@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LR Seimo posėdis GYVAI | Seimas AI Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a1a;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #d4232a 0%, #8b1a1f 100%);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 24px;
+            color: white;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-dot {
+            width: 12px;
+            height: 12px;
+            background: #ff4444;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .generate-btn, .members-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .generate-btn:hover, .members-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .setup-panel {
+            background: #333;
+            padding: 20px;
+            border-bottom: 1px solid #444;
+            display: none;
+        }
+
+        .setup-panel.active {
+            display: block;
+        }
+
+        .setup-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #d4232a;
+        }
+
+        .form-group input, .form-group textarea {
+            padding: 12px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: #2a2a2a;
+            color: white;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .generate-transcript-btn {
+            background: #d4232a;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            grid-column: 1 / -1;
+            justify-self: center;
+            transition: background 0.3s ease;
+        }
+
+        .generate-transcript-btn:hover {
+            background: #b01e24;
+        }
+
+        .generate-transcript-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #d4232a;
+        }
+
+        .loading-indicator.active {
+            display: block;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            height: calc(100vh - 120px); /* Account for header and control bar */
+            gap: 1px;
+        }
+
+        .video-area {
+            background: #000;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .parliament-chamber {
+            flex: 1;
+            background: linear-gradient(135deg, #2d1810 0%, #1a0f08 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chamber-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 20px;
+        }
+
+        .speaker-info {
+            background: rgba(212, 35, 42, 0.9);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .speaker-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .speaker-title {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .speaker-party {
+            font-size: 14px;
+            background: rgba(255,255,255,0.2);
+            padding: 3px 8px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .current-speech {
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .sidebar {
+            background: #2a2a2a;
+            display: flex;
+            flex-direction: column;
+            max-height: 100%;
+            overflow: hidden;
+        }
+
+        .session-info {
+            background: #333;
+            padding: 15px;
+            border-bottom: 1px solid #444;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .session-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #d4232a;
+        }
+
+        .session-time {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #555;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #d4232a;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .agenda {
+            background: #333;
+            padding: 15px;
+            border-bottom: 1px solid #444;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+
+        .agenda-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .agenda-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #555;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .agenda-item.active {
+            color: #d4232a;
+            font-weight: bold;
+        }
+
+        .live-updates {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            min-height: 0; /* Allow flex shrinking */
+        }
+
+        .updates-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .update-item {
+            background: #3a3a3a;
+            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 5px;
+            border-left: 3px solid #666;
+            transition: all 0.3s ease;
+        }
+
+        .update-item.new {
+            border-left-color: #d4232a;
+            background: #4a2a2a;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .update-time {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+
+        .update-text {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .control-bar {
+            background: #222;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            flex-shrink: 0;
+            border-top: 1px solid #444;
+        }
+
+        .playback-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .control-btn {
+            background: #d4232a;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: #b01e24;
+        }
+
+        .control-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .speed-control {
+            color: white;
+            font-size: 14px;
+        }
+
+        .speed-selector {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+
+        .timeline {
+            flex: 1;
+            margin: 0 20px;
+        }
+
+        .timeline-track {
+            width: 100%;
+            height: 6px;
+            background: #444;
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .timeline-progress {
+            height: 100%;
+            background: #d4232a;
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        .modal-content {
+            background-color: #2a2a2a;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-header {
+            background: #d4232a;
+            padding: 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .modal-body {
+            padding: 0;
+            overflow-y: auto;
+            max-height: calc(90vh - 80px);
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1px;
+            background: #444;
+        }
+
+        .member-card {
+            background: #333;
+            padding: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border: none;
+            color: white;
+            text-align: left;
+        }
+
+        .member-card:hover {
+            background: #3a3a3a;
+        }
+
+        .member-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #d4232a;
+        }
+
+        .member-party {
+            font-size: 12px;
+            background: #555;
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .member-role {
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 8px;
+        }
+
+        .member-profile {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px;
+            display: none;
+        }
+
+        .member-profile.active {
+            display: block;
+        }
+
+        .member-profile h3 {
+            color: #d4232a;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .member-profile .profile-section {
+            margin-bottom: 20px;
+        }
+
+        .member-profile .profile-section h4 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .member-profile .profile-section ul {
+            list-style: none;
+            padding-left: 15px;
+        }
+
+        .member-profile .profile-section li {
+            margin-bottom: 5px;
+            color: #ccc;
+            position: relative;
+        }
+
+        .member-profile .profile-section li:before {
+            content: "•";
+            color: #d4232a;
+            position: absolute;
+            left: -15px;
+        }
+
+        .chambers-view {
+            width: 100%;
+            height: 400px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400"><rect width="800" height="400" fill="%23654321"/><ellipse cx="400" cy="300" rx="300" ry="150" fill="%23543219"/><rect x="350" y="50" width="100" height="40" fill="%238B4513"/><text x="400" y="75" text-anchor="middle" fill="white" font-size="12">PIRMININKAS</text></svg>') center/cover;
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr auto;
+                height: calc(100vh - 140px); /* Adjust for mobile */
+            }
+            
+            .sidebar {
+                max-height: 250px;
+                order: 2;
+            }
+
+            .video-area {
+                order: 1;
+            }
+
+            .session-info {
+                padding: 10px;
+            }
+
+            .agenda {
+                padding: 10px;
+            }
+
+            .live-updates {
+                padding: 10px;
+            }
+
+            .control-bar {
+                padding: 5px 10px;
+                height: 50px;
+            }
+
+            .setup-form {
+                grid-template-columns: 1fr;
+            }
+
+            .header-controls {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .generate-btn, .members-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-controls">
+            <button class="generate-btn" id="toggleSetupBtn">⚙️ Generuoti naują posėdį (~ 5 min.)</button>
+            <button class="members-btn" id="membersBtn">👥 Seimo nariai (141)</button>
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>GYVAI</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="setup-panel" id="setupPanel">
+        <div class="setup-form">
+            <div class="form-group">
+                <label for="questionInput">Posėdžio tema / klausimas svarstymui:</label>
+                <textarea id="questionInput" placeholder="Pvz.: Ar Lietuva turėtų įvesti 4 dienų darbo savaitę iki 2027 metų?">Ar Lietuva turėtų įvesti 4 dienų darbo savaitę iki 2027 metų?</textarea>
+            </div>
+            <div class="form-group">
+                <label for="apiKeyInput">OpenAI API raktas (GPT-5-mini modelis):</label>
+                <input type="password" id="apiKeyInput" placeholder="sk-..." />
+                <small style="color: #999; margin-top: 5px; display: block;">
+                    Naudoja GPT-5-mini modelį geresniam turinio kokybei. Raktas saugomas saugiai jūsų naršyklėje.
+                </small>
+            </div>
+            <button class="generate-transcript-btn" id="generateTranscriptBtn">
+                🚀 Generuoti pilną Seimo posėdžio stenogramą (~ 5 min.)
+            </button>
+        </div>
+        <div class="loading-indicator" id="loadingIndicator">
+            <div>🚀 Generuojama detalus stenograma su GPT-5-mini (~ 5 min.)...</div>
+            <div style="margin-top: 10px; font-size: 14px;">Kuriamas ypač išsamus turinys su giliais argumentais ir statistikomis</div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="video-area">
+            <div class="parliament-chamber">
+                <div class="chambers-view" id="chambersView"></div>
+                <div class="chamber-overlay">
+                    <div class="speaker-info" id="speakerInfo">
+                        <div class="speaker-name" id="speakerName">Seimo posėdis prasidės netrukus</div>
+                        <div class="speaker-title" id="speakerTitle"></div>
+                        <div class="speaker-party" id="speakerParty"></div>
+                    </div>
+                    <div class="current-speech" id="currentSpeech">
+                        Sukurkite naują posėdį spustelėję "⚙️ Generuoti naują posėdį" mygtuką viršuje. Įveskite klausimą svarstymui ir OpenAI API raktą.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="session-info">
+                <div class="session-title" id="sessionTitle">Laukiama naujo posėdžio</div>
+                <div class="session-time" id="currentTime">-</div>
+                <div class="session-time" id="sessionTopic">Sukurkite naują posėdį aukščiau</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+
+            <div class="agenda">
+                <div class="agenda-title">Darbotvarkė</div>
+                <div class="agenda-item active" data-time="10:00">Posėdžio atidarymas</div>
+                <div class="agenda-item" data-time="10:05">Darbotvarkės pristatymas</div>
+                <div class="agenda-item" data-time="10:15">Pagrindinis pranešimas</div>
+                <div class="agenda-item" data-time="10:45">Frakcijų kalbos</div>
+                <div class="agenda-item" data-time="11:45">Pertrauka</div>
+                <div class="agenda-item" data-time="12:00">Diskusijos</div>
+                <div class="agenda-item" data-time="12:45">Balsavimas</div>
+                <div class="agenda-item" data-time="13:00">Uždarymas</div>
+            </div>
+
+            <div class="live-updates">
+                <div class="updates-title">Gyvai</div>
+                <div id="updatesContainer">
+                    <div class="update-item">
+                        <div class="update-time">-</div>
+                        <div class="update-text">Laukiama naujo posėdžio generavimo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="control-bar">
+        <div class="playback-controls">
+            <button class="control-btn" id="playPauseBtn" disabled>▶️ Paleisti</button>
+            <button class="control-btn" id="restartBtn" disabled>⏮️ Iš pradžių</button>
+            <div class="speed-control">
+                Greitis:
+                <select class="speed-selector" id="speedSelector">
+                    <option value="0.25">0.25x</option>
+                    <option value="0.5">0.5x</option>
+                    <option value="1">1x</option>
+                    <option value="2" selected>2x</option>
+                    <option value="5">5x</option>
+                    <option value="10">10x</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-track" id="timelineTrack">
+                <div class="timeline-progress" id="timelineProgress"></div>
+            </div>
+        </div>
+        
+        <div id="timeDisplay">00:00 / 00:00</div>
+    </div>
+
+    <!-- Members Modal -->
+    <div id="membersModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Lietuvos Respublikos Seimo nariai (2024-2028)</h2>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="members-grid" id="membersGrid">
+                    <!-- Members will be loaded here -->
+                </div>
+                <div class="member-profile" id="memberProfile">
+                    <!-- Selected member profile will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="seimas_members_data.js"></script>
+    <script src="seimas_stream_enhanced.js"></script>
+</body>
+</html>

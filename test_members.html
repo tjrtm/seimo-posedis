@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Seimas Members Data</title>
+</head>
+<body>
+    <h1>Testing Seimas Members Data</h1>
+    <div id="test-results"></div>
+
+    <script src="seimas_members_data.js"></script>
+    <script>
+        console.log('SEIMAS_MEMBERS_DATA available:', typeof window.SEIMAS_MEMBERS_DATA !== 'undefined');
+        console.log('Number of members:', window.SEIMAS_MEMBERS_DATA ? window.SEIMAS_MEMBERS_DATA.length : 0);
+        
+        if (window.SEIMAS_MEMBERS_DATA) {
+            const results = document.getElementById('test-results');
+            results.innerHTML = `
+                <p><strong>✅ Data loaded successfully!</strong></p>
+                <p>Total members: ${window.SEIMAS_MEMBERS_DATA.length}</p>
+                <p>First member: ${window.SEIMAS_MEMBERS_DATA[0].name} (${window.SEIMAS_MEMBERS_DATA[0].party})</p>
+                <p>Last member: ${window.SEIMAS_MEMBERS_DATA[window.SEIMAS_MEMBERS_DATA.length-1].name} (${window.SEIMAS_MEMBERS_DATA[window.SEIMAS_MEMBERS_DATA.length-1].party})</p>
+            `;
+            
+            // Test party distribution
+            const partyCount = {};
+            window.SEIMAS_MEMBERS_DATA.forEach(member => {
+                partyCount[member.party] = (partyCount[member.party] || 0) + 1;
+            });
+            
+            const partyList = Object.entries(partyCount)
+                .map(([party, count]) => `<li>${party}: ${count} nariai</li>`)
+                .join('');
+            
+            results.innerHTML += `<h3>Party distribution:</h3><ul>${partyList}</ul>`;
+        } else {
+            document.getElementById('test-results').innerHTML = '<p><strong>❌ Data not loaded!</strong></p>';
+        }
+    </script>
+</body>
+</html>
