@@ -3,7 +3,7 @@
 Pastaba dėl kintamų dydžių:
 - Šis dokumentas pritaikytas situacijoms, kai narių skaičius gali būti nežinomas ar kintantis. Vietoje griežtai apibrėžtų žmonių skaičių taikomi konfigūruojami limitai.
 - Rekomenduojami kintamieji (nustatomi administracine tvarka):
-  - `EKSKURSIJOS_DALYVIU_MAKS` – didžiausias vienos ekskursijos grupės dalyvių skaičius (numatyta reikšmė: 144).
+  - `EKSKURSIJOS_DALYVIU_MAKS` – didžiausias vienos ekskursijos grupės dalyvių skaičius (numatyta reikšmė: 141).
 
 
 ## I. BENDROSIOS NUOSTATOS
