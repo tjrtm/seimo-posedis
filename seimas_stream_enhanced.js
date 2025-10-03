@@ -9,6 +9,7 @@ class EnhancedSeimasLiveStream {
         this.intervalId = null;
         this.events = [];
         this.seimasMembers = [];
+        this.sessionDirectoryHandle = null;
         
         this.initializeElements();
         this.loadSeimasMembers();
@@ -251,7 +252,7 @@ class EnhancedSeimasLiveStream {
         
         try {
             const transcript = await this.callOpenAI(question, apiKey);
-            this.processGeneratedTranscript(transcript, question);
+            await this.processGeneratedTranscript(transcript, question);
             this.setupPanel.classList.remove('active');
             this.toggleSetupBtn.textContent = '⚙️ Generuoti naują posėdį';
         } catch (error) {
@@ -404,7 +405,7 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
         `;
     }
 
-    processGeneratedTranscript(transcriptJson, question) {
+    async processGeneratedTranscript(transcriptJson, question) {
         try {
             // Handle different response types from Responses API
             let transcriptData;
@@ -445,9 +446,169 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
 
             this.addLiveUpdate('10:00', 'Naujas posėdis sugeneruotas sėkmingai');
 
+            const saveResult = await this.saveTranscriptToFile(transcriptData);
+            if (saveResult.success) {
+                const saveMessage = saveResult.method === 'download'
+                    ? `Stenograma atsisiųsta failu: ${saveResult.path}`
+                    : `Stenograma automatiškai išsaugota: ${saveResult.path}`;
+                this.addLiveUpdate('10:01', saveMessage);
+            } else {
+                this.addLiveUpdate('10:01', 'Nepavyko automatiškai išsaugoti stenogramos. Parsisiųskite ją rankiniu būdu.');
+            }
+
         } catch (error) {
             console.error('Error processing transcript:', error);
             alert('Klaida apdorojant stenogramą. Bandykite dar kartą.');
+        }
+    }
+
+    async saveTranscriptToFile(transcriptData) {
+        try {
+            const timestamp = new Date();
+            const payload = this.createTranscriptPayload(transcriptData, timestamp);
+            const serialized = JSON.stringify(payload, null, 2);
+            const fileName = this.buildSessionFileName(transcriptData, timestamp);
+
+            if (typeof window === 'undefined') {
+                const fs = require('fs');
+                const path = require('path');
+                const sessionsDir = path.resolve(process.cwd(), 'sessions');
+                await fs.promises.mkdir(sessionsDir, { recursive: true });
+                const targetPath = path.join(sessionsDir, fileName);
+                await fs.promises.writeFile(targetPath, serialized, 'utf8');
+                return { success: true, path: `sessions/${fileName}`, method: 'node' };
+            }
+
+            if (window.isSecureContext && typeof window.showDirectoryPicker === 'function') {
+                try {
+                    const savedPath = await this.persistTranscriptUsingFileSystemAPI(fileName, serialized);
+                    this.recordSavedSession(savedPath, timestamp, 'filesystem');
+                    return { success: true, path: savedPath, method: 'filesystem' };
+                } catch (error) {
+                    console.warn('Failų sistemos API nepavyko, bus naudojamas atsisiuntimo metodas:', error);
+                }
+            }
+
+            const downloadName = this.triggerTranscriptDownload(fileName, serialized);
+            this.recordSavedSession(downloadName, timestamp, 'download');
+            return { success: true, path: downloadName, method: 'download' };
+        } catch (error) {
+            console.error('Klaida išsaugant stenogramą:', error);
+            return { success: false, error };
+        }
+    }
+
+    createTranscriptPayload(transcriptData, timestamp) {
+        return {
+            savedAt: timestamp.toISOString(),
+            title: transcriptData.title || 'Seimo posėdis',
+            topic: transcriptData.topic || '',
+            totalEvents: Array.isArray(transcriptData.events) ? transcriptData.events.length : 0,
+            durationMinutes: this.totalDuration,
+            events: transcriptData.events || []
+        };
+    }
+
+    buildSessionFileName(transcriptData, timestamp) {
+        const topic = transcriptData.topic || transcriptData.title || 'seimo-posedis';
+        const slug = this.slugifySessionName(topic);
+        const iso = timestamp.toISOString().replace(/[:.]/g, '-');
+        return `${iso}-${slug}.json`;
+    }
+
+    slugifySessionName(text) {
+        return text
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-zA-Z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .toLowerCase() || 'seimo-posedis';
+    }
+
+    async persistTranscriptUsingFileSystemAPI(fileName, contents) {
+        if (!window.isSecureContext || typeof window.showDirectoryPicker !== 'function') {
+            throw new Error('Failų sistemos API nepasiekiama nesaugiame kontekste');
+        }
+
+        const directoryHandle = await this.getSessionDirectoryHandle();
+        const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(contents);
+        await writable.close();
+
+        const directoryName = directoryHandle.name || 'sessions';
+        return `${directoryName}/${fileName}`;
+    }
+
+    async getSessionDirectoryHandle() {
+        if (this.sessionDirectoryHandle && await this.verifyDirectoryPermission(this.sessionDirectoryHandle)) {
+            return this.sessionDirectoryHandle;
+        }
+
+        const directoryHandle = await window.showDirectoryPicker({
+            id: 'seimas-sessions',
+            mode: 'readwrite'
+        });
+
+        const hasPermission = await this.verifyDirectoryPermission(directoryHandle);
+        if (!hasPermission) {
+            throw new Error('Leidimas rašyti į pasirinktą katalogą nebuvo suteiktas');
+        }
+
+        this.sessionDirectoryHandle = directoryHandle;
+        return directoryHandle;
+    }
+
+    async verifyDirectoryPermission(handle) {
+        if (!handle) {
+            return false;
+        }
+
+        if (typeof handle.queryPermission === 'function') {
+            const permission = await handle.queryPermission({ mode: 'readwrite' });
+            if (permission === 'granted') {
+                return true;
+            }
+        }
+
+        if (typeof handle.requestPermission === 'function') {
+            const permission = await handle.requestPermission({ mode: 'readwrite' });
+            return permission === 'granted';
+        }
+
+        return true;
+    }
+
+    triggerTranscriptDownload(fileName, contents) {
+        if (typeof document === 'undefined') {
+            return fileName;
+        }
+
+        const downloadName = `sessions-${fileName}`;
+        const blob = new Blob([contents], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = downloadName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        return downloadName;
+    }
+
+    recordSavedSession(fileName, timestamp, method) {
+        if (typeof window === 'undefined' || !window.localStorage) {
+            return;
+        }
+
+        try {
+            const existing = JSON.parse(window.localStorage.getItem('seimas_saved_sessions') || '[]');
+            existing.unshift({ fileName, savedAt: timestamp.toISOString(), method });
+            window.localStorage.setItem('seimas_saved_sessions', JSON.stringify(existing.slice(0, 20)));
+        } catch (error) {
+            console.warn('Nepavyko išsaugoti sesijos metaduomenų localStorage:', error);
         }
     }
 

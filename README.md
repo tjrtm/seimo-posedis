@@ -17,6 +17,11 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 - Realūs ekonominiai duomenys ir tarptautiniai pavyzdžiai
 - Gilios diskusijos su tarpusavio klausimais ir atsakymais
 
+### 💾 Sesijų archyvavimas
+- Sugeneruota stenograma automatiškai įrašoma į `sessions/` katalogą (naudojant Node.js aplinką)
+- Naršyklėje stenogramos atsisiunčiamos JSON formatu arba įrašomos pasirinktame aplanke naudojant Failų sistemos API
+- `sessions/` kataloge kaupiama chronologinė posėdžių istorija JSON formatu
+
 ### 📺 Gyvas transliavimas
 - Tikras LRT stiliaus dizainas
 - Real-time posėdžio eigos simuliacija
@@ -36,7 +41,8 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 3. **Įveskite** posėdžio temą (pvz.: "Ar turėtų būti įvesta 4 dienų darbo savaitė?")
 4. **Įveskite** OpenAI API raktą
 5. **Spauskite** "🚀 Generuoti pilną stenogramą"
-6. **Stebėkite** gyvą simuliaciją!
+6. Jei naršyklė palaiko Failų sistemos API, pasirinkite `sessions` katalogą automatiškam išsaugojimui
+7. **Stebėkite** gyvą simuliaciją!
 
 ## Failų struktūra
 
