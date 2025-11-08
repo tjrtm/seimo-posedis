@@ -10,8 +10,10 @@ class EnhancedSeimasLiveStream {
         this.events = [];
         this.seimasMembers = [];
         this.sessionDirectoryHandle = null;
-        
+        this.animatedFace = null;
+
         this.initializeElements();
+        this.initializeAnimatedFace();
         this.loadSeimasMembers();
         this.setupEventListeners();
         this.loadAPIKey();
@@ -50,6 +52,20 @@ class EnhancedSeimasLiveStream {
         this.closeModal = document.getElementById('closeModal');
         this.membersGrid = document.getElementById('membersGrid');
         this.memberProfile = document.getElementById('memberProfile');
+    }
+
+    initializeAnimatedFace() {
+        // Initialize the animated face in the chambersView container
+        if (typeof AnimatedFace !== 'undefined') {
+            try {
+                this.animatedFace = new AnimatedFace('chambersView');
+                console.log('AnimatedFace initialized successfully');
+            } catch (error) {
+                console.error('Error initializing AnimatedFace:', error);
+            }
+        } else {
+            console.warn('AnimatedFace class not found - face animation disabled');
+        }
     }
 
     async loadSeimasMembers() {
@@ -175,6 +191,12 @@ class EnhancedSeimasLiveStream {
         this.restartBtn.addEventListener('click', () => this.restart());
         this.speedSelector.addEventListener('change', (e) => {
             this.speedMultiplier = parseFloat(e.target.value);
+
+            // Update animated face speech rate
+            if (this.animatedFace) {
+                this.animatedFace.setRate(this.speedMultiplier);
+            }
+
             if (this.isPlaying) {
                 this.stopTimer();
                 this.startTimer();
@@ -706,6 +728,11 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
         this.isPlaying = false;
         this.playPauseBtn.textContent = '▶️ Tęsti';
         this.stopTimer();
+
+        // Stop animated face from speaking
+        if (this.animatedFace) {
+            this.animatedFace.stop();
+        }
     }
 
     restart() {
@@ -809,6 +836,12 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
 
         // Update party color
         this.updatePartyColor(event.party);
+
+        // Make the animated face speak
+        if (this.animatedFace && event.text) {
+            // Use the current speed multiplier for speech rate
+            this.animatedFace.speak(event.text, this.speedMultiplier);
+        }
     }
 
     updatePartyColor(party) {
