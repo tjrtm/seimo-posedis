@@ -96,7 +96,7 @@ Sistemoje yra pavyzdinis posėdis temu "Dirbtinio intelekto poveikis darbo rinka
 ## Saugumo pastabos
 
 - API raktas niekada neišsiunčiamas iš jūsų naršyklės
-- Visi duomenys saugomi lokaliui
+- Visi duomenys saugomi lokaliai
 - Stenogramos generuojamos real-time su OpenAI
 
 ## Licencija
