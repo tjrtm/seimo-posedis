@@ -55,7 +55,7 @@
             animation: pulse 2s infinite;
         }
 
-        .generate-btn, .members-btn {
+        .generate-btn, .members-btn, .load-btn {
             background: rgba(255,255,255,0.2);
             color: white;
             border: none;
@@ -66,7 +66,7 @@
             transition: background 0.3s ease;
         }
 
-        .generate-btn:hover, .members-btn:hover {
+        .generate-btn:hover, .members-btn:hover, .load-btn:hover {
             background: rgba(255,255,255,0.3);
         }
 
@@ -650,7 +650,7 @@
                 gap: 5px;
             }
 
-            .generate-btn, .members-btn {
+            .generate-btn, .members-btn, .load-btn {
                 font-size: 12px;
                 padding: 6px 12px;
             }
@@ -661,6 +661,7 @@
     <div class="header">
         <div class="header-controls">
             <button class="generate-btn" id="toggleSetupBtn">⚙️ Generuoti naują posėdį (~ 5 min.)</button>
+            <button class="load-btn" id="loadSessionBtn">📂 Įkelti išsaugotą sesiją</button>
             <button class="members-btn" id="membersBtn">👥 Seimo nariai (141)</button>
             <div class="live-indicator">
                 <div class="live-dot"></div>
@@ -668,6 +669,8 @@
             </div>
         </div>
     </div>
+
+    <input type="file" id="loadSessionInput" accept="application/json" style="display: none;" />
 
     <div class="setup-panel" id="setupPanel">
         <div class="setup-form">
