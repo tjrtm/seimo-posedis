@@ -24,6 +24,13 @@ class AnimatedFace {
         this.analyser = null;
         this.audioSource = null;
 
+        // Rendering backend flag
+        this.useThree = false;
+
+        // Canvas fallback refs
+        this.canvas = null;
+        this.ctx = null;
+
         this.init();
     }
 
@@ -33,48 +40,53 @@ class AnimatedFace {
             return;
         }
 
-        if (typeof THREE === 'undefined') {
-            console.error('AnimatedFace: THREE.js library not found - animation disabled');
-            return;
+        if (typeof THREE !== 'undefined') {
+            // Use Three.js if available
+            this.useThree = true;
+
+            // Create Three.js scene
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color(0x1a1a1a);
+
+            // Camera setup
+            this.camera = new THREE.PerspectiveCamera(
+                45,
+                this.container.clientWidth / this.container.clientHeight,
+                0.1,
+                1000
+            );
+            this.camera.position.z = 5;
+
+            // Renderer setup
+            this.renderer = new THREE.WebGLRenderer({ antialias: true });
+            this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+            this.renderer.setPixelRatio(window.devicePixelRatio);
+            this.container.innerHTML = ''; // Clear container
+            this.container.appendChild(this.renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            this.scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 5, 5);
+            this.scene.add(directionalLight);
+
+            const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+            fillLight.position.set(-5, 0, -5);
+            this.scene.add(fillLight);
+
+            // Create face
+            this.createFace();
+
+            // Handle window resize
+            window.addEventListener('resize', () => this.onWindowResize());
+        } else {
+            // Fallback to a lightweight Canvas 2D animation
+            console.warn('AnimatedFace: THREE.js not found — using 2D fallback');
+            this.initCanvasFallback();
+            window.addEventListener('resize', () => this.onWindowResize());
         }
-
-        // Create Three.js scene
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x1a1a1a);
-
-        // Camera setup
-        this.camera = new THREE.PerspectiveCamera(
-            45,
-            this.container.clientWidth / this.container.clientHeight,
-            0.1,
-            1000
-        );
-        this.camera.position.z = 5;
-
-        // Renderer setup
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
-        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.container.innerHTML = ''; // Clear container
-        this.container.appendChild(this.renderer.domElement);
-
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        this.scene.add(ambientLight);
-
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 5, 5);
-        this.scene.add(directionalLight);
-
-        const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
-        fillLight.position.set(-5, 0, -5);
-        this.scene.add(fillLight);
-
-        // Create face
-        this.createFace();
-
-        // Handle window resize
-        window.addEventListener('resize', () => this.onWindowResize());
 
         // Start animation loop
         this.animate();
@@ -410,20 +422,26 @@ class AnimatedFace {
         this.updateBlinkAnimation(deltaTime);
         this.updateHeadRotation(deltaTime);
 
-        // Add subtle breathing motion
-        if (this.face) {
-            this.face.position.y = Math.sin(Date.now() * 0.001) * 0.02;
+        if (this.useThree) {
+            // Add subtle breathing motion
+            if (this.face) {
+                this.face.position.y = Math.sin(Date.now() * 0.001) * 0.02;
+            }
+            this.renderer.render(this.scene, this.camera);
+        } else {
+            this.drawCanvasFallback();
         }
-
-        this.renderer.render(this.scene, this.camera);
     }
 
     onWindowResize() {
         if (!this.container) return;
-
-        this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+        if (this.useThree) {
+            this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+        } else if (this.canvas && this.ctx) {
+            this.resizeCanvas();
+        }
     }
 
     stop() {
@@ -448,6 +466,122 @@ class AnimatedFace {
         }
     }
 }
+
+// ----- Canvas 2D fallback implementation -----
+AnimatedFace.prototype.initCanvasFallback = function () {
+    this.container.innerHTML = '';
+    this.canvas = document.createElement('canvas');
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
+    this.container.appendChild(this.canvas);
+    this.ctx = this.canvas.getContext('2d');
+    this.resizeCanvas();
+};
+
+AnimatedFace.prototype.resizeCanvas = function () {
+    const rect = this.container.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    this.canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+    this.canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+};
+
+AnimatedFace.prototype.drawCanvasFallback = function () {
+    const ctx = this.ctx;
+    if (!ctx) return;
+
+    const w = this.container.clientWidth;
+    const h = this.container.clientHeight;
+
+    // Clear
+    ctx.clearRect(0, 0, w, h);
+
+    // Background
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, '#1a1a1a');
+    grad.addColorStop(1, '#111');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Center face area
+    const cx = w / 2;
+    const cy = h / 2 + Math.sin(Date.now() * 0.001) * 2; // subtle breathing
+    const faceR = Math.min(w, h) * 0.28;
+
+    // Head
+    ctx.fillStyle = '#ffdbac';
+    ctx.beginPath();
+    ctx.arc(cx, cy, faceR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hair (top semicircle)
+    ctx.fillStyle = '#3d2817';
+    ctx.beginPath();
+    ctx.arc(cx, cy - faceR * 0.2, faceR * 1.05, Math.PI, 0);
+    ctx.fill();
+
+    // Eyes
+    const eyeOffsetX = faceR * 0.4;
+    const eyeY = cy - faceR * 0.15;
+    const eyeR = faceR * 0.12;
+
+    // Eyelid openness from 0..1
+    const open = Math.max(0, Math.min(1, this.eyeOpenAmount));
+    const lid = eyeR * (1 - open);
+
+    ['left', 'right'].forEach((side, i) => {
+        const ex = cx + (i === 0 ? -eyeOffsetX : eyeOffsetX);
+        // White
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.ellipse(ex, eyeY, eyeR, eyeR * 0.85, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // Pupil
+        ctx.fillStyle = '#4a3728';
+        ctx.beginPath();
+        ctx.arc(ex, eyeY, eyeR * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+        // Eyelid overlay
+        if (lid > 0) {
+            ctx.fillStyle = '#ffdbac';
+            ctx.beginPath();
+            ctx.ellipse(ex, eyeY - (open < 0.5 ? lid * 0.2 : 0), eyeR, eyeR * 0.85, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    });
+
+    // Brows
+    ctx.strokeStyle = '#3d2817';
+    ctx.lineWidth = faceR * 0.06;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx - eyeOffsetX - faceR * 0.1, eyeY - faceR * 0.25);
+    ctx.lineTo(cx - eyeOffsetX + faceR * 0.1, eyeY - faceR * 0.3);
+    ctx.moveTo(cx + eyeOffsetX - faceR * 0.1, eyeY - faceR * 0.3);
+    ctx.lineTo(cx + eyeOffsetX + faceR * 0.1, eyeY - faceR * 0.25);
+    ctx.stroke();
+
+    // Nose
+    ctx.fillStyle = '#ffdbac';
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx - faceR * 0.05, cy + faceR * 0.15);
+    ctx.lineTo(cx + faceR * 0.05, cy + faceR * 0.15);
+    ctx.closePath();
+    ctx.fill();
+
+    // Mouth
+    const openAmt = Math.max(0, this.mouthOpenAmount);
+    const mouthW = faceR * 0.6;
+    const mouthH = faceR * 0.1 + openAmt * faceR * 0.25;
+    const mouthY = cy + faceR * 0.35;
+    ctx.fillStyle = '#8b4545';
+    ctx.beginPath();
+    ctx.moveTo(cx - mouthW / 2, mouthY);
+    ctx.quadraticCurveTo(cx, mouthY + mouthH, cx + mouthW / 2, mouthY);
+    ctx.quadraticCurveTo(cx, mouthY - mouthH * 0.3, cx - mouthW / 2, mouthY);
+    ctx.fill();
+};
 
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
