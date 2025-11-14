@@ -33,6 +33,11 @@ class AnimatedFace {
             return;
         }
 
+        if (typeof THREE === 'undefined') {
+            console.error('AnimatedFace: THREE.js library not found - animation disabled');
+            return;
+        }
+
         // Create Three.js scene
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x1a1a1a);
