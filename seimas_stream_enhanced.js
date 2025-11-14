@@ -69,6 +69,8 @@ class EnhancedSeimasLiveStream {
         this.playPauseBtn = document.getElementById('playPauseBtn');
         this.restartBtn = document.getElementById('restartBtn');
         this.speedSelector = document.getElementById('speedSelector');
+        this.loadSessionBtn = document.getElementById('loadSessionBtn');
+        this.loadSessionInput = document.getElementById('loadSessionInput');
 
         // Setup elements
         this.toggleSetupBtn = document.getElementById('toggleSetupBtn');
@@ -248,6 +250,20 @@ class EnhancedSeimasLiveStream {
 
         if (this.textToSpeechCheckbox) {
             this.textToSpeechCheckbox.addEventListener('change', () => this.handleTextToSpeechToggle());
+        }
+
+        if (this.loadSessionBtn && this.loadSessionInput) {
+            this.loadSessionBtn.addEventListener('click', () => {
+                this.loadSessionInput.value = '';
+                this.loadSessionInput.click();
+            });
+
+            this.loadSessionInput.addEventListener('change', (event) => {
+                const file = event.target?.files?.[0];
+                if (file) {
+                    this.loadSessionFromFile(file);
+                }
+            });
         }
 
         // Modal
@@ -855,6 +871,104 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
         `;
     }
 
+    setupSessionPlayback(transcriptData, {
+        question = '',
+        timestamp = new Date(),
+        message = 'Naujas posėdis sugeneruotas sėkmingai'
+    } = {}) {
+        const normalizedEvents = this.normalizeEvents(Array.isArray(transcriptData.events) ? transcriptData.events : []);
+        transcriptData.events = normalizedEvents;
+
+        this.events = normalizedEvents;
+        this.totalDuration = this.calculateTotalDuration(normalizedEvents, transcriptData.durationMinutes);
+        this.lastTranscriptTimestamp = timestamp;
+
+        const topic = transcriptData.topic || question || 'Išsaugota Seimo sesija';
+
+        this.sessionTitle.textContent = transcriptData.title || 'Seimo posėdis';
+        this.sessionTopic.textContent = topic;
+
+        this.restart();
+
+        this.playPauseBtn.disabled = false;
+        this.restartBtn.disabled = false;
+
+        this.clearAudioAssets();
+        this.resetVoiceAssignments();
+        this.audioPreparationPromise = null;
+
+        this.addLiveUpdate('10:00', message);
+
+        return normalizedEvents;
+    }
+
+    calculateTotalDuration(events, fallbackDuration) {
+        if (typeof fallbackDuration === 'number' && fallbackDuration > 0) {
+            return fallbackDuration;
+        }
+
+        if (!Array.isArray(events) || events.length === 0) {
+            return 180;
+        }
+
+        const maxTime = events.reduce((max, event) => {
+            if (typeof event.time === 'number' && !Number.isNaN(event.time)) {
+                return Math.max(max, event.time);
+            }
+            return max;
+        }, 0);
+
+        return Math.max(maxTime + 5, 5);
+    }
+
+    normalizeEvents(events) {
+        if (!Array.isArray(events)) {
+            return [];
+        }
+
+        return events.map((event, index) => {
+            const normalized = { ...event };
+
+            if (typeof normalized.time !== 'number') {
+                const numericTime = Number(normalized.time);
+                if (Number.isFinite(numericTime)) {
+                    normalized.time = numericTime;
+                }
+            }
+
+            if (typeof normalized.time !== 'number' || Number.isNaN(normalized.time)) {
+                normalized.time = index * 5;
+            }
+
+            if (!normalized.timestamp) {
+                normalized.timestamp = this.formatTime(Math.floor(normalized.time));
+            }
+
+            if (!normalized.update) {
+                if (normalized.speaker) {
+                    normalized.update = `${normalized.speaker} kalba posėdyje`;
+                } else {
+                    normalized.update = 'Posėdžio eiga atnaujinta';
+                }
+            }
+
+            return normalized;
+        });
+    }
+
+    sanitizeText(value) {
+        if (value === null || value === undefined) {
+            return '';
+        }
+
+        return String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
     async processGeneratedTranscript(transcriptJson, question, apiKey) {
         try {
             // Handle different response types from Responses API
@@ -877,26 +991,12 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
                 transcriptData = this.convertTextToStructuredTranscript(responseText, question);
             }
 
-            this.events = transcriptData.events || [];
-            this.totalDuration = this.events.length > 0 ? Math.max(...this.events.map(e => e.time)) + 5 : 180;
             const transcriptTimestamp = new Date();
-            this.lastTranscriptTimestamp = transcriptTimestamp;
-
-            // Update UI
-            this.sessionTitle.textContent = transcriptData.title || 'Seimo posėdis';
-            this.sessionTopic.textContent = transcriptData.topic || question;
-
-            // Clear previous updates
-            this.updatesContainer.innerHTML = '';
-
-            // Reset playback
-            this.restart();
-
-            // Enable controls
-            this.playPauseBtn.disabled = false;
-            this.restartBtn.disabled = false;
-
-            this.addLiveUpdate('10:00', 'Naujas posėdis sugeneruotas sėkmingai');
+            this.setupSessionPlayback(transcriptData, {
+                question,
+                timestamp: transcriptTimestamp,
+                message: 'Naujas posėdis sugeneruotas sėkmingai'
+            });
 
             let audioMetadata = null;
             if (this.textToSpeechEnabled) {
@@ -969,6 +1069,84 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
         } catch (error) {
             console.error('Klaida išsaugant stenogramą:', error);
             return { success: false, error };
+        }
+    }
+
+    async loadSessionFromFile(file) {
+        if (!file) {
+            return;
+        }
+
+        try {
+            const fileContents = await file.text();
+            let payload;
+
+            try {
+                payload = JSON.parse(fileContents);
+            } catch (parseError) {
+                throw new Error('Nepavyko perskaityti JSON failo');
+            }
+
+            if (!payload || typeof payload !== 'object') {
+                throw new Error('Pasirinktas failas neturi sesijos duomenų');
+            }
+
+            const eventsSource = Array.isArray(payload.events)
+                ? payload.events
+                : Array.isArray(payload.transcript?.events)
+                    ? payload.transcript.events
+                    : [];
+
+            const transcriptData = {
+                title: payload.title || payload.sessionTitle || 'Seimo posėdis',
+                topic: payload.topic || payload.question || '',
+                events: eventsSource,
+                durationMinutes: payload.durationMinutes
+            };
+
+            const savedAt = payload.savedAt ? new Date(payload.savedAt) : new Date();
+            const sessionLabel = file.name || payload.fileName || 'sesija';
+
+            this.setupSessionPlayback(transcriptData, {
+                question: transcriptData.topic,
+                timestamp: savedAt,
+                message: `Įkelta išsaugota sesija (${sessionLabel})`
+            });
+
+            this.addLiveUpdate('10:01', `Sesijoje rasta ${transcriptData.events.length} įvykių.`);
+
+            const audioMetadata = payload.audio;
+            const apiKey = this.apiKeyInput?.value?.trim();
+
+            if (this.textToSpeechEnabled) {
+                if (apiKey) {
+                    try {
+                        this.updateTextToSpeechStatus('🔄 Atkuriami balsai įkeltai sesijai...', 'processing');
+                        const preparedAudio = await this.prepareTextToSpeechAssets(transcriptData, apiKey, savedAt);
+                        if (preparedAudio?.mapping?.length) {
+                            this.addLiveUpdate('10:02', `Sugeneruota ${preparedAudio.mapping.length} teksto į kalbą įrašų įkeltai sesijai.`);
+                            this.updateTextToSpeechStatus('🔊 Teksto į kalbą įrašai atkurti įkeltai sesijai.', 'success');
+                        } else {
+                            this.addLiveUpdate('10:02', 'Nepavyko sugeneruoti teksto į kalbą įrašų įkeltai sesijai.');
+                            this.updateTextToSpeechStatus('🔇 Įkeltai sesijai nepavyko sugeneruoti teksto į kalbą įrašų.', 'error');
+                        }
+                    } catch (audioError) {
+                        console.error('Error preparing audio for loaded session:', audioError);
+                        this.addLiveUpdate('10:02', 'Nepavyko sugeneruoti teksto į kalbą įrašų įkeltai sesijai.');
+                        this.updateTextToSpeechStatus('🔇 Nepavyko sugeneruoti balsų įkeltai sesijai.', 'error');
+                    }
+                } else {
+                    this.updateTextToSpeechStatus('⚠️ Įveskite OpenAI API raktą, kad atkurtumėte balsus įkeltai sesijai.', 'error');
+                }
+            } else if (audioMetadata?.enabled) {
+                this.addLiveUpdate('10:02', 'Ši sesija turi teksto į kalbą metaduomenis. Įjunkite funkciją ir įveskite API raktą, kad atkurtumėte balsus.');
+            } else {
+                this.updateTextToSpeechStatus('🔇 Teksto į kalbą funkcija išjungta.', 'info');
+            }
+        } catch (error) {
+            console.error('Nepavyko įkelti sesijos failo:', error);
+            this.addLiveUpdate('10:00', '❌ Nepavyko įkelti pasirinkto sesijos failo. Patikrinkite JSON formatą.');
+            alert('Nepavyko įkelti sesijos failo. Įsitikinkite, kad pasirenkate teisingą JSON failą.');
         }
     }
 
@@ -1383,9 +1561,11 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
     addLiveUpdate(time, text) {
         const updateItem = document.createElement('div');
         updateItem.className = 'update-item new';
+        const safeTime = this.sanitizeText(time);
+        const safeText = this.sanitizeText(text);
         updateItem.innerHTML = `
-            <div class="update-time">${time}</div>
-            <div class="update-text">${text}</div>
+            <div class="update-time">${safeTime}</div>
+            <div class="update-text">${safeText}</div>
         `;
 
         this.updatesContainer.insertBefore(updateItem, this.updatesContainer.firstChild);
