@@ -662,6 +662,7 @@
         <div class="header-controls">
             <button class="generate-btn" id="toggleSetupBtn">⚙️ Generuoti naują posėdį (~ 5 min.)</button>
             <button class="load-btn" id="loadSessionBtn">📂 Įkelti išsaugotą sesiją</button>
+            <button class="load-btn" id="loadSessionFolderBtn">📁 Atverti sesijos aplanką</button>
             <button class="members-btn" id="membersBtn">👥 Seimo nariai (141)</button>
             <div class="live-indicator">
                 <div class="live-dot"></div>
@@ -758,13 +759,14 @@
         <div class="playback-controls">
             <button class="control-btn" id="playPauseBtn" disabled>▶️ Paleisti</button>
             <button class="control-btn" id="restartBtn" disabled>⏮️ Iš pradžių</button>
+            <button class="control-btn" id="skipNextBtn" disabled>⏭️ Kitas</button>
             <div class="speed-control">
                 Greitis:
                 <select class="speed-selector" id="speedSelector">
                     <option value="0.25">0.25x</option>
                     <option value="0.5">0.5x</option>
-                    <option value="1">1x</option>
-                    <option value="2" selected>2x</option>
+                    <option value="1" selected>1x</option>
+                    <option value="2">2x</option>
                     <option value="5">5x</option>
                     <option value="10">10x</option>
                 </select>
@@ -799,7 +801,17 @@
     </div>
 
     <!-- Three.js for WebGL 3D graphics -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.180.0/three.min.js"></script>
+    <script type="module">
+        import * as THREEModule from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.180.0/three.module.js';
+        const existing = window.THREE || {};
+        for (const key of Object.keys(THREEModule)) {
+            if (!(key in existing)) {
+                existing[key] = THREEModule[key];
+            }
+        }
+        window.THREE = existing;
+    </script>
 
     <!-- Animated Face Component -->
     <script src="animated_face.js"></script>
