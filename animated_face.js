@@ -10,6 +10,9 @@ class AnimatedFace {
         this.isSpeaking = false;
         this.currentVoice = null;
         this.speechRate = 1.0;
+        this.externalAudioElement = null;
+        this.externalAudioListeners = null;
+        this.manualSpeechTimeout = null;
 
         // Animation state
         this.mouthOpenAmount = 0;
@@ -40,61 +43,91 @@ class AnimatedFace {
             return;
         }
 
-        if (typeof THREE !== 'undefined') {
-            // Use Three.js if available
-            this.useThree = true;
+        if (this.canUseThreeRenderer()) {
+            try {
+                // Use Three.js if available
+                this.useThree = true;
 
-            // Create Three.js scene
-            this.scene = new THREE.Scene();
-            this.scene.background = new THREE.Color(0x1a1a1a);
+                // Create Three.js scene
+                this.scene = new THREE.Scene();
+                this.scene.background = new THREE.Color(0x1a1a1a);
 
-            // Camera setup
-            this.camera = new THREE.PerspectiveCamera(
-                45,
-                this.container.clientWidth / this.container.clientHeight,
-                0.1,
-                1000
-            );
-            this.camera.position.z = 5;
+                // Camera setup
+                this.camera = new THREE.PerspectiveCamera(
+                    45,
+                    this.container.clientWidth / this.container.clientHeight,
+                    0.1,
+                    1000
+                );
+                this.camera.position.z = 5;
 
-            // Renderer setup
-            this.renderer = new THREE.WebGLRenderer({ antialias: true });
-            this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-            this.renderer.setPixelRatio(window.devicePixelRatio);
-            this.container.innerHTML = ''; // Clear container
-            this.container.appendChild(this.renderer.domElement);
+                // Renderer setup
+                this.renderer = new THREE.WebGLRenderer({ antialias: true });
+                this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+                this.renderer.setPixelRatio(window.devicePixelRatio);
+                this.container.innerHTML = ''; // Clear container
+                this.container.appendChild(this.renderer.domElement);
 
-            // Lighting
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-            this.scene.add(ambientLight);
+                // Lighting
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                this.scene.add(ambientLight);
 
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(5, 5, 5);
-            this.scene.add(directionalLight);
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(5, 5, 5);
+                this.scene.add(directionalLight);
 
-            const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
-            fillLight.position.set(-5, 0, -5);
-            this.scene.add(fillLight);
+                const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+                fillLight.position.set(-5, 0, -5);
+                this.scene.add(fillLight);
 
-            // Create face
-            this.createFace();
-
-            // Handle window resize
-            window.addEventListener('resize', () => this.onWindowResize());
+                // Create face
+                this.createFace();
+            } catch (error) {
+                console.error('AnimatedFace: Failed to initialize Three.js renderer, falling back to 2D', error);
+                this.useThree = false;
+                this.initCanvasFallback();
+            }
         } else {
             // Fallback to a lightweight Canvas 2D animation
-            console.warn('AnimatedFace: THREE.js not found — using 2D fallback');
+            console.warn('AnimatedFace: THREE.js renderer unavailable — using 2D fallback');
             this.initCanvasFallback();
-            window.addEventListener('resize', () => this.onWindowResize());
         }
+
+        if (!this.boundResizeHandler) {
+            this.boundResizeHandler = () => this.onWindowResize();
+        }
+        window.addEventListener('resize', this.boundResizeHandler);
 
         // Start animation loop
         this.animate();
 
-        // Initialize Web Speech API
-        this.initSpeechSynthesis();
-
         this.isInitialized = true;
+    }
+
+    canUseThreeRenderer() {
+        if (typeof THREE === 'undefined') {
+            return false;
+        }
+
+        const requiredConstructors = [
+            'WebGLRenderer',
+            'Scene',
+            'PerspectiveCamera',
+            'Color',
+            'Group',
+            'Mesh',
+            'MeshPhongMaterial',
+            'SphereGeometry'
+        ];
+
+        const missing = requiredConstructors.filter(name => typeof THREE[name] !== 'function');
+
+        if (missing.length > 0) {
+            console.warn(`AnimatedFace: Missing THREE constructors (${missing.join(', ')})`);
+            return false;
+        }
+
+        return true;
     }
 
     createFace() {
@@ -269,45 +302,80 @@ class AnimatedFace {
         ) || voices.find(voice => voice.lang.startsWith('en')) || voices[0];
     }
 
-    speak(text, rate = 1.0) {
-        if (!this.synth) {
-            console.error('Speech synthesis not available');
-            return Promise.resolve();
+    speak(text = '', rate = 1.0) {
+        this.detachExternalAudio();
+        const normalizedLength = Math.max(1, (text || '').length);
+        const durationSeconds = Math.min(20, Math.max(2, normalizedLength / (12 * Math.max(rate, 0.1))));
+
+        this.isSpeaking = true;
+        this.startLipSync();
+        this.addHeadMovements();
+
+        if (this.manualSpeechTimeout) {
+            clearTimeout(this.manualSpeechTimeout);
         }
 
-        return new Promise((resolve, reject) => {
-            // Cancel any ongoing speech
-            this.synth.cancel();
+        this.manualSpeechTimeout = setTimeout(() => this.stopManualSpeech(), durationSeconds * 1000);
+        return Promise.resolve();
+    }
 
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.voice = this.currentVoice;
-            utterance.rate = rate;
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
+    syncWithAudioElement(audioElement) {
+        if (!audioElement || typeof audioElement.addEventListener !== 'function') {
+            return;
+        }
 
-            utterance.onstart = () => {
+        this.detachExternalAudio();
+        this.externalAudioElement = audioElement;
+
+        const handlePlay = () => {
+            if (!this.isSpeaking) {
                 this.isSpeaking = true;
                 this.startLipSync();
-            };
+                this.addHeadMovements();
+            }
+        };
 
-            utterance.onend = () => {
-                this.isSpeaking = false;
-                this.stopLipSync();
-                resolve();
-            };
+        const handleStop = () => {
+            if (!audioElement.paused) {
+                return;
+            }
+            this.isSpeaking = false;
+            this.stopLipSync();
+        };
 
-            utterance.onerror = (error) => {
-                console.error('Speech synthesis error:', error);
-                this.isSpeaking = false;
-                this.stopLipSync();
-                reject(error);
-            };
+        audioElement.addEventListener('play', handlePlay);
+        audioElement.addEventListener('pause', handleStop);
+        audioElement.addEventListener('ended', handleStop);
 
-            // Add subtle head movements during speech
-            this.addHeadMovements();
+        this.externalAudioListeners = { handlePlay, handleStop };
 
-            this.synth.speak(utterance);
-        });
+        if (!audioElement.paused) {
+            handlePlay();
+        }
+    }
+
+    detachExternalAudio() {
+        if (this.externalAudioElement && this.externalAudioListeners) {
+            this.externalAudioElement.removeEventListener('play', this.externalAudioListeners.handlePlay);
+            this.externalAudioElement.removeEventListener('pause', this.externalAudioListeners.handleStop);
+            this.externalAudioElement.removeEventListener('ended', this.externalAudioListeners.handleStop);
+        }
+
+        this.externalAudioElement = null;
+        this.externalAudioListeners = null;
+        this.stopManualSpeech();
+    }
+
+    stopManualSpeech() {
+        if (this.manualSpeechTimeout) {
+            clearTimeout(this.manualSpeechTimeout);
+            this.manualSpeechTimeout = null;
+        }
+
+        if (!this.externalAudioElement) {
+            this.isSpeaking = false;
+            this.stopLipSync();
+        }
     }
 
     startLipSync() {
@@ -448,6 +516,7 @@ class AnimatedFace {
         if (this.synth) {
             this.synth.cancel();
         }
+        this.detachExternalAudio();
         this.isSpeaking = false;
         this.stopLipSync();
     }

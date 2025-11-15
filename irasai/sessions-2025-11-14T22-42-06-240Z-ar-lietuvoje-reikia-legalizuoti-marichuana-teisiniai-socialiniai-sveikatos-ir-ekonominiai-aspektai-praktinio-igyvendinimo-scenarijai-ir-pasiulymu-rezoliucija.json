@@ -1,0 +1,853 @@
+{
+  "savedAt": "2025-11-14T22:42:06.240Z",
+  "title": "Seimo posėdis: Lietuvos narkotikų politinės strategijos ir marichuanos legalizavimo diskusija",
+  "topic": "Ar Lietuvoje reikia legalizuoti marichuaną? Teisiniai, socialiniai, sveikatos ir ekonominiai aspektai, praktinio įgyvendinimo scenarijai ir pasiūlymų rezoliucija",
+  "totalEvents": 44,
+  "durationMinutes": 224,
+  "events": [
+    {
+      "time": 0,
+      "timestamp": "10:00",
+      "type": "atidarymas",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdį vedantis",
+      "party": "Nepriklausomas",
+      "text": "Gerbiami kolegos, posėdį atidarau. Džiugu matyti daug dalyvių ir platų interesą dėl šiandieninės temos: ar Lietuvoje reikia legalizuoti marichuaną. Primenu procedūrinius dalykus: posėdis vyks pagal numatytą darbotvarkę, kalbos trukmė – pagal rengiamą tvarką; frakcijų atstovai pasisakys pagal eilę, po frakcijų kalbų bus pertrauka, o po pertraukos – intensyvi diskusija su klausimais ir rezoliucijos svarstymas. Atsižvelgiant į temato jautrumą, prašau laikytis mandagumo, faktologijos ir vengti politinių išpuolių. Administracija primygtinai prašo įtraukti į spaudos pranešimus tik santraukas, parengtus posėdžių sekretoriato – dėl informacijos vientisumo. Dėl balsavimo: galutinė rezoliucija bus teikiama balsuoti tiesioginiu būdu; prieš balsavimą bus parodytas balsavimo lapelis ir skelbiamas frakcijų suskaičiavimas. Dabar perduodu žodį kolegei, kuri pristatys darbotvarkę ir posėdžio eigą.",
+      "update": "Posėdžio atidarymas ir procedūrinės pastabos"
+    },
+    {
+      "time": 5,
+      "timestamp": "10:05",
+      "type": "darbotvarkė",
+      "speaker": "Agnė Širinskienė",
+      "title": "Konstitucinės teisės ekspertė, parlamentarinių procedūrų specialistė",
+      "party": "LSDP",
+      "text": "Dėkoju pirmininkui. Siūloma darbotvarkė: 1) posėdžio atidarymas; 2) darbotvarkės pristatymas (šiandien šis punktas daugiausiai procedūrinis); 3) pagrindinis pranešimas – ministerijos atstovo statistinis ir teisės analizės aprašymas (15 minučių); 4) frakcijų kalbos – po 8–12 minučių, siekiant užtikrinti lygiavertiškumą; 5) 15 min pertrauka; 6) intensyvios diskusijos, klausimai ir atsakymai (45 min); 7) rezoliucijos svarstymas su pataisomis; 8) balsavimas. Kiekvienai frazei siūloma laikytis laiko – frakcijų atstovams pasibaigus, kiti nariai galės užregistruoti užklausas raštu. Procedūriškai atkreipiu dėmesį į Konstitucijos 91 straipsnį dėl Lietuvos įsipareigojimų tarptautinėms sutartims ir Seimo teisę priimti rekomendacines rezoliucijas. Taip pat primenu, kad jei bus siūlomos teisės aktų pataisos, jos turi būti parengtos Teisės departamento išvadoje – šiandien mes svarstysime tik rezoliuciją, ne įstatymą. Prašau patvirtinti darbotvarkę. Kviečiu visus atkreipti dėmesį į bylos komplektą – pridedu EMCDDA, WHO ir Ekonomikos ministerijos santraukas, kurios buvo išsiųstos anksčiau.",
+      "update": "Darbotvarkės taškai ir procedūriniai nurodymai patvirtinti"
+    },
+    {
+      "time": 15,
+      "timestamp": "10:15",
+      "type": "pagrindinis_pranešimas",
+      "speaker": "Arūnas Dulkys",
+      "title": "Sveikatos sistemos valdymo ir reformų koordinavimo ekspertas",
+      "party": "DSVL",
+      "text": "Ačiū. Pristatymas suskirstytas į tris dalis: epidemiologija, sveikatos priežiūros išlaidos ir tarptautinė patirtis. Pagal mūsų duomenis (Sveikatos apsaugos ministerijos analizė, 2024 m. atnaujinimas): pastarojo meto (2022–2023) rekomenduojami rodikliai rodo, kad Lietuvos suaugusiųjų (18+) pastarojo mėnesio kanapių vartojimo rodiklis yra apie 2,8–3,5% (skaičiai priklauso nuo apklausos) – žymiai žemiau ES vidurkio, kuris EMCDDA duomenimis 2022 m. buvo apie 6–8% (priklausomai nuo amžiaus grupės). Jaunimo (15–24 metų) grupėje pastarojo metų vartojimas Lietuvoje siekia apie 6–7%, o ES jaunuolių vidurkis – 10–12%. Sveikatos priežiūros išlaidų, tiesiogiai susijusių su kanapių vartojimu (psichikos sveikatos paslaugos, priklausomybės gydymas), vertinimas rodo, kad Lietuvoje šios išlaidos siekia maždaug 1,4–2,0 mln. EUR per metus – tai preliminarus skaičius, į kurį įtrauktos tik specializuotos paslaugos. Tarptautinė patirtis: Kanada per 2019–2022 m. metinį apyvartos mokesčių pajamų vidurkį pajuto apie 0,8–1,2 mlrd. CAD iš legalios rinkos; Uruguay ir Olandija rodo mažesnį tiesioginį biudžeto poveikį dėl reguliavimo modelio, tačiau sumažėjo policijos apkrovos. RAND Corporation ekonominės analizės 2016 ir 2020 ataskaitos rodo, kad legalizacija gali sumažinti teisėsaugos išlaidas 20–30% nuo šiuo metu su narkotikų nusikalstamumu susijusių operacijų biudžeto, tačiau tuo pačiu padidinti sveikatos paslaugų poreikį 5–15% per pirmus 5 metus. ES teisė: nėra vieningos direktyvos legalizacijai – yra bendros politikos gairės (EU Drugs Strategy 2021–2025), kurios ragina nukreipti į visuomenės sveikatą. Išvados: turime kompleksiškai įvertinti rizikas ir naudą; siūlau svarstyti reguliuojamos dekriminalizacijos ir griežtos socialinės intervencijos modelį, su gairėmis dėl amžiaus ribos (21 metai), licencijavimo, vartotojų apsaugos ir mokesčių struktūros. Pateiksiu žodį frakcijų atstovams.",
+      "update": "Ministerijos atstovo statistinė santrauka ir tarptautinių pavyzdžių apžvalga"
+    },
+    {
+      "time": 45,
+      "timestamp": "10:45",
+      "type": "frakcijos_kalba",
+      "speaker": "Agnė Bilotaitė",
+      "title": "Vidaus reikalų ministrė ir saugumo ekspertė",
+      "party": "TS-LKD",
+      "text": "Ačiū. TS-LKD pozicija grindžiama viešojo saugumo užtikrinimu, kriminalinės veiklos mažinimu ir teisėtumo palaikymu. Statistikos šviesoje: jei pagal Europos duomenis pagrindinė problema – ne legalus vartojimas, bet nelegali rinka ir organizuotas nusikalstamumas, dekriminalizacija gali turėti tiek pliusų, tiek minusų. Policijos duomenys rodo, kad nuo 2018 iki 2023 m. su kanapėmis susijusių nusikalstamų veikų skaičius išaugo 12%, o su organizuotu tiekimu susijusių tyrimų sudėtingumas reikalauja tarptautinio bendradarbiavimo. Ekonominiu požiūriu, mes privalome įvertinti grynąjį fiskalinį efektą: Kanada pademonstravo pajamas, bet taip pat išaugusias sveikatos ir darbo našumo nuostolių išlaidas. Remiantis ekonomikos teorija apie externalijas, jei vartojimas sukelia neigiamas externalijas (sveikatos priežiūros sąnaudos, sumažėjusi produktyvumas), tada mokesčių struktūra ar reguliavimas turi apimti šias išlaidas (Pigou mokesčiai). Tačiau praktikoje mes neturime patikimų ilgo laikotarpio duomenų Lietuvos kontekste. Kitu aspektu – saugumo operacijų perskirstymas: jei teisėsauga atitrauks resursus nuo smulkių vartotojų persekiojimo, reikia garantuoti, kad organizuotos grandinės bus neutralizuotos (būtų perimtos licencijuotų pardavėjų kontrolės ir griežtų licencijų reikalavimų). TS-LKD siūlo tris dalykus: 1) laipsnišką pilotavimą instituciniuose regionuose; 2) griežtas amžiaus ribas 21 metai; 3) 30–50% akcizo modelį, skaičiuojant pagal rinkos užimamą dalį, su pajamų skyrimu gydymui ir prevencijai (ne mažiau 40% pajamų į sveikatą). Klausimas kolegoms iš sveikatos: ar turime detalesnį įvertinimą, kiek papildomų investicijų reikėtų priklausomybės gydymui, jei vartojimas padidėtų 10% per 5 metus?",
+      "update": "TS-LKD atsargus požiūris: prioritetas – viešasis saugumas ir griežta kontrolė"
+    },
+    {
+      "time": 55,
+      "timestamp": "10:55",
+      "type": "frakcijos_kalba",
+      "speaker": "Agnė Širinskienė",
+      "title": "Konstitucinės teisės ekspertė ir parlamentarinių procedūrų specialistė",
+      "party": "LSDP",
+      "text": "Dėkoju. LSDP vertina klausimą per socialinės apsaugos, teisingumo ir demokratinių institucijų stiprinimo prizmę. Pirma, konstitucinė dimensija: Seimas turi teisę formuoti socialinę politiką, tačiau tai turi vykti laikantis tarptautinių įsipareigojimų; Lietuvos Konstitucija numato atitinkamas žmogaus teises ir valstybės pareigas ginti visuomenės sveikatą. Antra, socialinė apsauga ir darbuotojų teisės: legalizacija be socialinių mechanizmų gali sukelti darbo rinkos problemas, tiek dėl darbo našumo, tiek dėl socialinės rizikos padidėjimo. Mes remiamės OECD ir EMCDDA rekomendacijomis, kurios ragina sutelkti dėmesį į prevenciją, mokyklų programas ir perkvalifikavimo galimybes asmenims, priklausomybę patiriantiems asmenims. Gauti skaičiai: socialinių paslaugų integravimas į bendrą modelį pagal mūsų vertinimus leistų sumažinti priklausomumo ilgalaikius kaštus 10–15% per 10 metų, jeigu būtų investuota 5–7 mln. EUR per metus į prevenciją ir ambulatorinį gydymą. LSDP siūlo sureguliuoti politiką taip: 1) dekriminalizacija administracine prasme (nuobaudos, bet ne baudžiamoji atsakomybė) už mažas asmenines dozes su aiškia amžiaus riba; 2) didesnės investicijos į socialinę reabilitaciją ir perkvalifikavimą – prognozuojamos investicijos 20–30 mln. EUR per 5 metus; 3) įpareigojimas Vyriausybei parengti poveikio vertinimą per 6 mėn. ir integruotą nacionalinę programą. Kelti klausimą teisės departamentui: ar administracinės baudos už asmeninį kiekį prieštarautų tarptautiniams sutarčių įsipareigojimams?",
+      "update": "LSDP siūlo dekriminalizaciją + plataus socialinio palaikymo paketą"
+    },
+    {
+      "time": 65,
+      "timestamp": "11:05",
+      "type": "frakcijos_kalba",
+      "speaker": "Ramūnas Zilnys",
+      "title": "Aplinkos apsaugos aktyvistas ir klimato kaitos ekspertas",
+      "party": "Nemuno aušra",
+      "text": "Ačiū. Nemuno aušros pozicija išsiskiria žalia perspektyva: legalizavimo klausime būtina įtraukti tvarumo, žiediškos ekonomikos ir aplinkosaugos režimus. Kanapių komercinė gamyba turi potencialių neigiamų padarinių – intensyvi vidaus auginimo sistema gali padidinti energijos suvartojimą (apšvietimas, vėdinimas), vandens naudojimą ir trąšų panaudojimą, jei nebus taikomos griežtos aplinkosaugos normos. Pająmų modeliai Kanadoje rodo, kad komercinė gamyba po legalizacijos iš esmės padidino patalpų auginimo energijos suvartojimą iki 2–3 kWh per kg pagamintos produkcijos (priklausomai nuo technologijos). Mes siūlome: 1) licencijavimo sąlygas, kurios reikalautų energijos vartojimo žymėjimo, CO2 apskaičiavimo ir skatinimo naudoti švarią energiją (pvz., atsinaujinančią elektrą), 2) ribotą ir decentralizuotą leidimų išdavimą, prioritetą – žemės ūkio integruotoms mažo poveikio technologijoms; 3) mokesčių ir paskatų sistemą, kuri ne skatina masinę intensyvią gamybą, o inovacijas ir mažo poveikio gamybos metodus. Iš ekonominės pusės: remiantis žiedinės ekonomikos teorija, verslu grindžiami sprendimai turėtų internalizuoti aplinkosaugos kaštus. Jei Lietuvoje leistume masinę produkciją be apribojimų, ilgalaikiai infrastruktūros (elektros, atliekų tvarkymo) kaštai gali viršyti fiskalines pajamas. Klausimas sveikatos ir ekonomikos kolegoms: ar mes galime įtraukti aplinkosaugos sąnaudas į akcizo skaičiavimą?",
+      "update": "Žaliųjų prioritetai: tvarumas, reguliavimas gamybai, aplinkosaugos sąnaudų internalizacija"
+    },
+    {
+      "time": 75,
+      "timestamp": "11:15",
+      "type": "frakcijos_kalba",
+      "speaker": "Aidas Gedvilas",
+      "title": "Buvęs Seimo pirmininkas ir konstitucinalistas",
+      "party": "LVŽS",
+      "text": "Dėkoju. Lietuvos valstiečių ir žaliųjų sąjungos požiūris – kompleksinis: atsižvelgiame į kaimo bendruomenių interesus, tradicines vertybes ir žemės ūkio sektoriaus stabilumą. Kaimo ūkiai gali gauti naujų galimybių, tačiau tai turi būti subalansuota – mes nenorime, kad smulkūs ūkininkai būtų išstumti korporatyvios gamybos. Pagal mūsų vertinimus, jei būtų leista komercinė gamyba be aiškių apribojimų, stambios įmonės galėtų monopolizuoti rinką per 3–5 metus, atsiimdamos 60–70% rinkos dalies, kaip matėme kituose sektoriniuose pavyzdžiuose. Siūlome: 1) quota sistema licencijoms mažiesiems ūkiams (pvz., ne daugiau kaip 20 ha ekvivalentas arba 3 licencijos vienai juridinei subjektai), 2) specialios paskolos ir paskatų programos smulkiesiems ūkininkams (už 3–5 metų laikotarpį – subsidijos 30–40% įrangos įsigijimui), 3) išlaikyti stiprų vietos savivaldos vaidmenį leidžiant gamybą regionuose pagal teritorinę analizę (biologinė įvairovė, vandens ištekliai). Socialiniu aspektu pabrėžiu šeimų apsaugą: reikia aiškios prevencijos mokyklose – prognozuojamos programos kainos 2–3 mln. EUR per metus. Klausimas kolegoms: ar frakcijos, siūlančios visišką legalizaciją, gali pateikti modelius, kaip užtikrinti smulkiųjų ūkių konkurencingumą?",
+      "update": "LVŽS atkreipia dėmesį į regionų ir smulkių ūkių apsaugą bei quota modelį"
+    },
+    {
+      "time": 85,
+      "timestamp": "11:25",
+      "type": "frakcijos_kalba",
+      "speaker": "Audra Sipavičienė",
+      "title": "Tarptautinio bendradarbiavimo ir projektų valdymo ekspertė",
+      "party": "DSVL",
+      "text": "Ačiū. DSVL siūlo pragmatišką, eksperimentišką požiūrį, remiantis pilotinių programų ir regioninio išbandymo mechanizmu. Siūlome įteisinti ribotus pilotus 2–3 Administraciniuose vienetuose (pvz., Vilniaus apskrityje, Klaipėdos regione ir Šiauliuose), kuriuose per 3 metus būtų testuojami: licencijavimo modeliai, amžiaus ribos, priemonių veiksmingumas prevencijai ir gydymui. Tarptautinis komparatyvus pavyzdys: JAV kai kuriuose valstijose (pvz., Colorado) pilotų ir fazių modelis leido rinkti duomenis apie nusikalstamumo rodiklius, užimtumo pokyčius ir sveikatos paslaugų paklausą. Finansinis modelis: pilotui reikėtų skirti 4–6 mln. EUR per regioną per pirmus trejus metus – tai apimtų duomenų rinkimą, sveikatos paslaugų stiprinimą ir prevencines programas. Administracinės išlaidos licencijavimui preliminariai 0,5–1,0 mln. EUR per regioną pirmaisiais metais. Mūsų klausimas kolegoms: ar kas sutinka su pilotų modeliu kaip sąlyga tolimesniam sprendimui? Be to, siūlau, kad visi finansiniai srautai būtų vieši ir audituojami pagal ES gerąją praktiką.",
+      "update": "DSVL siūlo pilotinius regioninius modelius ir viešą audituojamą finansavimą"
+    },
+    {
+      "time": 95,
+      "timestamp": "11:35",
+      "type": "frakcijos_kalba",
+      "speaker": "Arvydas Sekmokas",
+      "title": "Ekonomikos ministras ir verslo aplinkos ekspertas",
+      "party": "Nepriklausomas",
+      "text": "Dėkoju. Žiūriu į klausimą per liberalios ekonominės politikos prizmę: laisvos rinkos principai ir inovacijos. Ekonominė teorija rodo, kad licencijuota ir reguliuojama rinka gali pagerinti vartotojų saugumą (kokybės standartai), sumažinti nelegalaus tiekimo dalį ir generuoti fiskalines pajamas. Tarptautiniai skaičiai: Kanada pranešė apie 300–700 mln. EUR metinių pajamų (konvertuota ir priklauso nuo valiutos kursų) per pirmuosius 2–3 metus, bet reikia atsižvelgti į rinkos kanibalizavimą ir turizmo efektus. Lietuvos rinkos dydžio modeliavimas: jeigu pastarojo mėnesio vartotojų skaičius padidėtų iki ES vidurkio (6–8%), metinė vidutinė rinka (įskaitant buitinius ir medicininius vartotojus) galėtų būti vertinama 150–250 mln. EUR; iš to mokesčiai ir akcizai – 30–60 mln. EUR (priklausomai nuo mokesčių struktūros). Reikalinga fiskalinė disciplina: siūlau trumpalaikį modelį, kuriame 50% pajamų būtų skiriama sveikatai ir prevencijai, 30% – regioniniam vystymuisi (smulkiesiems ūkiams), 20% – teisėsaugos adaptacijai. Taip pat – minimalus reguliavimo laipsnis leidžia inovacijoms: teisinių startuolių kūrimas, kanapių produktų tyrimai (medicinos, cheminės, biotechnologijos) gali duoti aukštos pridėtinės vertės eksporto potencialą. Klausimas kolegoms: ar sutinkate su proporcine paskirstymo formule – 50/30/20?",
+      "update": "Ekonominis modelis: rinkos dydžio prognozė ir siūloma pajamų paskirstymo schema"
+    },
+    {
+      "time": 105,
+      "timestamp": "11:45",
+      "type": "pertrauka_pradžia",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdį vedantis",
+      "party": "Nepriklausomas",
+      "text": "Posėdis skelbiamas pertraukai 15 minučių – 11:45 iki 12:00. Pertrauka skirta frakcijoms aptarti pataisas ir parengti klausimus bei siūlymus intensyviam diskusijos etapui. Prašau grįžti laiku. Administracija primena: visi dokumentai prieinami Seimo intranete. Atkreipiu dėmesį, kad po pertraukos prasidės tiesioginė diskusija, kurioje kiekvienas užsiregistravęs turės iki 3 minučių paklausimus ir 5 minučių atsakymus. Pertraukai pabaiga – 12:00.",
+      "update": "15 min pertrauka"
+    },
+    {
+      "time": 120,
+      "timestamp": "12:00",
+      "type": "diskusija_pradžia",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdį vedantis",
+      "party": "Nepriklausomas",
+      "text": "Grįžtame iš pertraukos. Pradedame intensyvią diskusiją ir tarpusavio klausimus. Prašau užsiregistruoti klausimus trumpai ir konkrečiai. Pirmasis klausimas – Audrui, ar Sveikatos ministerija gali pateikti detalesnį skaičiavimą apie gydymo paslaugų poreikį, jei vartojimas padidėtų 10–15% per 5 metus? Prašau Arūną Dulkį atsakyti per 5 minutes.",
+      "update": "Intensyvios diskusijos pradžia"
+    },
+    {
+      "time": 123,
+      "timestamp": "12:03",
+      "type": "klausimas_atsakymas",
+      "speaker": "Arūnas Dulkys",
+      "title": "Sveikatos sistemos valdymo ir reformų koordinavimo ekspertas",
+      "party": "DSVL",
+      "text": "Atsakymas į pirminį klausimą: remiantis nacionalinėmis epidemiologinėmis projekcijomis (modelis: scenarijai A–C), jei vartojimas padidėtų 10% per 5 metus, numatomas ambulatorinių priklausomybės paslaugų paklausos padidėjimas apie 12–18% per pirmuosius trejus metus ir 5–8% stabilizacija vėliau. Skaičiai: papildomos gydymo ir socialinių paslaugų išlaidos – apie 6–10 mln. EUR per metus (scenarijus A) arba 12–18 mln. EUR (scenarijus B, intensyvesnis scenarijus). Šiuos skaičius sudaro: psichikos sveikatos konsultacijos (~40% išlaidų), narkomanijos gydymas (~30%), reabilitacija ir socialinė integracija (~30%). Šį skaičiavimą patikslinsime per 3 mėn., jei bus priimtas sprendimas pilotuoti. Taip pat rekomenduoju įvesti aiškias duomenų rinkimo tvarkas (privalomas ataskaitų teikimas licencijuotiems tiekėjams), kad matytume realius pokyčius. Klausimas A. Sekmokui: ar Finansų ministerija turi preliminarų modelį, kaip įtraukti šias išlaidas į biudžeto horizontą ir mokesčių struktūras?",
+      "update": "Sveikatos ministerijos išlaidų projicavimas esant vartojimo augimui"
+    },
+    {
+      "time": 126,
+      "timestamp": "12:06",
+      "type": "klausimas_atsakymas",
+      "speaker": "Arvydas Sekmokas",
+      "title": "Ekonomikos ministras ir verslo aplinkos ekspertas",
+      "party": "Nepriklausomas",
+      "text": "Trumpai apie finansus: Finansų ministerija gali modeliuoti įvairius akcizo ir PVM variantus. Preliminari modelinė lentele (remiantis Kanados/Kolorado duomenimis ir Lietuvos prognozėmis): - scenarijus konservatyvus (rinkos dydis 150 mln. EUR) – pajamos ~20–35 mln. EUR; - scenarijus vidutinis (rinkos dydis 200 mln. EUR) – pajamos ~30–50 mln. EUR; - scenarijus agresyvus (rinkos dydis 250 mln. EUR) – pajamos ~40–70 mln. EUR. Iš to galima padengti papildomas sveikatos išlaidas (6–18 mln. EUR), palikti rezervo teisėsaugai ir visuomeninei komunikacijai ir turėti likutį investicijoms į regionus. Mokestinę struktūrą galime suderinti taip, kad dalis pajamų būtų privalomai rezervuojama sveikatai – tai atitinka ir moralinį principą. Siūlau formuoti stabilų fondą (truth fund), kurio taisyklės būtų įtvirtintos teisės akte, kad pajamos nebūtų perimamos į bendrą konsoliduotą biudžetą be aiškaus tikslo. Klausimas kolegoms: ar pritariate stabiliam fondui su aiškiu paskirstymo mechanizmu?",
+      "update": "Finansų ministerijos preliminari pajamų ir mokesčių modelio apžvalga"
+    },
+    {
+      "time": 129,
+      "timestamp": "12:09",
+      "type": "diskusija",
+      "speaker": "Algirdas Sysas",
+      "title": "Buvęs finansų ministras ir ekonomikos politikos formuotojas",
+      "party": "LSDP",
+      "text": "Iš ekonominės perspektyvos pabrėžiu prognozių rizikas: fiskalinė prognozė stipriai priklauso nuo vartotojų elgsenos ir de facto rinkos dydžio. Jei legalizavimas sumažina nelegalią pasiūlą, reali rinka gali padidėti, bet dalis vartotojų gali sumažinti vartojimą teisėtoje rinkoje dėl kainos skirtumų. Pigou šešėlis: reikia įvertinti tiek teigiamas, tiek neigiamas externalijas. Siūlau konkretų pasiūlymą: sudaryti 10 metų fiskalinę simuliaciją, įtraukti 3 scenarijus (konservatyvus, vidutinis, agresyvus) ir nustatyti saugiklius biudžeto balanso palaikymui. Taip pat reiktų numatyti perkvalifikavimo fondą, skirtą asmenims, kurių darbo vietos gali būti paveiktos (pvz., priklausomybių gydymo sektoriuje ar žemės ūkyje). Finansinės intervencijos pagal mūsų skaičiavimus: per pirmuosius 5 metus – 15–25 mln. EUR tam, kad sumažintume socialines pasekmes ir remtume regionus. Klausimas teisės kolegoms: ar yra numatyti teisiniai mechanizmai, kurie apsaugotų biudžeto paskirstymo tikslingumą (pvz., įstatymo ribojimai pajamų perleidimui)?",
+      "update": "Skaičiuojami fiskaliniai rizikos scenarijai ir siūlymai dėl saugiklių"
+    },
+    {
+      "time": 132,
+      "timestamp": "12:12",
+      "type": "diskusija",
+      "speaker": "Andrius Kubilius",
+      "title": "Buvęs ministras pirmininkas ir ekonomikos ekspertas",
+      "party": "TS-LKD",
+      "text": "Pritariu kolegoms dėl fiskalinio disciplinos poreikio. Tačiau norėčiau atkreipti dėmesį į tarptautinę konkurencingumo dimensiją: jei Lietuva pasirinks griežtesnį reguliavimą nei kaimyninės šalys, mes prarasime galimybes pritraukti tyrimus ir investicijas. Kita vertus, perlaisvinus įsiliejimas gali pakenkti viešajam saugumui ir darbo produktivitui. Reikalaujamas subalansuotas požiūris – mes turime formuoti reguliavimą taip, kad jis būtų stabilus, aiškus ir numatytų lengvatus naujoms technologijoms (pvz., medicininiams produktams, CBD baziniams produktams). Konkretus siūlymas: įteisinti komercinį sektorių tik jei laikomasi kokybės standartų, sertifikavimo ir eksporto kontrolės, siekiant užtikrinti, kad industrija sukurtų aukštesnės pridėtinės vertės grandines. Klausimas Audrai Sipavičienei: ar pilotų metu numatomas tarptautinis bendradarbiavimas ir eksporto galimybių vertinimas?",
+      "update": "Pabrėžiamas tarptautinės konkurencingumo ir eksporto potencialo svarstymas"
+    },
+    {
+      "time": 135,
+      "timestamp": "12:15",
+      "type": "diskusija",
+      "speaker": "Audra Sipavičienė",
+      "title": "Tarptautinio bendradarbiavimo ir projektų valdymo ekspertė",
+      "party": "DSVL",
+      "text": "Trumpai: taip, pilotai turi būti integruoti su tarptautiniais partneriais, siekiant keistis duomenimis su Kanados, Olandijos ir Portugalijos institucijomis. Siūlau sudaryti tarptautinį mokslinį komisiją, kurioje dalyvautų EMCDDA atstovai ir universiteto ekspertai, kad mūsų pilotai būtų prilyginami tarptautiniams standarto rodikliams.",
+      "update": "Pilotai – tarptautinio bendradarbiavimo kontekste"
+    },
+    {
+      "time": 138,
+      "timestamp": "12:18",
+      "type": "klausimas",
+      "speaker": "Arvydas Anušauskas",
+      "title": "Krašto apsaugos ministras ir saugumo ekspertas",
+      "party": "TS-LKD",
+      "text": "Aš noriu užduoti tiesų klausimą: kaip mes įsitikinsime, kad legalizacija nesukels padidėjusio vartojimo tarp kariuomenės ir saugumo institucijų darbuotojų, kurių budrumas turi likti aukštas? Ar numatoma speciali kontrolė ir testavimo tvarka darbo vietose? Prašau kolegų pateikti precedento pavyzdžių ir pasiūlymų dėl darbo vietos draudimų ar teisių ribojimo.",
+      "update": "Klausimas dėl darbo vietos saugumo ir kontrolės"
+    },
+    {
+      "time": 141,
+      "timestamp": "12:21",
+      "type": "atsakymas",
+      "speaker": "Agnė Bilotaitė",
+      "title": "Vidaus reikalų ministrė ir saugumo ekspertė",
+      "party": "TS-LKD",
+      "text": "Atsakysiu praktiškai: turi būti aiškios darbo vietos taisyklės. Daugelis šalių (Kanada, kelios JAV valstijos) turi reglamentą, leidžiantį darbdaviams išlaikyti draudimą naudojimui darbo metu ir griežtą testavimo politiką saugumo sektoriams. Siūlau įtvirtinti įstatyme nuostatą, kad viešojo saugumo institucijoms (kariuomenė, policija, ugniagesiai, skubi medicininė pagalba) taikomi griežti vartojimo apribojimai ir testavimas, taip pat perkvalifikavimo ir parengtinių gydymo programų schema. Tai svarbu, kad nebūtų rizikos operacijų saugumui. Papildomai rekomenduoju įtraukti privalomą psichologinės kompetencijos įvertinimą pareigybėse, kuriose budrumas ypač svarbus.",
+      "update": "Siūlomas griežtas darbo vietos draudimas saugumo institucijoms ir testavimas"
+    },
+    {
+      "time": 144,
+      "timestamp": "12:24",
+      "type": "klausimas",
+      "speaker": "Aušra Papirtienė",
+      "title": "Gyvūnų gerovės ir bioetikos ekspertė",
+      "party": "LVŽS",
+      "text": "Klausimas susijęs su bioetika ir gyvūnų gerove: jei bus skatinama vietinė gamyba, ar numatomos gairės, kurios apsaugotų agrarinį kraštovaizdį ir gyvūnų bei laukinės faunos interesus? Ar galime įtraukti reikalavimus aplinkosaugos ir bioetikos sertifikavimui licencijuojant augintojus?",
+      "update": "Klausimas dėl ekologinių ir bioetikos reikalavimų gamybos srityje"
+    },
+    {
+      "time": 147,
+      "timestamp": "12:27",
+      "type": "atsakymas",
+      "speaker": "Ramūnas Zilnys",
+      "title": "Aplinkos apsaugos aktyvistas ir klimato kaitos ekspertas",
+      "party": "Nemuno aušra",
+      "text": "Aš sutinku – sertifikacija turi apimti aplinkosaugos reikalavimus. Siūlau įvesti 'žaliąjį sertifikatą' gamintojams, kurių įrengimai atitinka energijos efektyvumo, trąšų naudojimo, atliekų tvarkymo standartus. Be to, teritorinė analizė turi užkirsti kelią gamybai jautriose ekosistemose. Tokios reguliacijos būtų įgyvendinamos per Aplinkos ministerijos ir Žemės ūkio ministerijos vykdomus leidimus.",
+      "update": "Siūlomas 'žaliojo sertifikato' mechanizmas gamintojams"
+    },
+    {
+      "time": 150,
+      "timestamp": "12:30",
+      "type": "klausimas",
+      "speaker": "Artūras Skaržius",
+      "title": "Technologijų ir skaitmeninės plėtros ekspertas",
+      "party": "LSDP",
+      "text": "Klausimas dėl skaitmeninių sprendimų: kaip mes užtikrinsime licencijuotų pardavėjų dėl kliento tapatybės ir amžiaus patikrinimą? Ar svarstote vieningą skaitmeninį registrą, panašų į tabako arba alkoholio kontrolės modelius, su e. ID integracija, kad būtų galima stebėti pardavimus, rinkliavas ir duomenų rinkimą moksliniams tikslams? Tai sumažintų nelegalių pardavėjų veiklos galimybes.",
+      "update": "Klausimas dėl skaitmeninių kontrolės priemonių ir registrų"
+    },
+    {
+      "time": 153,
+      "timestamp": "12:33",
+      "type": "atsakymas",
+      "speaker": "Artūras Melianas",
+      "title": "Kultūros demokratizavimo ir meno prieinamumo ekspertas",
+      "party": "Nemuno aušra",
+      "text": "Skaitmeninės priemonės yra būtinos. Siūlau sukurti vieningą e-platformą, kurioje licencijuoti pardavėjai privalėtų registruoti kiekvieną pardavimą, o vartotojas būtų patvirtinamas per e. ID. Be to, dalis duomenų turėtų būti anonimiški moksliniam tyrimui. Taip pat rekomenduoju pilotuose išbandyti blockchain tipo sandorių registraciją, kuri užtikrintų duomenų vientisumą ir prieinamumą tyrimams. Pagrindinis klausimas: ar turime biudžetą skaitmeninei infrastruktūrai? Jei taip, kokio dydžio – preliminariai 1–2 mln. EUR pilotui?",
+      "update": "Skaitmeninių sprendimų ir registrų pasiūlymas"
+    },
+    {
+      "time": 156,
+      "timestamp": "12:36",
+      "type": "atsakymas",
+      "speaker": "Arvydas Sekmokas",
+      "title": "Ekonomikos ministras ir verslo aplinkos ekspertas",
+      "party": "Nepriklausomas",
+      "text": "Dėl biudžeto skaitmeninei infrastruktūrai: preliminarus vertinimas rodo, kad integruotas e-platformos ir ataskaitų sistemos sukūrimas pilotais galėtų kainuoti 1,2–2,5 mln. EUR, priklausomai nuo reikalavimų ir integracijos su valstybės ID sistemomis. Tai vienkartinės investicijos, bet būtinos siekiant mokslinio duomenų rinkimo ir mokesčių surinkimo. Siūlau įtraukti šią eilutę į pilotų finansavimo paketą.",
+      "update": "Preliminarus skaitmeninės infrastruktūros biudžetas"
+    },
+    {
+      "time": 159,
+      "timestamp": "12:39",
+      "type": "diskusija",
+      "speaker": "Andrius Navickas",
+      "title": "Aplinkos apsaugos specialistas ir ekologų judėjimo lyderis",
+      "party": "LSDP",
+      "text": "Noriu papildyti socialinės priežiūros priemones: svarbu, kad dekriminalizavimo ar legalizavimo modelis nepadidintų nelygybės. Tarptautiniai tyrimai rodo, kad rizikos grupės (mažas išsilavinimas, mažos pajamos) labiau linkusios patirti žalingas pasekmes. Todėl siūlau pereinamąsias priemones – nemokamas reabilitacijos paslaugas, skaitmenines konsultacijas, mobiliąsias klinikas regionams. Finansavimas tokioms priemonėms pirmuosius 3 metus – apie 8–12 mln. EUR. Taip pat siūlau įtraukti į programą darbdavių švietimą apie rizikas ir parengimą dėl darbo tvarkos pokyčių.",
+      "update": "Siūlomos socialinės priemonės mažinant nelygybę ir skatinant prevenciją"
+    },
+    {
+      "time": 162,
+      "timestamp": "12:42",
+      "type": "klausimas",
+      "speaker": "Aušra Papirtienė",
+      "title": "Gyvūnų gerovės ir bioetikos ekspertė",
+      "party": "LVŽS",
+      "text": "Klausimas dėl atliekų ir pesticidų: ar gamybos licencijavimas apims reikalavimus dėl trąšų ir pesticidų naudojimo, kad nebūtų teršiami vandens telkiniai, kurie gali paveikti gyvūnų buveines? Ar mes turime tyrimų dėl potencialių cheminių nuotėkių poveikio regionams?",
+      "update": "Klausimas apie chemikalų ir atliekų poveikį aplinkai"
+    },
+    {
+      "time": 165,
+      "timestamp": "12:45",
+      "type": "pokalbis",
+      "speaker": "Ramūnas Zilnys",
+      "title": "Aplinkos apsaugos aktyvistas ir klimato kaitos ekspertas",
+      "party": "Nemuno aušra",
+      "text": "Trumpai: reikia įtvirtinti reikalavimą vykdyti poveikio aplinkai vertinimą (PAV) visiems didesniems gamybos objektams ir taikyti integruotą taršos prevencijos principą. Esamu laiku aplinkosaugos rizikos galime modeliuoti, bet reikės papildomų monitoringo stočių ir ataskaitų – preliminariai 0,5–1,0 mln. EUR per teritoriją monitoringo diegimui.",
+      "update": "Rekomenduojama PAV ir monitoringo investicija"
+    },
+    {
+      "time": 168,
+      "timestamp": "12:48",
+      "type": "rezoliucijos_pristatymas",
+      "speaker": "Andrejus Stančikas",
+      "title": "Kultūrų dialogo ir tautinių bendrijų ekspertas",
+      "party": "LSDP",
+      "text": "Pradedu pateikti rezoliucijos projektą. Siūloma rezoliucija: 1) skatinti kompleksinį požiūrį į kanapių politiką – prioritetas visuomenės sveikatai; 2) rekomenduoti Vyriausybei pradėti trijų metų pilotus bent 2–3 regionuose; 3) įpareigoti Vyriausybę per 6 mėn. parengti poveikio vertinimą (sveikata, ekonomika, aplinka, tarptautiniai įsipareigojimai); 4) rekomenduoti teikti mokesčių pajamų paskirstymo schemą – ne mažiau 40% sveikatai ir prevencijai; 5) raginti sudaryti tarptautinį ekspertų komitetą. Pataisos: frakcijos gali siūlyti pataisas iki 12:55. Pagrindinis rezoliucijos tikslas – suteikti Seimo rekomendacinį įrankį valstybei planuoti tolesnę politiką. Klausimas kolegoms: ar frakcijos nori pateikti prioritetines pataisas – finansavimo, amžiaus ribos ar pilotų apimties klausimais?",
+      "update": "Rezoliucijos projektas pateiktas svarstymui"
+    },
+    {
+      "time": 171,
+      "timestamp": "12:51",
+      "type": "pataisos_siūlymas",
+      "speaker": "Agnė Bilotaitė",
+      "title": "Vidaus reikalų ministrė ir saugumo ekspertė",
+      "party": "TS-LKD",
+      "text": "TS-LKD siūlo pataisą į rezoliuciją: (A) įrašyti griežtą amžiaus ribą – ne žemiau 21 metų; (B) įpareigoti, kad pilotuose būtų išimtinai taikomi griežti darbo saugumo reikalavimai: privalomas testavimas saugumo tarnybose; (C) įtraukti nuostatą, kad tam tikros produktų formos (rūkymas viešose vietose) bus uždraustos, ir skatinti saugesnes vartojimo formas (pvz., medicininės paskirties dozavimo prietaisai). Prašau Seimo sekretoriatą įregistruoti pataisą.",
+      "update": "TS-LKD siūlo pataisas dėl amžiaus ribos ir darbo saugos"
+    },
+    {
+      "time": 174,
+      "timestamp": "12:54",
+      "type": "pataisos_siūlymas",
+      "speaker": "Algirdas Sysas",
+      "title": "Buvęs finansų ministras ir ekonomikos politikos formuotojas",
+      "party": "LSDP",
+      "text": "Aš siūlau finansinę pataisą: įtraukti aiškią biudžeto liniją, kuri nustato, kad ne mažiau kaip 50% mokesčių pajamų iš kanapių būtų nukreipta į sveikatos, prevencijos ir socialinės integracijos programas per pirmus 5 metus, su specialiu perkvalifikavimo fondu darbo vietų perkėlimui. Taip pat siūlau įvesti finansinį apsauginį mechanizmą – jei pajamos nukris žemiau prognostinių lygmenų, automatiškai įsigalios sumažintos licencijų kvotos, kad nebūtų fiskalinio šoko. Prašau įtraukti į pataisą.",
+      "update": "LSDP siūlo fiskalinį apsauginį mechanizmą ir 50% skyrimą sveikatai"
+    },
+    {
+      "time": 177,
+      "timestamp": "12:57",
+      "type": "pataisos_siūlymas",
+      "speaker": "Ramūnas Zilnys",
+      "title": "Aplinkos apsaugos aktyvistas ir klimato kaitos ekspertas",
+      "party": "Nemuno aušra",
+      "text": "Aplinkos pataisa: į rezoliuciją įtraukti reikalavimą, kad visos licencijuotos gamybos vietos turėtų atliktą PAV, o per pilotus būtų privalomos žiedinės ekonomikos priemonės (vandens perdirbimas, energijos efektyvumas), taip pat kad dalis pajamų būtų skirtos vietos aplinkosaugos monitoringui. Be to, siūlau mokestinę nuostatą, kuri skatina 'žaliosios' gamybos licencijas su mažesniais mokesčiais pirmiems 5 metams.",
+      "update": "Pataisa dėl PAV ir žalio gamybos skatinimo"
+    },
+    {
+      "time": 180,
+      "timestamp": "13:00",
+      "type": "balsavimas_pradžia",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdį vedantis",
+      "party": "Nepriklausomas",
+      "text": "Pradedamas balsavimas dėl rezoliucijos su pateiktomis pataisomis. Primenu – balsuojama atskirai už pagrindinę rezoliuciją ir už kiekvieną įregistruotą pataisą. Balsavimo procedūra vyksta elektroniniu būdu. Balsavimo rezultatus paskelbsiu iš karto. Dabar balsuojame už pataisą TS-LKD (amžiaus riba 21 m., darbo saugos nuostatos).",
+      "update": "Balsavimas už pirmąją pataisą"
+    },
+    {
+      "time": 183,
+      "timestamp": "13:03",
+      "type": "balsavimas_rezultatas",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdį vedantis",
+      "party": "Nepriklausomas",
+      "text": "Balsavimo rezultatų skelbimas: už – 64, prieš – 22, susilaikė – 12. Pataisa priimta. Dabar balsuojame už Algirdo Systo fiskalinę pataisą (50% sveikatai ir apsauginis mechanizmas).",
+      "update": "TS-LKD pataisa priimta"
+    },
+    {
+      "time": 186,
+      "timestamp": "13:06",
+      "type": "balsavimas_rezultatas",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdį vedantis",
+      "party": "Nepriklausomas",
+      "text": "Algirdo Systo pataisos balsavimas: už – 58, prieš – 28, susilaikė – 12. Pataisa priimta. Dabar balsuosime už Ramūno Zilnio aplinkos pataisą (PAV ir žaliųjų licencijų paskatinimas).",
+      "update": "Algirdas Sysas pataisa priimta"
+    },
+    {
+      "time": 189,
+      "timestamp": "13:09",
+      "type": "balsavimas_rezultatas",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdį vedantis",
+      "party": "Nepriklausomas",
+      "text": "Ramūno Zilnio pataisos balsavimas: už – 70, prieš – 12, susilaikė – 16. Pataisa priimta. Dabar balsuojame už pagrindinę rezoliuciją, kuri apima visus priimtus pakeitimus.",
+      "update": "Ramūno Zilnio pataisa priimta"
+    },
+    {
+      "time": 192,
+      "timestamp": "13:12",
+      "type": "balsavimas_rezultatas",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdį vedantis",
+      "party": "Nepriklausomas",
+      "text": "Pagrindinės rezoliucijos balsavimas: už – 62, prieš – 25, susilaikė – 11. Rezoliucija priimta. Santrauka: Seimas rekomenduoja Vyriausybei pradėti pilotines programas 2–3 regionuose, įpareigoja parengti 6 mėnesių poveikio vertinimą, įtvirtina fiskalinio paskirstymo mechanizmą (ne mažiau 50% sveikatai pirmųjų metų), nustato amžiaus ribą 21 metai ir reikalauja aplinkosauginių reikalavimų gamybai. Dėkoju visiems už dalyvavimą. Posėdis uždaromas.",
+      "update": "Pagrindinė rezoliucija priimta balsavimu"
+    },
+    {
+      "time": 195,
+      "timestamp": "13:15",
+      "type": "baigiamasis_žodis",
+      "speaker": "Agnė Širinskienė",
+      "title": "Konstitucinės teisės ekspertė ir parlamentarinių procedūrų specialistė",
+      "party": "LSDP",
+      "text": "Trumpai užbaigsiu procedūrine nata: įpareigojimai Vyriausybei taps Seimo rekomendacijomis; jei Vyriausybė parengs įstatymo projektą, jis bus pateiktas su Teisės departamento išvada ir poveikio vertinimu. Bendras politinis susitarimas šiandien – tai pradžia ilgalaikei diskusijai, kurioje būtina užtikrinti skaidrumą, mokslo duomenų nuolatinį sekimą ir tarptautinį bendradarbiavimą. Prašau Vyriausybės per mėnesį pristatyti planą pilotams, o per 6 mėnesius – poveikio vertinimą. Ačiū visiems už konstruktyvumą.",
+      "update": "Procedūrinis nurodymas dėl tolimesnės teisėkūros"
+    },
+    {
+      "time": 198,
+      "timestamp": "13:18",
+      "type": "komentaras",
+      "speaker": "Arūnas Gelūnas",
+      "title": "Mokslo ir inovacijų ekspertas",
+      "party": "LSDP",
+      "text": "Sveikinu priimtą rezoliuciją ir noriu pabrėžti mokslinių tyrimų vaidmenį. Siūlau, kad dalis pajamų būtų skirta universiteto tolimesniems klinikiniams tyrimams ir biotechnologijų inovacijoms susijusioms su kanapių medicininėmis savybėmis. Konkrečiai: 3–5 mln. EUR per pirmuosius 3 metus Tyrimų ir plėtros fondo rėmuose, su aiškiais rezultatais ir skaidrumu. Tokiu būdu mes skatinsime aukštos pridėtinės vertės veiklą vietoje žemos pridėtinės vertės produkto gamybos.",
+      "update": "Siūloma skirti lėšų moksliniams tyrimams ir inovacijoms"
+    },
+    {
+      "time": 201,
+      "timestamp": "13:21",
+      "type": "komentaras",
+      "speaker": "Andrius Navickas",
+      "title": "Aplinkos apsaugos specialistas ir ekologų judėjimo lyderis",
+      "party": "LSDP",
+      "text": "Papildomai noriu pabrėžti, kad stebėsime socialinius indikatorius tiesiogiai – mokyklose, darbo našumo rodiklius ir priklausomybės gydymo vartojimą. Siūlau, kad Seimas peržiūrėtų rezoliucijos vykdymo rodiklius kas 12 mėnesių specialioje ataskaitoje Vyriausybei.",
+      "update": "Siūlymas apie metinius ataskaitų reikalavimus"
+    },
+    {
+      "time": 204,
+      "timestamp": "13:24",
+      "type": "komentaras",
+      "speaker": "Asta Kubilienė",
+      "title": "Socialinio darbo specialistė ir švietimo ekspertė",
+      "party": "LSDP",
+      "text": "Atkreipiu dėmesį į mokyklų ir šeimų apsaugos programas. Siūlau privalomas prevencines programas 5–18 metų vaikams, kurios yra įrodytai veiksmingos (ESCAP rekomendacijos), taip pat paramą tėvams ir mokytojams – biudžetas per pirmuosius 3 metus 2–4 mln. EUR. Be šių priemonių rizika, kad legalizacija turėtų nepageidaujamą poveikį paauglėms grupėms, ženkliai išauga. Reikalauju įtraukti šių programų finansavimą į Vyriausybės planą.",
+      "update": "Reikalavimas įtraukti prevencines programas vaikams ir tėvams"
+    },
+    {
+      "time": 207,
+      "timestamp": "13:27",
+      "type": "komentaras",
+      "speaker": "Andrius Kubilius",
+      "title": "Buvęs ministras pirmininkas ir ekonomikos ekspertas",
+      "party": "TS-LKD",
+      "text": "Trumpai: pritariu mokslinių tyrimų rėmimui ir prevencijai, bet siūlau išlaikyti griežtus siekius dėl reguliavimo stabilumo – investuotojai reikalauja aiškumo. Be to, siūlau numatyti auditą po trejų metų, kuris įvertintų reguliavimo efektyvumą ir biudžeto tvarumą.",
+      "update": "Siūlomas trejų metų auditas reguliavimo vertinimui"
+    },
+    {
+      "time": 210,
+      "timestamp": "13:30",
+      "type": "komentaras",
+      "speaker": "Arvydas Juozaitis",
+      "title": "Filosofas ir kultūros kritikas",
+      "party": "Nepriklausomas",
+      "text": "Noriu pateikti kultūrinį ir etinį aspektą: diskusija apie marichuaną dažnai iškreipiama į tik ekonominius rodiklius, tačiau svarbu diskutuoti apie visuomenės vertybes, atsakomybę ir asmeninį pasirinkimą. Siūlau pridėti rezoliucijos punktą, skatinantį visuomeninį diskursą apie priklausomybės rizikas ir kultūrinę edukaciją, kad sprendimai būtų ne tik technokratiniai, bet ir etiniai.",
+      "update": "Etinio ir kultūrinio diskurso siūlymas į rezoliuciją"
+    },
+    {
+      "time": 213,
+      "timestamp": "13:33",
+      "type": "komentaras",
+      "speaker": "Arvydas Anušauskas",
+      "title": "Krašto apsaugos ministras ir saugumo ekspertas",
+      "party": "TS-LKD",
+      "text": "Primenu, kad turime pasiruošti ir tarptautinei dimensijai: pavyzdžiui, tranzitas per mūsų sienas gali keistis, o ES šalių požiūriai skiriasi. Siūlau, kad Vyriausybė informuotų ES partnerius apie pilotus ir užtikrintų koordinaciją su muitine ir pasienio tarnybomis.",
+      "update": "Siūloma tarptautinė koordinacija su ES partneriais ir muitine"
+    },
+    {
+      "time": 216,
+      "timestamp": "13:36",
+      "type": "atsakomasis_komentaras",
+      "speaker": "Audronius Ažubalis",
+      "title": "Diplomatijos ir užsienio prekybos ekspertas",
+      "party": "TS-LKD",
+      "text": "Papildyčiau – be ES koordinacijos, turime įvertinti ir tarptautinius prekybos aspektus: jei Lietuva vystys specifines medicininio kanapių produktų technologijas, turime užtikrinti, kad eksporto teisės būtų aiškios. Diplomatinis dialogas su ES institucijomis bus būtinas – siūlau URM įtraukti kaip partnerį pilotų rengime.",
+      "update": "Pasiūlymas įtraukti URM dėl tarptautinių ir eksporto klausimų"
+    },
+    {
+      "time": 219,
+      "timestamp": "13:39",
+      "type": "pabaigos_pastaba",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdį vedantis",
+      "party": "Nepriklausomas",
+      "text": "Dar keli formalūs punktai: sekretoriatas parengs galutinę rezoliucijos redakciją su priimtomis pataisomis ir išsiųs ją visiems nariams per 48 valandas. Vyriausybė turi 30 dienų pateikti pilotų įgyvendinimo planą. Ačiū už konstruktyvią diskusiją. Posėdis oficialiai uždaromas.",
+      "update": "Posėdžio užbaigimas ir tolimesni veiksmai"
+    }
+  ],
+  "audio": {
+    "enabled": true,
+    "model": "gpt-4o-mini-tts",
+    "mappingFile": null,
+    "audioDirectory": null,
+    "mapping": [
+      {
+        "eventIndex": 0,
+        "speaker": "Saulius Skvernelis",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "10:00",
+        "file": null
+      },
+      {
+        "eventIndex": 1,
+        "speaker": "Agnė Širinskienė",
+        "voice": "fable",
+        "voiceKey": "fable",
+        "rateMultiplier": 1,
+        "timestamp": "10:05",
+        "file": null
+      },
+      {
+        "eventIndex": 2,
+        "speaker": "Arūnas Dulkys",
+        "voice": "nova",
+        "voiceKey": "nova",
+        "rateMultiplier": 1,
+        "timestamp": "10:15",
+        "file": null
+      },
+      {
+        "eventIndex": 3,
+        "speaker": "Agnė Bilotaitė",
+        "voice": "onyx",
+        "voiceKey": "onyx",
+        "rateMultiplier": 1,
+        "timestamp": "10:45",
+        "file": null
+      },
+      {
+        "eventIndex": 4,
+        "speaker": "Agnė Širinskienė",
+        "voice": "fable",
+        "voiceKey": "fable",
+        "rateMultiplier": 1,
+        "timestamp": "10:55",
+        "file": null
+      },
+      {
+        "eventIndex": 5,
+        "speaker": "Ramūnas Zilnys",
+        "voice": "shimmer",
+        "voiceKey": "shimmer",
+        "rateMultiplier": 1,
+        "timestamp": "11:05",
+        "file": null
+      },
+      {
+        "eventIndex": 6,
+        "speaker": "Aidas Gedvilas",
+        "voice": "coral",
+        "voiceKey": "coral",
+        "rateMultiplier": 1,
+        "timestamp": "11:15",
+        "file": null
+      },
+      {
+        "eventIndex": 7,
+        "speaker": "Audra Sipavičienė",
+        "voice": "ballad",
+        "voiceKey": "ballad",
+        "rateMultiplier": 1,
+        "timestamp": "11:25",
+        "file": null
+      },
+      {
+        "eventIndex": 8,
+        "speaker": "Arvydas Sekmokas",
+        "voice": "ash",
+        "voiceKey": "ash",
+        "rateMultiplier": 1,
+        "timestamp": "11:35",
+        "file": null
+      },
+      {
+        "eventIndex": 9,
+        "speaker": "Saulius Skvernelis",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "11:45",
+        "file": null
+      },
+      {
+        "eventIndex": 10,
+        "speaker": "Saulius Skvernelis",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "12:00",
+        "file": null
+      },
+      {
+        "eventIndex": 11,
+        "speaker": "Arūnas Dulkys",
+        "voice": "nova",
+        "voiceKey": "nova",
+        "rateMultiplier": 1,
+        "timestamp": "12:03",
+        "file": null
+      },
+      {
+        "eventIndex": 12,
+        "speaker": "Arvydas Sekmokas",
+        "voice": "ash",
+        "voiceKey": "ash",
+        "rateMultiplier": 1,
+        "timestamp": "12:06",
+        "file": null
+      },
+      {
+        "eventIndex": 13,
+        "speaker": "Algirdas Sysas",
+        "voice": "sage",
+        "voiceKey": "sage",
+        "rateMultiplier": 1,
+        "timestamp": "12:09",
+        "file": null
+      },
+      {
+        "eventIndex": 14,
+        "speaker": "Andrius Kubilius",
+        "voice": "marin",
+        "voiceKey": "marin",
+        "rateMultiplier": 1,
+        "timestamp": "12:12",
+        "file": null
+      },
+      {
+        "eventIndex": 15,
+        "speaker": "Audra Sipavičienė",
+        "voice": "ballad",
+        "voiceKey": "ballad",
+        "rateMultiplier": 1,
+        "timestamp": "12:15",
+        "file": null
+      },
+      {
+        "eventIndex": 16,
+        "speaker": "Arvydas Anušauskas",
+        "voice": "cedar",
+        "voiceKey": "cedar",
+        "rateMultiplier": 1,
+        "timestamp": "12:18",
+        "file": null
+      },
+      {
+        "eventIndex": 17,
+        "speaker": "Agnė Bilotaitė",
+        "voice": "onyx",
+        "voiceKey": "onyx",
+        "rateMultiplier": 1,
+        "timestamp": "12:21",
+        "file": null
+      },
+      {
+        "eventIndex": 18,
+        "speaker": "Aušra Papirtienė",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-14",
+        "rateMultiplier": 1.07,
+        "timestamp": "12:24",
+        "file": null
+      },
+      {
+        "eventIndex": 19,
+        "speaker": "Ramūnas Zilnys",
+        "voice": "shimmer",
+        "voiceKey": "shimmer",
+        "rateMultiplier": 1,
+        "timestamp": "12:27",
+        "file": null
+      },
+      {
+        "eventIndex": 20,
+        "speaker": "Artūras Skaržius",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-15",
+        "rateMultiplier": 1.105,
+        "timestamp": "12:30",
+        "file": null
+      },
+      {
+        "eventIndex": 21,
+        "speaker": "Artūras Melianas",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-16",
+        "rateMultiplier": 1.1400000000000001,
+        "timestamp": "12:33",
+        "file": null
+      },
+      {
+        "eventIndex": 22,
+        "speaker": "Arvydas Sekmokas",
+        "voice": "ash",
+        "voiceKey": "ash",
+        "rateMultiplier": 1,
+        "timestamp": "12:36",
+        "file": null
+      },
+      {
+        "eventIndex": 23,
+        "speaker": "Andrius Navickas",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-17",
+        "rateMultiplier": 1.175,
+        "timestamp": "12:39",
+        "file": null
+      },
+      {
+        "eventIndex": 24,
+        "speaker": "Aušra Papirtienė",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-14",
+        "rateMultiplier": 1.07,
+        "timestamp": "12:42",
+        "file": null
+      },
+      {
+        "eventIndex": 25,
+        "speaker": "Ramūnas Zilnys",
+        "voice": "shimmer",
+        "voiceKey": "shimmer",
+        "rateMultiplier": 1,
+        "timestamp": "12:45",
+        "file": null
+      },
+      {
+        "eventIndex": 26,
+        "speaker": "Andrejus Stančikas",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-18",
+        "rateMultiplier": 1,
+        "timestamp": "12:48",
+        "file": null
+      },
+      {
+        "eventIndex": 27,
+        "speaker": "Agnė Bilotaitė",
+        "voice": "onyx",
+        "voiceKey": "onyx",
+        "rateMultiplier": 1,
+        "timestamp": "12:51",
+        "file": null
+      },
+      {
+        "eventIndex": 28,
+        "speaker": "Algirdas Sysas",
+        "voice": "sage",
+        "voiceKey": "sage",
+        "rateMultiplier": 1,
+        "timestamp": "12:54",
+        "file": null
+      },
+      {
+        "eventIndex": 29,
+        "speaker": "Ramūnas Zilnys",
+        "voice": "shimmer",
+        "voiceKey": "shimmer",
+        "rateMultiplier": 1,
+        "timestamp": "12:57",
+        "file": null
+      },
+      {
+        "eventIndex": 30,
+        "speaker": "Saulius Skvernelis",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "13:00",
+        "file": null
+      },
+      {
+        "eventIndex": 31,
+        "speaker": "Saulius Skvernelis",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "13:03",
+        "file": null
+      },
+      {
+        "eventIndex": 32,
+        "speaker": "Saulius Skvernelis",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "13:06",
+        "file": null
+      },
+      {
+        "eventIndex": 33,
+        "speaker": "Saulius Skvernelis",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "13:09",
+        "file": null
+      },
+      {
+        "eventIndex": 34,
+        "speaker": "Saulius Skvernelis",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "13:12",
+        "file": null
+      },
+      {
+        "eventIndex": 35,
+        "speaker": "Agnė Širinskienė",
+        "voice": "fable",
+        "voiceKey": "fable",
+        "rateMultiplier": 1,
+        "timestamp": "13:15",
+        "file": null
+      },
+      {
+        "eventIndex": 36,
+        "speaker": "Arūnas Gelūnas",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-19",
+        "rateMultiplier": 1.035,
+        "timestamp": "13:18",
+        "file": null
+      },
+      {
+        "eventIndex": 37,
+        "speaker": "Andrius Navickas",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-17",
+        "rateMultiplier": 1.175,
+        "timestamp": "13:21",
+        "file": null
+      },
+      {
+        "eventIndex": 38,
+        "speaker": "Asta Kubilienė",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-20",
+        "rateMultiplier": 1.07,
+        "timestamp": "13:24",
+        "file": null
+      },
+      {
+        "eventIndex": 39,
+        "speaker": "Andrius Kubilius",
+        "voice": "marin",
+        "voiceKey": "marin",
+        "rateMultiplier": 1,
+        "timestamp": "13:27",
+        "file": null
+      },
+      {
+        "eventIndex": 40,
+        "speaker": "Arvydas Juozaitis",
+        "voice": "verse",
+        "voiceKey": "verse",
+        "rateMultiplier": 1,
+        "timestamp": "13:30",
+        "file": null
+      },
+      {
+        "eventIndex": 41,
+        "speaker": "Arvydas Anušauskas",
+        "voice": "cedar",
+        "voiceKey": "cedar",
+        "rateMultiplier": 1,
+        "timestamp": "13:33",
+        "file": null
+      },
+      {
+        "eventIndex": 42,
+        "speaker": "Audronius Ažubalis",
+        "voice": "alloy",
+        "voiceKey": "alloy-variant-21",
+        "rateMultiplier": 1.105,
+        "timestamp": "13:36",
+        "file": null
+      },
+      {
+        "eventIndex": 43,
+        "speaker": "Saulius Skvernelis",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "13:39",
+        "file": null
+      }
+    ]
+  }
+}
