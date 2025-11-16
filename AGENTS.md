@@ -10,11 +10,11 @@
 - `test_members.html` – quick manual verification of member data rendering.
 - `README.md` and other docs – product overview and usage.
 
-## Build, Test, and Development Commands
-- Serve locally (no build step): `python3 -m http.server 8000`
-  - Open `http://localhost:8000/seimas_live_stream_enhanced.html` in a browser.
-- Quick data check: open `test_members.html` and confirm grid renders without console errors.
-- Optional: open the HTML file directly, but a local server is recommended for File System API features.
+## Runtime Services & Build Commands
+- **Web assets**: serve locally (no build step) via `python3 -m http.server 8000`, then open `http://localhost:8000/seimas_live_stream_enhanced.html`. Direct file loads work but break File System API.
+- **Local TTS**: start Speaches (`cd speaches && docker compose -f compose.cpu.yaml up speaches`). Configure `ALLOW_ORIGINS=["http://127.0.0.1:5500","http://localhost:8000"]` when serving via dev servers to avoid CORS blocks.
+- **Model preparation**: download the Kokoro TTS model once (`uvx speaches-cli model download speaches-ai/Kokoro-82M-v1.0-ONNX`) or add aliases in `speaches/model_aliases.json`.
+- Quick data check: open `test_members.html` to validate member rendering and console cleanliness.
 
 ## Coding Style & Naming Conventions
 - JavaScript: 4‑space indentation, single quotes, semicolons, ES6 classes.
@@ -22,12 +22,24 @@
 - Filenames: snake_case for JS/HTML; member profiles keep Lithuanian diacritics and use `First_Lastname-####.md`.
 - Prefer small, focused methods; document non‑obvious logic with brief comments.
 
+## Localization Rules
+- Session language toggle lives in the setup panel (`#sessionLanguageSelect`). Default is Lithuanian (`lt`); English (`en`) is optional.
+- Language choice informs prompt scaffolding, OpenAI system instructions, live updates, and persists in `localStorage` (`seimas_session_language`).
+- When adding content, ensure strings exist for both languages or clearly document if a feature remains Lithuanian-only.
+
+## Generation Modes
+- The UI exposes a two-option toggle (`#generationModeToggle`). `local` mode routes transcripts to Ollama (`http://localhost:11434/api/chat`) and uses Speaches for TTS. `remote` mode uses OpenAI GPT-5-mini + gpt-4o-mini-tts.
+- Keep `this.generationMode` in sync with the toggle, persist via `seimas_generation_mode`, and update `this.currentTTSOptions` whenever the mode or TTS settings change.
+- Local mode validation requires both `localOllamaBaseUrlInput` and `localOllamaModelInput`. Remote mode requires an OpenAI API key starting with `sk-`.
+- When extending functionality, always add provider-aware copy (statuses, logs, docs) so we never assume Speaches or OpenAI is the only pipeline.
+
 ## Testing Guidelines
 - Manual verification in modern Chromium/Firefox:
   - Playback controls, timeline updates, and speaker info update correctly.
   - Transcript generation flow works with an API key and saves to `sessions/` when permitted.
   - No errors in DevTools console.
 - Use `test_members.html` to validate member data loads and UI renders.
+- Local TTS smoke test: with Speaches running, enable the TTS checkbox, confirm POST `http://localhost:8000/v1/audio/speech` returns 200 and that generated audio plays in the timeline.
 
 ## Commit & Pull Request Guidelines
 - Commits: imperative present; concise subject (<72 chars). Use type prefixes when helpful (e.g., `feat:`, `fix:`, `docs:`). Example: `fix: handle missing Three.js dependency`.
@@ -38,3 +50,4 @@
 - Never commit API keys. Enter keys via the UI; storage remains local.
 - Keep assets local; avoid adding external network calls.
 - If adding new data files, prefer JSON/MD under `seimas/` or `sessions/` with clear naming.
+- For Speaches deployments, keep `.env` out of source control. When exposing dev servers, prefer explicit `ALLOW_ORIGINS` rather than `"*"`, and document any additional ports stakeholders might hit.

@@ -1,4 +1,4 @@
-// Enhanced Seimas Live Stream with OpenAI Integration
+// Enhanced Seimas Live Stream with OpenAI + Speaches Integration
 class EnhancedSeimasLiveStream {
     constructor() {
         this.isPlaying = false;
@@ -32,21 +32,76 @@ class EnhancedSeimasLiveStream {
         this.eventAudioPromises = new Map();
         this.pendingAudioCompletion = null;
         this.liveStreamGeneration = 0;
-        this.availableVoices = [
-            { voice: 'alloy', key: 'alloy', label: 'Alloy' },
-            { voice: 'echo', key: 'echo', label: 'Echo' },
-            { voice: 'fable', key: 'fable', label: 'Fable' },
-            { voice: 'onyx', key: 'onyx', label: 'Onyx' },
-            { voice: 'nova', key: 'nova', label: 'Nova' },
-            { voice: 'shimmer', key: 'shimmer', label: 'Shimmer' },
-            { voice: 'coral', key: 'coral', label: 'Coral' },
-            { voice: 'verse', key: 'verse', label: 'Verse' },
-            { voice: 'ballad', key: 'ballad', label: 'Ballad' },
-            { voice: 'ash', key: 'ash', label: 'Ash' },
-            { voice: 'sage', key: 'sage', label: 'Sage' },
-            { voice: 'marin', key: 'marin', label: 'Marin' },
-            { voice: 'cedar', key: 'cedar', label: 'Cedar' }
-        ];
+        this.voiceLibraries = {
+            speaches: [
+                { voice: 'af_heart', key: 'af_heart', label: 'Heart (US F)', rateMultiplier: 1 },
+                { voice: 'af_alloy', key: 'af_alloy', label: 'Alloy (US F)', rateMultiplier: 1.03 },
+                { voice: 'af_bella', key: 'af_bella', label: 'Bella (US F)', rateMultiplier: 0.97 },
+                { voice: 'af_kore', key: 'af_kore', label: 'Kore (US F)', rateMultiplier: 1.05 },
+                { voice: 'af_nicole', key: 'af_nicole', label: 'Nicole (US F)', rateMultiplier: 0.95 },
+                { voice: 'af_river', key: 'af_river', label: 'River (US F)', rateMultiplier: 1.08 },
+                { voice: 'af_sky', key: 'af_sky', label: 'Sky (US F)', rateMultiplier: 0.92 },
+                { voice: 'af_nova', key: 'af_nova', label: 'Nova (US F)', rateMultiplier: 1.02 },
+                { voice: 'am_adam', key: 'am_adam', label: 'Adam (US M)', rateMultiplier: 1 },
+                { voice: 'am_echo', key: 'am_echo', label: 'Echo (US M)', rateMultiplier: 0.98 },
+                { voice: 'am_eric', key: 'am_eric', label: 'Eric (US M)', rateMultiplier: 1.06 },
+                { voice: 'am_liam', key: 'am_liam', label: 'Liam (US M)', rateMultiplier: 1.04 },
+                { voice: 'am_michael', key: 'am_michael', label: 'Michael (US M)', rateMultiplier: 0.96 },
+                { voice: 'am_onyx', key: 'am_onyx', label: 'Onyx (US M)', rateMultiplier: 1.1 },
+                { voice: 'am_puck', key: 'am_puck', label: 'Puck (US M)', rateMultiplier: 0.94 },
+                { voice: 'bf_alice', key: 'bf_alice', label: 'Alice (UK F)', rateMultiplier: 1.01 },
+                { voice: 'bf_emma', key: 'bf_emma', label: 'Emma (UK F)', rateMultiplier: 0.93 },
+                { voice: 'bf_isabella', key: 'bf_isabella', label: 'Isabella (UK F)', rateMultiplier: 1.07 },
+                { voice: 'bm_daniel', key: 'bm_daniel', label: 'Daniel (UK M)', rateMultiplier: 1.02 },
+                { voice: 'bm_fable', key: 'bm_fable', label: 'Fable (UK M)', rateMultiplier: 0.9 },
+                { voice: 'bm_george', key: 'bm_george', label: 'George (UK M)', rateMultiplier: 1.09 },
+                { voice: 'jm_kumo', key: 'jm_kumo', label: 'Kumo (JP M)', rateMultiplier: 1.05 },
+                { voice: 'jf_alpha', key: 'jf_alpha', label: 'Alpha (JP F)', rateMultiplier: 0.95 },
+                { voice: 'zf_xiaoxiao', key: 'zf_xiaoxiao', label: 'Xiaoxiao (ZH F)', rateMultiplier: 0.98 },
+                { voice: 'zm_yunxi', key: 'zm_yunxi', label: 'Yunxi (ZH M)', rateMultiplier: 1.03 },
+                { voice: 'ef_dora', key: 'ef_dora', label: 'Dora (ES F)', rateMultiplier: 1.05 },
+                { voice: 'em_alex', key: 'em_alex', label: 'Alex (ES M)', rateMultiplier: 0.97 },
+                { voice: 'ff_siwis', key: 'ff_siwis', label: 'Siwis (FR F)', rateMultiplier: 1.04 },
+                { voice: 'if_sara', key: 'if_sara', label: 'Sara (IT F)', rateMultiplier: 0.99 },
+                { voice: 'im_nicola', key: 'im_nicola', label: 'Nicola (IT M)', rateMultiplier: 1.08 },
+                { voice: 'pf_dora', key: 'pf_dora', label: 'Dora (PT-BR F)', rateMultiplier: 0.96 },
+                { voice: 'pm_alex', key: 'pm_alex', label: 'Alex (PT-BR M)', rateMultiplier: 1.06 }
+            ],
+            openai: [
+                { voice: 'alloy', key: 'alloy', label: 'Alloy', rateMultiplier: 1 },
+                { voice: 'echo', key: 'echo', label: 'Echo', rateMultiplier: 0.98 },
+                { voice: 'fable', key: 'fable', label: 'Fable', rateMultiplier: 1.04 },
+                { voice: 'onyx', key: 'onyx', label: 'Onyx', rateMultiplier: 1.08 },
+                { voice: 'nova', key: 'nova', label: 'Nova', rateMultiplier: 0.96 },
+                { voice: 'shimmer', key: 'shimmer', label: 'Shimmer', rateMultiplier: 1.02 },
+                { voice: 'coral', key: 'coral', label: 'Coral', rateMultiplier: 0.94 },
+                { voice: 'verse', key: 'verse', label: 'Verse', rateMultiplier: 1.06 },
+                { voice: 'ballad', key: 'ballad', label: 'Ballad', rateMultiplier: 0.92 },
+                { voice: 'ash', key: 'ash', label: 'Ash', rateMultiplier: 1.05 },
+                { voice: 'sage', key: 'sage', label: 'Sage', rateMultiplier: 0.9 },
+                { voice: 'marin', key: 'marin', label: 'Marin', rateMultiplier: 1.03 },
+                { voice: 'cedar', key: 'cedar', label: 'Cedar', rateMultiplier: 1.07 }
+            ]
+        };
+        this.availableVoices = this.voiceLibraries.speaches.map(profile => ({ ...profile }));
+        this.defaultSpeachesSettings = {
+            baseUrl: 'http://localhost:8000/v1',
+            modelId: 'speaches-ai/Kokoro-82M-v1.0-ONNX',
+            responseFormat: 'mp3'
+        };
+        this.speachesSettings = { ...this.defaultSpeachesSettings };
+        this.sessionLanguage = 'lt';
+        this.generationMode = 'local';
+        this.localGenerationSettings = {
+            baseUrl: 'http://localhost:11434',
+            model: 'llama3.1:70b',
+            temperature: 0.35
+        };
+        this.remoteGenerationSettings = {
+            transcriptModel: 'gpt-5-mini',
+            ttsModel: 'gpt-4o-mini-tts'
+        };
+        this.currentTTSOptions = null;
 
         this.initializeElements();
         this.initializeAnimatedFace();
@@ -54,6 +109,11 @@ class EnhancedSeimasLiveStream {
         this.setupEventListeners();
         this.loadAPIKey();
         this.loadTextToSpeechPreference();
+        this.loadSessionLanguagePreference();
+        this.loadSpeachesSettings();
+        this.loadLocalGenerationSettings();
+        this.loadGenerationMode();
+        this.resetVoiceAssignments(this.getTextToSpeechProvider());
     }
 
     initializeElements() {
@@ -91,6 +151,15 @@ class EnhancedSeimasLiveStream {
         this.loadingIndicator = document.getElementById('loadingIndicator');
         this.textToSpeechCheckbox = document.getElementById('textToSpeechCheckbox');
         this.textToSpeechStatus = document.getElementById('textToSpeechStatus');
+        this.sessionLanguageSelect = document.getElementById('sessionLanguageSelect');
+        this.speachesBaseUrlInput = document.getElementById('speachesBaseUrlInput');
+        this.speachesModelInput = document.getElementById('speachesModelInput');
+        this.speachesFormatSelect = document.getElementById('speachesFormatSelect');
+        this.generationModeToggle = document.getElementById('generationModeToggle');
+        this.localConfigPanel = document.getElementById('localConfigPanel');
+        this.remoteConfigPanel = document.getElementById('remoteConfigPanel');
+        this.localOllamaBaseUrlInput = document.getElementById('localOllamaBaseUrlInput');
+        this.localOllamaModelInput = document.getElementById('localOllamaModelInput');
 
         // Modal elements
         this.membersBtn = document.getElementById('membersBtn');
@@ -227,8 +296,6 @@ class EnhancedSeimasLiveStream {
             ` : ''}
         `;
         
-        this.memberProfile.classList.add('active');
-        this.membersGrid.style.display = 'none';
     }
 
     setupEventListeners() {
@@ -265,6 +332,36 @@ class EnhancedSeimasLiveStream {
 
         // API key input
         this.apiKeyInput.addEventListener('input', () => this.saveAPIKey());
+        if (this.sessionLanguageSelect) {
+            this.sessionLanguageSelect.addEventListener('change', (e) => this.handleSessionLanguageChange(e.target.value));
+        }
+        if (this.generationModeToggle) {
+            this.generationModeToggle.addEventListener('click', (event) => {
+                const option = event.target.closest('.mode-option');
+                if (!option) {
+                    return;
+                }
+                const mode = option.getAttribute('data-mode');
+                if (mode === 'local' || mode === 'remote') {
+                    this.handleGenerationModeChange(mode);
+                }
+            });
+        }
+        if (this.localOllamaBaseUrlInput) {
+            this.localOllamaBaseUrlInput.addEventListener('input', (e) => this.handleLocalGenerationSettingsChange('baseUrl', e.target.value));
+        }
+        if (this.localOllamaModelInput) {
+            this.localOllamaModelInput.addEventListener('input', (e) => this.handleLocalGenerationSettingsChange('model', e.target.value));
+        }
+        if (this.speachesBaseUrlInput) {
+            this.speachesBaseUrlInput.addEventListener('input', (e) => this.handleSpeachesSettingsChange('baseUrl', e.target.value));
+        }
+        if (this.speachesModelInput) {
+            this.speachesModelInput.addEventListener('input', (e) => this.handleSpeachesSettingsChange('modelId', e.target.value));
+        }
+        if (this.speachesFormatSelect) {
+            this.speachesFormatSelect.addEventListener('change', (e) => this.handleSpeachesSettingsChange('responseFormat', e.target.value));
+        }
 
         if (this.textToSpeechCheckbox) {
             this.textToSpeechCheckbox.addEventListener('change', () => this.handleTextToSpeechToggle());
@@ -316,13 +413,15 @@ class EnhancedSeimasLiveStream {
     }
 
     showMembersModal() {
-        this.membersModal.style.display = 'block';
-        this.membersGrid.style.display = 'grid';
-        this.memberProfile.classList.remove('active');
+        if (this.membersModal) {
+            this.membersModal.classList.add('active');
+        }
     }
 
     hideMembersModal() {
-        this.membersModal.style.display = 'none';
+        if (this.membersModal) {
+            this.membersModal.classList.remove('active');
+        }
     }
 
     loadAPIKey() {
@@ -339,6 +438,329 @@ class EnhancedSeimasLiveStream {
         }
     }
 
+    loadSessionLanguagePreference() {
+        let stored = null;
+        try {
+            stored = localStorage.getItem('seimas_session_language');
+        } catch (error) {
+            console.warn('Nepavyko nuskaityti kalbos nustatymo iš localStorage:', error);
+        }
+        this.sessionLanguage = stored === 'en' ? 'en' : 'lt';
+        if (this.sessionLanguageSelect) {
+            this.sessionLanguageSelect.value = this.sessionLanguage;
+        }
+    }
+
+    saveSessionLanguagePreference() {
+        try {
+            localStorage.setItem('seimas_session_language', this.sessionLanguage);
+        } catch (error) {
+            console.warn('Nepavyko įrašyti kalbos nustatymo į localStorage:', error);
+        }
+    }
+
+    handleSessionLanguageChange(value) {
+        const nextValue = value === 'en' ? 'en' : 'lt';
+        this.sessionLanguage = nextValue;
+        if (this.sessionLanguageSelect && this.sessionLanguageSelect.value !== nextValue) {
+            this.sessionLanguageSelect.value = nextValue;
+        }
+        this.saveSessionLanguagePreference();
+        const statusNote = nextValue === 'en'
+            ? 'Session language switched to English. Regenerate a transcript to apply the change.'
+            : 'Sesijos kalba nustatyta į lietuvių. Sugeneruokite naują stenogramą, kad pritaikytumėte.';
+        this.addLiveUpdate(this.formatTime(0), statusNote);
+    }
+
+    loadSpeachesSettings() {
+        try {
+            const stored = localStorage.getItem('seimas_speaches_settings');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                this.speachesSettings = {
+                    ...this.defaultSpeachesSettings,
+                    ...parsed
+                };
+            } else {
+                this.speachesSettings = { ...this.defaultSpeachesSettings };
+            }
+        } catch (error) {
+            console.warn('Nepavyko nuskaityti Speaches nustatymų iš localStorage:', error);
+            this.speachesSettings = { ...this.defaultSpeachesSettings };
+        }
+        this.applySpeachesSettingsToInputs();
+    }
+
+    applySpeachesSettingsToInputs() {
+        const settings = this.speachesSettings || this.defaultSpeachesSettings;
+        if (this.speachesBaseUrlInput && typeof settings.baseUrl === 'string') {
+            this.speachesBaseUrlInput.value = settings.baseUrl;
+        }
+        if (this.speachesModelInput && typeof settings.modelId === 'string') {
+            this.speachesModelInput.value = settings.modelId;
+        }
+        if (this.speachesFormatSelect && settings.responseFormat) {
+            this.speachesFormatSelect.value = settings.responseFormat;
+        }
+    }
+
+    handleSpeachesSettingsChange(field, value) {
+        if (!this.speachesSettings) {
+            this.speachesSettings = { ...this.defaultSpeachesSettings };
+        }
+
+        const cleanedValue = typeof value === 'string' ? value.trim() : value;
+        if (cleanedValue) {
+            const normalizedValue = field === 'responseFormat' && typeof cleanedValue === 'string'
+                ? cleanedValue.toLowerCase()
+                : cleanedValue;
+            this.speachesSettings[field] = normalizedValue;
+        } else if (field === 'responseFormat') {
+            this.speachesSettings[field] = this.defaultSpeachesSettings.responseFormat;
+        } else {
+            this.speachesSettings[field] = '';
+        }
+
+        this.saveSpeachesSettings();
+
+        if (this.textToSpeechEnabled) {
+            this.updateTextToSpeechStatus(`⚙️ Speaches nustatymai atnaujinti (modelis: ${this.getActiveSpeachesModelLabel()}).`, 'info');
+        }
+    }
+
+    saveSpeachesSettings() {
+        try {
+            localStorage.setItem('seimas_speaches_settings', JSON.stringify(this.speachesSettings));
+        } catch (error) {
+            console.warn('Nepavyko įrašyti Speaches nustatymų į localStorage:', error);
+        }
+    }
+
+    ensureSpeachesConfigured() {
+        const baseUrl = this.speachesSettings?.baseUrl?.trim();
+        const modelId = this.speachesSettings?.modelId?.trim();
+        if (!baseUrl || !modelId) {
+            this.updateTextToSpeechStatus('⚠️ Nurodykite Speaches serverio URL ir modelio ID teksto į kalbą nustatymuose.', 'error');
+            return false;
+        }
+        return true;
+    }
+
+    ensureLocalGenerationConfigured() {
+        const baseUrl = (this.localOllamaBaseUrlInput?.value || this.localGenerationSettings?.baseUrl || '').trim();
+        const model = (this.localOllamaModelInput?.value || this.localGenerationSettings?.model || '').trim();
+
+        if (!baseUrl || !model) {
+            alert('Prašome nurodyti galiojantį Ollama API adresą ir modelio pavadinimą.');
+            return false;
+        }
+
+        this.localGenerationSettings.baseUrl = baseUrl;
+        this.localGenerationSettings.model = model;
+        this.saveLocalGenerationSettings();
+        return true;
+    }
+
+    loadLocalGenerationSettings() {
+        try {
+            const stored = localStorage.getItem('seimas_local_generation_settings');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                this.localGenerationSettings = {
+                    ...this.localGenerationSettings,
+                    ...parsed
+                };
+            }
+        } catch (error) {
+            console.warn('Nepavyko nuskaityti lokalaus generavimo nustatymų:', error);
+        }
+
+        if (this.localOllamaBaseUrlInput && this.localGenerationSettings.baseUrl) {
+            this.localOllamaBaseUrlInput.value = this.localGenerationSettings.baseUrl;
+        }
+        if (this.localOllamaModelInput && this.localGenerationSettings.model) {
+            this.localOllamaModelInput.value = this.localGenerationSettings.model;
+        }
+    }
+
+    saveLocalGenerationSettings() {
+        try {
+            localStorage.setItem('seimas_local_generation_settings', JSON.stringify(this.localGenerationSettings));
+        } catch (error) {
+            console.warn('Nepavyko įrašyti lokalaus generavimo nustatymų:', error);
+        }
+    }
+
+    handleLocalGenerationSettingsChange(field, value) {
+        if (!this.localGenerationSettings) {
+            this.localGenerationSettings = {};
+        }
+        this.localGenerationSettings[field] = typeof value === 'string' ? value.trim() : value;
+        this.saveLocalGenerationSettings();
+    }
+
+    loadGenerationMode() {
+        try {
+            const stored = localStorage.getItem('seimas_generation_mode');
+            if (stored === 'remote' || stored === 'local') {
+                this.generationMode = stored;
+            }
+        } catch (error) {
+            console.warn('Nepavyko nuskaityti generavimo režimo:', error);
+        }
+        this.applyGenerationModeToUI();
+    }
+
+    saveGenerationMode() {
+        try {
+            localStorage.setItem('seimas_generation_mode', this.generationMode);
+        } catch (error) {
+            console.warn('Nepavyko įrašyti generavimo režimo:', error);
+        }
+    }
+
+    applyGenerationModeToUI() {
+        if (this.generationModeToggle) {
+            const buttons = this.generationModeToggle.querySelectorAll('.mode-option');
+            buttons.forEach(button => {
+                const mode = button.getAttribute('data-mode');
+                button.classList.toggle('active', mode === this.generationMode);
+            });
+        }
+        if (this.localConfigPanel) {
+            this.localConfigPanel.classList.toggle('hidden', this.generationMode !== 'local');
+        }
+        if (this.remoteConfigPanel) {
+            this.remoteConfigPanel.classList.toggle('hidden', this.generationMode !== 'remote');
+        }
+    }
+
+    handleGenerationModeChange(mode) {
+        if (mode !== 'local' && mode !== 'remote') {
+            return;
+        }
+        if (this.generationMode === mode) {
+            return;
+        }
+        this.generationMode = mode;
+        this.saveGenerationMode();
+        this.applyGenerationModeToUI();
+        this.currentTTSOptions = null;
+        this.resetVoiceAssignments(this.getTextToSpeechProvider());
+        const providerLabel = this.getTextToSpeechProvider() === 'openai' ? 'OpenAI TTS' : 'Speaches';
+        this.updateTextToSpeechStatus(`🔁 Pereita į ${mode === 'remote' ? 'OpenAI debesų' : 'lokalų'} režimą. Balsams bus naudojamas ${providerLabel}.`, 'info');
+    }
+
+    getTextToSpeechProvider() {
+        return this.generationMode === 'remote' ? 'openai' : 'speaches';
+    }
+
+    buildDefaultTTSOptions() {
+        const provider = this.getTextToSpeechProvider();
+        if (provider === 'openai') {
+            return {
+                provider: 'openai',
+                apiKey: this.apiKeyInput?.value?.trim(),
+                model: this.remoteGenerationSettings?.ttsModel || 'gpt-4o-mini-tts'
+            };
+        }
+        return {
+            provider: 'speaches',
+            baseUrl: this.speachesSettings?.baseUrl,
+            model: this.speachesSettings?.modelId
+        };
+    }
+
+    getTTSProviderLabel() {
+        return this.getTextToSpeechProvider() === 'openai'
+            ? `OpenAI (${this.remoteGenerationSettings?.ttsModel || 'gpt-4o-mini-tts'})`
+            : `Speaches (${this.getActiveSpeachesModelLabel()})`;
+    }
+
+    getActiveSpeachesModelLabel() {
+        return this.speachesSettings?.modelId?.trim() || this.defaultSpeachesSettings.modelId;
+    }
+
+    normalizeBaseUrl(url) {
+        if (!url) {
+            return '';
+        }
+        const trimmed = url.trim();
+        const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `http://${trimmed}`;
+        return withProtocol.replace(/\/+$/, '');
+    }
+
+    getSpeachesEndpoint(path = '') {
+        const rawBase = this.speachesSettings?.baseUrl?.trim();
+        if (!rawBase) {
+            throw new Error('Speaches serverio URL nenurodytas.');
+        }
+
+        const normalizedBase = this.normalizeBaseUrl(rawBase);
+        const normalizedPath = path ? `/${path.replace(/^\/+/, '')}` : '';
+        return `${normalizedBase}${normalizedPath}`;
+    }
+
+    getSpeachesMimeType() {
+        const format = (this.speachesSettings?.responseFormat || 'mp3').toLowerCase();
+        if (format === 'wav') {
+            return 'audio/wav';
+        }
+        if (format === 'ogg' || format === 'oga' || format === 'vorbis') {
+            return 'audio/ogg';
+        }
+        if (format === 'flac') {
+            return 'audio/flac';
+        }
+        return 'audio/mpeg';
+    }
+
+    getSpeachesFileExtension() {
+        const format = (this.speachesSettings?.responseFormat || 'mp3').toLowerCase();
+        if (format === 'wav') {
+            return 'wav';
+        }
+        if (format === 'ogg' || format === 'oga' || format === 'vorbis') {
+            return 'ogg';
+        }
+        if (format === 'flac') {
+            return 'flac';
+        }
+        return 'mp3';
+    }
+
+    async requestSpeechFromOpenAI(text, voiceProfile, apiKey) {
+        const payload = {
+            model: this.remoteGenerationSettings?.ttsModel || 'gpt-4o-mini-tts',
+            voice: voiceProfile.voice,
+            input: text
+        };
+
+        if (voiceProfile.style) {
+            payload.style = voiceProfile.style;
+        }
+        if (voiceProfile.rateMultiplier && voiceProfile.rateMultiplier !== 1) {
+            payload.speed = Number(voiceProfile.rateMultiplier.toFixed(2));
+        }
+
+        const response = await fetch('https://api.openai.com/v1/audio/speech', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+            throw new Error(error.error?.message || 'OpenAI TTS API klaida');
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        return new Blob([arrayBuffer], { type: 'audio/mpeg' });
+    }
+
     loadTextToSpeechPreference() {
         if (!this.textToSpeechCheckbox) {
             return;
@@ -351,9 +773,9 @@ class EnhancedSeimasLiveStream {
             this.textToSpeechEnabled = isEnabled;
 
             if (isEnabled) {
-                this.updateTextToSpeechStatus('🔊 Teksto į kalbą funkcija aktyvuota. Sugeneruokite posėdį, kad būtų sukurtos kalbos.', 'success');
+                this.updateTextToSpeechStatus(`🔊 Teksto į kalbą funkcija aktyvuota. Naudojamas ${this.getTTSProviderLabel()}.`, 'success');
             } else {
-                this.updateTextToSpeechStatus('🔇 Teksto į kalbą funkcija išjungta.', 'info');
+                this.updateTextToSpeechStatus('🔇 Teksto į kalbą funkcija išjungta. Įjunkite ją, jei norite girdėti posėdį.', 'info');
             }
         } catch (error) {
             console.warn('Nepavyko nuskaityti TTS nustatymo iš localStorage:', error);
@@ -378,45 +800,63 @@ class EnhancedSeimasLiveStream {
         }
 
         if (this.textToSpeechEnabled) {
-            this.updateTextToSpeechStatus('🔊 Teksto į kalbą funkcija aktyvuota. Naudojamas gpt-4o-mini-tts modelis su unikaliomis balsų kombinacijomis.', 'success');
+            const provider = this.getTextToSpeechProvider();
+            if (provider === 'openai') {
+                const apiKey = this.apiKeyInput?.value?.trim();
+                if (!apiKey || !apiKey.startsWith('sk-')) {
+                    alert('Įveskite galiojantį OpenAI API raktą, kad būtų galima generuoti balsus.');
+                    this.textToSpeechCheckbox.checked = false;
+                    this.textToSpeechEnabled = false;
+                    localStorage.setItem('seimas_tts_enabled', 'false');
+                    return;
+                }
+            } else if (!this.ensureSpeachesConfigured()) {
+                this.textToSpeechEnabled = false;
+                this.textToSpeechCheckbox.checked = false;
+                try {
+                    localStorage.setItem('seimas_tts_enabled', 'false');
+                } catch (storageError) {
+                    console.warn('Nepavyko atnaujinti TTS nustatymo po klaidos:', storageError);
+                }
+                return;
+            }
+
+            const providerLabel = provider === 'openai'
+                ? `OpenAI (${this.remoteGenerationSettings?.ttsModel || 'gpt-4o-mini-tts'})`
+                : `Speaches (${this.getActiveSpeachesModelLabel()})`;
+            this.updateTextToSpeechStatus(`🔊 Teksto į kalbą funkcija aktyvuota. Naudojamas ${providerLabel}.`, 'success');
 
             if (this.events.length > 0) {
                 if (this.streamLiveFromTTS) {
-                    const apiKey = this.apiKeyInput.value.trim();
-                    if (apiKey) {
-                        this.updateTextToSpeechStatus('🔄 Pasisakymai bus atkuriami realiu laiku. Spauskite „Paleisti“, kad pradėtumėte.', 'processing');
-                    } else {
-                        this.updateTextToSpeechStatus('⚠️ Įveskite OpenAI API raktą, kad būtų galima generuoti balsus.', 'error');
-                    }
+                    this.updateTextToSpeechStatus(`🔄 ${provider === 'openai' ? 'OpenAI' : 'Speaches'} generuos balsus realiu laiku. Spauskite „Paleisti“, kad pradėtumėte.`, 'processing');
                     return;
                 }
 
-                const apiKey = this.apiKeyInput.value.trim();
-                if (apiKey) {
-                    const timestamp = this.lastTranscriptTimestamp || new Date();
-                    const transcriptInfo = {
-                        title: this.sessionTitle?.textContent,
-                        topic: this.sessionTopic?.textContent,
-                        events: this.events
-                    };
-                    let storageContext = this.currentSessionStorageContext;
-                    if (!storageContext) {
-                        try {
-                            storageContext = await this.prepareSessionStorageContext(transcriptInfo, timestamp);
-                            if (storageContext) {
-                                this.currentSessionStorageContext = storageContext;
-                            }
-                        } catch (contextError) {
-                            console.warn('Nepavyko paruošti sesijos aplanko TTS generavimui:', contextError);
+                const timestamp = this.lastTranscriptTimestamp || new Date();
+                const transcriptInfo = {
+                    title: this.sessionTitle?.textContent,
+                    topic: this.sessionTopic?.textContent,
+                    events: this.events
+                };
+                let storageContext = this.currentSessionStorageContext;
+                if (!storageContext) {
+                    try {
+                        storageContext = await this.prepareSessionStorageContext(transcriptInfo, timestamp);
+                        if (storageContext) {
+                            this.currentSessionStorageContext = storageContext;
                         }
+                    } catch (contextError) {
+                        console.warn('Nepavyko paruošti sesijos aplanko TTS generavimui:', contextError);
                     }
-
-                    this.prepareTextToSpeechAssets(transcriptInfo, apiKey, timestamp, storageContext).catch(error => {
-                        console.error('TTS preparation failed on toggle:', error);
-                    });
-                } else {
-                    this.updateTextToSpeechStatus('⚠️ Įveskite OpenAI API raktą, kad būtų galima generuoti balsus.', 'error');
                 }
+
+                const ttsOptions = this.buildDefaultTTSOptions();
+                this.currentTTSOptions = ttsOptions;
+                this.resetVoiceAssignments(ttsOptions.provider || provider);
+
+                this.prepareTextToSpeechAssets(transcriptInfo, timestamp, storageContext, ttsOptions).catch(error => {
+                    console.error('TTS preparation failed on toggle:', error);
+                });
             }
         } else {
             this.updateTextToSpeechStatus('🔇 Teksto į kalbą funkcija išjungta.', 'info');
@@ -455,24 +895,32 @@ class EnhancedSeimasLiveStream {
         }
     }
 
-    resetVoiceAssignments() {
+    resetVoiceAssignments(provider = this.getTextToSpeechProvider()) {
         this.voiceAssignments.clear();
         this.usedVoiceKeys.clear();
+        const library = this.voiceLibraries[provider] || [];
+        this.availableVoices = library.map(profile => ({ ...profile }));
         this.availableVoiceQueue = this.availableVoices.map(profile => ({ ...profile }));
     }
 
-    createDerivedVoiceProfile(index) {
+    createDerivedVoiceProfile(index, provider = this.getTextToSpeechProvider()) {
         const variantIndex = index + 1;
         const rateMultiplier = 1 + (variantIndex % 6) * 0.035;
+        const library = this.voiceLibraries[provider] || [];
+        const fallbackVoice =
+            library[Math.min(variantIndex, Math.max(library.length - 1, 0))]?.voice ||
+            library[0]?.voice ||
+            (provider === 'openai' ? 'alloy' : 'af_heart');
         return {
-            voice: 'alloy',
-            key: `alloy-variant-${variantIndex}`,
-            label: `Alloy variant ${variantIndex}`,
+            voice: fallbackVoice,
+            key: `${provider}-variant-${variantIndex}`,
+            label: `${provider === 'openai' ? 'OpenAI' : 'Speaches'} variant ${variantIndex}`,
             rateMultiplier
         };
     }
 
     getVoiceForSpeaker(speakerName) {
+        const provider = this.currentTTSOptions?.provider || this.getTextToSpeechProvider();
         if (this.voiceAssignments.has(speakerName)) {
             return this.voiceAssignments.get(speakerName);
         }
@@ -490,7 +938,7 @@ class EnhancedSeimasLiveStream {
 
         if (!assignedProfile) {
             const fallbackIndex = this.voiceAssignments.size;
-            assignedProfile = this.createDerivedVoiceProfile(fallbackIndex);
+            assignedProfile = this.createDerivedVoiceProfile(fallbackIndex, provider);
             this.usedVoiceKeys.add(assignedProfile.key);
         }
 
@@ -551,13 +999,19 @@ class EnhancedSeimasLiveStream {
         }
     }
 
-    async prepareTextToSpeechAssets(transcriptData, apiKey, timestamp, storageContext = null) {
+    async prepareTextToSpeechAssets(transcriptData, timestamp, storageContext = null, ttsOptions = null) {
         if (typeof window === 'undefined' || !this.textToSpeechEnabled) {
             return null;
         }
 
-        if (!apiKey) {
-            this.updateTextToSpeechStatus('⚠️ Reikalingas OpenAI API raktas teksto į kalbą generavimui.', 'error');
+        const options = ttsOptions || this.buildDefaultTTSOptions();
+        const provider = options?.provider || this.getTextToSpeechProvider();
+
+        if (provider === 'speaches' && !this.ensureSpeachesConfigured()) {
+            return null;
+        }
+        if (provider === 'openai' && (!options?.apiKey || !options.apiKey.startsWith('sk-'))) {
+            this.updateTextToSpeechStatus('⚠️ Įveskite galiojantį OpenAI API raktą teksto į kalbą generavimui.', 'error');
             return null;
         }
 
@@ -565,7 +1019,7 @@ class EnhancedSeimasLiveStream {
             return this.audioPreparationPromise;
         }
 
-        this.audioPreparationPromise = this._prepareTextToSpeechAssets(transcriptData, apiKey, timestamp, storageContext);
+        this.audioPreparationPromise = this._prepareTextToSpeechAssets(transcriptData, timestamp, storageContext, options);
         try {
             return await this.audioPreparationPromise;
         } finally {
@@ -573,7 +1027,7 @@ class EnhancedSeimasLiveStream {
         }
     }
 
-    async _prepareTextToSpeechAssets(transcriptData, apiKey, timestamp, storageContext = null) {
+    async _prepareTextToSpeechAssets(transcriptData, timestamp, storageContext = null, ttsOptions = {}) {
         try {
             const events = Array.isArray(transcriptData?.events) ? transcriptData.events : [];
             if (events.length === 0) {
@@ -581,10 +1035,18 @@ class EnhancedSeimasLiveStream {
                 return null;
             }
 
-            this.updateTextToSpeechStatus('🔄 Generuojami balsai naudojant gpt-4o-mini-tts...', 'processing');
+            const provider = ttsOptions?.provider || this.getTextToSpeechProvider();
+            const modelLabel = provider === 'openai'
+                ? (this.remoteGenerationSettings?.ttsModel || 'gpt-4o-mini-tts')
+                : this.getActiveSpeachesModelLabel();
+            const responseFormat = provider === 'speaches'
+                ? (this.speachesSettings?.responseFormat || 'mp3').toLowerCase()
+                : 'mp3';
+
+            this.updateTextToSpeechStatus(`🔄 Generuojami balsai (${provider === 'openai' ? 'OpenAI TTS' : 'Speaches'})...`, 'processing');
 
             this.clearAudioAssets();
-            this.resetVoiceAssignments();
+            this.resetVoiceAssignments(provider);
 
             const preparationTimestamp = timestamp instanceof Date ? timestamp : new Date();
             this.lastTranscriptTimestamp = preparationTimestamp;
@@ -627,6 +1089,7 @@ class EnhancedSeimasLiveStream {
 
             const slug = this.slugifySessionName(transcriptData.topic || transcriptData.title || 'seimo-posedis');
             const iso = preparationTimestamp.toISOString().replace(/[:.]/g, '-');
+            const fileExtension = provider === 'speaches' ? this.getSpeachesFileExtension() : 'mp3';
 
             for (let index = 0; index < events.length; index++) {
                 const event = events[index];
@@ -638,7 +1101,7 @@ class EnhancedSeimasLiveStream {
                 const voiceProfile = this.getVoiceForSpeaker(speakerName);
 
                 try {
-                    const audioBlob = await this.requestSpeechFromOpenAI(event.text, voiceProfile, apiKey);
+                    const audioBlob = await this.synthesizeSpeech(event.text, voiceProfile, provider, ttsOptions);
                     const audioUrl = URL.createObjectURL(audioBlob);
                     const audioElement = new Audio(audioUrl);
                     audioElement.preload = 'auto';
@@ -668,7 +1131,7 @@ class EnhancedSeimasLiveStream {
                     let savedFile = null;
                     if (!savingDisabled && audioDirectoryHandle && typeof audioDirectoryHandle.getFileHandle === 'function') {
                         try {
-                            const fileName = `${iso}-${slug}-event-${String(index + 1).padStart(3, '0')}.mp3`;
+                            const fileName = `${iso}-${slug}-event-${String(index + 1).padStart(3, '0')}.${fileExtension}`;
                             const fileHandle = await audioDirectoryHandle.getFileHandle(fileName, { create: true });
                             const writable = await fileHandle.createWritable();
                             await writable.write(audioBlob);
@@ -687,7 +1150,8 @@ class EnhancedSeimasLiveStream {
                         voiceKey: voiceProfile.key,
                         rateMultiplier: basePlaybackRate,
                         timestamp: event.timestamp,
-                        file: savedFile
+                        file: savedFile,
+                        format: responseFormat
                     });
                 } catch (error) {
                     console.error('Nepavyko sugeneruoti audio įrašo:', error);
@@ -702,11 +1166,14 @@ class EnhancedSeimasLiveStream {
                     const mappingFileHandle = await directoryHandle.getFileHandle(mappingFileName, { create: true });
                     const writable = await mappingFileHandle.createWritable();
                     await writable.write(JSON.stringify({
-                        model: 'gpt-4o-mini-tts',
+                        provider,
+                        model: modelLabel,
+                        responseFormat,
                         createdAt: preparationTimestamp.toISOString(),
                         sessionTitle: transcriptData.title || 'Seimo posėdis',
                         sessionTopic: transcriptData.topic || '',
                         audioDirectory: audioDirectoryDetails.path,
+                        server: provider === 'speaches' ? (this.speachesSettings?.baseUrl || '') : '',
                         items: mapping
                     }, null, 2));
                     await writable.close();
@@ -720,9 +1187,9 @@ class EnhancedSeimasLiveStream {
             if (mapping.length > 0) {
                 const savedInfo = mapping.filter(item => item.file).length;
                 if (savedInfo > 0) {
-                    this.updateTextToSpeechStatus(`🔊 Sugeneruota ${mapping.length} kalbų, ${savedInfo} įrašyta į katalogą naudojant gpt-4o-mini-tts.`, 'success');
+                    this.updateTextToSpeechStatus(`🔊 Sugeneruota ${mapping.length} kalbų, ${savedInfo} įrašyta į katalogą (${provider === 'openai' ? 'OpenAI' : 'Speaches'}: ${modelLabel}).`, 'success');
                 } else {
-                    this.updateTextToSpeechStatus(`🔊 Sugeneruota ${mapping.length} kalbų (vietinis atkūrimas).`, 'success');
+                    this.updateTextToSpeechStatus(`🔊 Sugeneruota ${mapping.length} kalbų (atkuriama naršyklėje, ${provider === 'openai' ? 'OpenAI' : 'Speaches'}: ${modelLabel}).`, 'success');
                 }
             } else if (errors.length > 0) {
                 this.updateTextToSpeechStatus('⚠️ Nepavyko sugeneruoti audio failų. Peržiūrėkite konsolę.', 'error');
@@ -731,7 +1198,9 @@ class EnhancedSeimasLiveStream {
             }
 
             return {
-                model: 'gpt-4o-mini-tts',
+                provider,
+                model: modelLabel,
+                responseFormat,
                 mapping,
                 mappingFile: mappingFilePath,
                 audioDirectory: audioDirectoryDetails.path,
@@ -764,9 +1233,13 @@ class EnhancedSeimasLiveStream {
         }
     }
 
-    async requestSpeechFromOpenAI(text, voiceProfile, apiKey) {
+    async requestSpeechFromSpeaches(text, voiceProfile) {
+        if (!this.ensureSpeachesConfigured()) {
+            throw new Error('Speaches serveris nesukonfigūruotas.');
+        }
+
         const payload = {
-            model: 'gpt-4o-mini-tts',
+            model: this.getActiveSpeachesModelLabel(),
             voice: voiceProfile.voice,
             input: text
         };
@@ -775,44 +1248,97 @@ class EnhancedSeimasLiveStream {
             payload.style = voiceProfile.style;
         }
 
-        const response = await fetch('https://api.openai.com/v1/audio/speech', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
-            throw new Error(error.error?.message || 'OpenAI TTS API klaida');
+        const responseFormat = this.speachesSettings?.responseFormat;
+        if (responseFormat && responseFormat.toLowerCase() !== 'mp3') {
+            payload.response_format = responseFormat;
         }
 
+        if (voiceProfile.rateMultiplier && voiceProfile.rateMultiplier !== 1) {
+            const clampedSpeed = Math.min(Math.max(voiceProfile.rateMultiplier, 0.5), 2).toFixed(2);
+            payload.speed = Number(clampedSpeed);
+        }
+
+        const endpoint = this.getSpeachesEndpoint('audio/speech');
+        let response;
+        try {
+            response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+        } catch (networkError) {
+            throw new Error(`Nepavyko pasiekti Speaches serverio (${endpoint}): ${networkError.message}`);
+        }
+
+        if (!response.ok) {
+            const contentType = response.headers.get('Content-Type') || '';
+            let errorMessage = `Speaches TTS API klaida (${response.status})`;
+            if (contentType.includes('application/json')) {
+                const errorBody = await response.json().catch(() => null);
+                errorMessage = errorBody?.error?.message || errorBody?.message || errorMessage;
+            } else {
+                const errorText = await response.text().catch(() => '');
+                if (errorText) {
+                    errorMessage = errorText;
+                }
+            }
+            throw new Error(errorMessage);
+        }
+
+        const mimeType = response.headers.get('Content-Type') || this.getSpeachesMimeType();
         const arrayBuffer = await response.arrayBuffer();
-        return new Blob([arrayBuffer], { type: 'audio/mpeg' });
+        return new Blob([arrayBuffer], { type: mimeType });
+    }
+
+    async synthesizeSpeech(text, voiceProfile, provider, providerOptions = {}) {
+        if (provider === 'openai') {
+            return this.requestSpeechFromOpenAI(text, voiceProfile, providerOptions.apiKey);
+        }
+        return this.requestSpeechFromSpeaches(text, voiceProfile);
     }
 
     async generateTranscript() {
         const question = this.questionInput.value.trim();
-        const apiKey = this.apiKeyInput.value.trim();
+        const mode = this.generationMode;
 
         if (!question) {
             alert('Prašome įvesti klausimą svarstymui');
             return;
         }
 
-        if (!apiKey || !apiKey.startsWith('sk-')) {
-            alert('Prašome įvesti galiojantį OpenAI API raktą');
+        if (mode === 'remote') {
+            const apiKey = this.apiKeyInput.value.trim();
+            if (!apiKey || !apiKey.startsWith('sk-')) {
+                alert('Prašome įvesti galiojantį OpenAI API raktą');
+                return;
+            }
+            this.saveAPIKey();
+        } else if (!this.ensureLocalGenerationConfigured()) {
             return;
         }
 
-        this.saveAPIKey();
         this.showLoading(true);
 
+        let transcript;
+        let apiKeyForRun = this.apiKeyInput.value.trim();
+
         try {
-            const transcript = await this.callOpenAI(question, apiKey);
-            await this.processGeneratedTranscript(transcript, question, apiKey);
+            if (mode === 'remote') {
+                transcript = await this.callOpenAI(question, apiKeyForRun);
+                this.currentTTSOptions = {
+                    provider: 'openai',
+                    apiKey: apiKeyForRun
+                };
+            } else {
+                transcript = await this.callLocalModel(question);
+                this.currentTTSOptions = { provider: 'speaches' };
+            }
+
+            this.resetVoiceAssignments(this.currentTTSOptions?.provider || this.getTextToSpeechProvider());
+
+            await this.processGeneratedTranscript(transcript, question);
             this.setupPanel.classList.remove('active');
             this.toggleSetupBtn.textContent = '⚙️ Generuoti naują posėdį';
         } catch (error) {
@@ -830,12 +1356,14 @@ class EnhancedSeimasLiveStream {
         if (show) {
             this.generateTranscriptBtn.textContent = '⏳ Generuojama...';
         } else {
-            this.generateTranscriptBtn.textContent = '🚀 Generuoti pilną Seimo posėdžio stenogramą';
+            this.generateTranscriptBtn.textContent = '🚀 Generuoti Seimo posėdį';
         }
     }
 
     async callOpenAI(question, apiKey) {
         const prompt = this.buildPrompt(question);
+        const systemPrompt = this.buildSystemPrompt();
+        const model = this.remoteGenerationSettings?.transcriptModel || 'gpt-5-mini';
         
         const response = await fetch('https://api.openai.com/v1/responses', {
             method: 'POST',
@@ -844,11 +1372,11 @@ class EnhancedSeimasLiveStream {
                 'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify({
-                model: 'gpt-5-mini',
+                model,
                 input: [
                     {
                         role: 'system',
-                        content: 'Jūs esate ekspertas Lietuvos parlamento posėdžių simuliavime ir politikos analizės specialistas. Jūsų užduotis - sukurti ypač detalų, realistišką Seimo posėdžio transkriptą su giliais politiniais argumentais, statistiniais duomenimis, tarptautiniais palyginimais ir nuodugniais narių pasisakymais. Kiekvienas narys turi kalbėti pagal savo politinę ideologiją ir specialybę, pateikdamas konkretų, išsamų turinį su pavyzdžiais, skaičiais ir argumentuotomis pozicijomis. SVARBU: Atsakykite TIKTAI JSON formatu.'
+                        content: systemPrompt
                     },
                     {
                         role: 'user',
@@ -893,75 +1421,185 @@ class EnhancedSeimasLiveStream {
         }
     }
 
+    buildSystemPrompt() {
+        if (this.sessionLanguage === 'en') {
+            return 'You are an expert Lithuanian parliamentary simulation model. Produce exhaustive, realistic Seimas transcripts entirely in English and respond ONLY with valid JSON that matches the requested schema.';
+        }
+        return 'Jūs esate Lietuvos parlamento simuliacijų ekspertas. Kurkite itin detalias Seimo stenogramas lietuvių kalba ir atsakykite TIK taisyklingu JSON formatu pagal pateiktą struktūrą.';
+    }
+
+    async callLocalModel(question) {
+        const prompt = this.buildPrompt(question);
+        const systemPrompt = this.buildSystemPrompt();
+        const baseUrl = this.normalizeBaseUrl(this.localGenerationSettings?.baseUrl || 'http://localhost:11434');
+        const model = this.localGenerationSettings?.model || 'llama3.1:70b';
+        const temperature = Number(this.localGenerationSettings?.temperature ?? 0.35);
+
+        const response = await fetch(`${baseUrl}/api/chat`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model,
+                stream: false,
+                options: {
+                    temperature
+                },
+                messages: [
+                    { role: 'system', content: systemPrompt },
+                    { role: 'user', content: prompt }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text().catch(() => 'Ollama API klaida');
+            throw new Error(errorText || 'Ollama API klaida');
+        }
+
+        const data = await response.json();
+        return data?.message?.content || data?.response || data || '';
+    }
+
     buildPrompt(question) {
-        const memberProfiles = this.seimasMembers.slice(0, 20).map(member => 
+        const memberProfiles = this.seimasMembers.slice(0, 20).map(member =>
             `${member.name} (${member.party}): ${member.personality}`
         ).join('\n');
+        const isLithuanian = this.sessionLanguage !== 'en';
+        const languageCode = isLithuanian ? 'lt' : 'en';
 
-        return `
+        if (isLithuanian) {
+            return `
 Sukurkite ypač išsamų ir realistišką Lietuvos Respublikos Seimo posėdžio transkriptą šiai temai: "${question}"
 
-SEIMO NARIŲ PROFILIAI (naudokite tikrus vardus ir jų specialybes):
+SEIMO NARIŲ PROFILIAI:
 ${memberProfiles}
 
 DETALIZUOTI REIKALAVIMAI:
 
 1. POSĖDŽIO STRUKTŪRA (3 valandos, 10:00-13:00):
-   - 10:00 - Posėdžio atidarymas (S. Skvernelis su procedūriniais paaiškinimais)
-   - 10:05 - Darbotvarkės pristatymas (detalus)
-   - 10:15 - Pagrindinis pranešimas (ministerijos atstovas su statistikomis)
-   - 10:45 - Frakcijų kalbos (kiekviena po 8-12 min., išsamios pozicijos)
-   - 11:45 - 15 min pertrauka
-   - 12:00 - Intensyvios diskusijos ir tarpusavio klausimai
-   - 12:45 - Rezoliucijos svarstymas su pataisomis
-   - 13:00 - Balsavimas su komentarais
+   - 10:00 atidarymas ir procedūros
+   - 10:05 darbotvarkės pristatymas
+   - 10:15 pagrindinis ministerijos pranešimas (statistika)
+   - 10:45 frakcijų kalbos (8-12 min.)
+   - 11:45 15 min. pertrauka
+   - 12:00 diskusijos ir klausimai
+   - 12:45 rezoliucijos/pataisos
+   - 13:00 balsavimo rezultatai
 
-2. KALBOS KOKYBĖS REIKALAVIMAI:
-   - Kiekvienas narys kalba 150-400 žodžių (ne trumpai!)
-   - Naudojami konkretūs statistiniai duomenys ir skaičiai
-   - Pateikiami tarptautinių šalių pavyzdžiai
-   - Cituojami ekspertų tyrimai ir ES direktyvos
-   - Argumentai grindžiami ekonomikos teorijomis
-   - Keliamos konkretūs klausimai kitiems nariams
+2. TURINIO KOKYBĖ:
+   - 150-400 žodžių vienam pasisakymui
+   - Konkretūs statistiniai duomenys (Eurostatas, LRV, ES)
+   - Tarptautiniai palyginimai ir ekspertų citatos
+   - Klausimai-atsakymai tarp frakcijų
+   - Aiškūs pasiūlymai, kompromisai, rizikų vertinimas
 
-3. FRAKCIJŲ IDEOLOGINĖS POZICIJOS:
-   - LSDP: Socialinė apsauga, darbuotojų teisės, perkvalifikavimas
-   - TS-LKD: Ekonominis efektyvumas, konkurencingumas, fiskalinė atsakomybė
-   - Nemuno aušra: Piliečių teisės, demokratijos stiprinimas, žalieji sprendimai
-   - DSVL: Pragmatiškas požiūris, kompromisai, regionų interesai
-   - Liberalai: Laisvos rinkos principai, inovacijos, mažiau reguliavimo
-   - LVŽS: Kaimo interesai, žemės ūkis, tradicinės vertybės
+3. IDEOLOGINĖS VĖŽĖS:
+   - LSDP: socialinė apsauga, darbuotojų teisės
+   - TS-LKD: konkurencingumas, fiskalinė drausmė, saugumas
+   - Nemuno aušra: pilietinės laisvės, žalieji sprendimai
+   - DSVL: pragmatiški kompromisai, regionai
+   - Liberalai: laisva rinka, inovacijos, deregulacija
+   - LVŽS: kaimo interesai, žemės ūkis, tradicijos
 
-4. DISKUSIJŲ TURINYS:
-   - Nagrinėjami ekonominiai poveikiai su skaičiais
-   - Analizuojamos socialinės pasekmės su pavyzdžiais
-   - Keliami procedūriniai ir konstituciniai klausimai
-   - Diskutuojamos praktinio įgyvendinimo detalės
-   - Pateikiamos alternatyvos ir kompromisai
+4. KONTEKSTAS:
+   - Ekonomika (BVP, infliacija, biudžetas)
+   - Socialinės pasekmės (švietimas, sveikata, nelygybė)
+   - Teisiniai/procedūriniai aspektai
+   - Įgyvendinimo planai ir finansavimas
 
 5. BALSAVIMO REALIZMAS:
-   - Pateikite konkrečius rezultatus pagal partijų dydžius
-   - Įtraukite susilaikžiusius ir nesutariančius narių balso
+   - For/Prieš/Susilaikė pagal frakcijų dydžius
+   - Dissent, papildomi balsavimų turai, emocinės reakcijos
 
-FORMATAS - JSON objektas su šia struktūra:
+FORMATAS (tik JSON):
 {
   "title": "Išsamus posėdžio pavadinimas",
-  "topic": "Tema su kontekstu",
+  "topic": "Tema ir kontekstas",
+  "language": "${languageCode}",
   "events": [
     {
-      "time": laiko_minutėmis,
+      "time": minutes_from_start,
       "timestamp": "HH:MM",
-      "type": "tipas",
+      "type": "speech",
       "speaker": "Vardas Pavardė",
       "title": "Pareigos",
       "party": "Partija",
-      "text": "ILGAS, DETALUS KALBOS TEKSTAS SU ARGUMENTAIS, SKAIČIAIS IR PAVYZDŽIAIS",
-      "update": "Informatyvi santrauka"
+      "text": "ILGAS, DETALUS TEKSTAS LIETUVIŲ KALBA SU ARGUMENTAIS",
+      "update": "Trumpa santrauka lietuviškai"
     }
   ]
 }
 
-SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkriptais. Kiekvienas pasisakymas turi turėti konkretų turinį, o ne bendras frazes!
+SVARBU: Sugeneruokite 50-60 įvykių ir jokio papildomo teksto už JSON ribų.
+            `;
+        }
+
+        return `
+Generate an exceptionally detailed and realistic transcript of the Lithuanian Parliament (Seimas) for: "${question}"
+
+MEMBER PROFILES:
+${memberProfiles}
+
+DETAILED REQUIREMENTS:
+
+1. SESSION STRUCTURE (3 hours, 10:00-13:00):
+   - 10:00 opening and procedure overview
+   - 10:05 agenda presentation
+   - 10:15 ministry briefing packed with statistics
+   - 10:45 party group speeches (8-12 min each)
+   - 11:45 15-minute recess
+   - 12:00 debate + cross-examination
+   - 12:45 resolution/amendment discussion
+   - 13:00 recorded vote and commentary
+
+2. CONTENT QUALITY:
+   - 150-400 words per entry
+   - Concrete data (Eurostat, OECD, IMF, Lithuanian stats)
+   - International comparisons, EU/NATO references
+   - Clear proposals, costs, implementation steps
+   - Rebuttals, interjections, emotional tone markers
+
+3. IDEOLOGICAL GUARDRAILS:
+   - LSDP: welfare state, labor rights, social equity
+   - TS-LKD: competitiveness, fiscal discipline, national security
+   - Nemuno aušra: civil liberties, democratic safeguards, green policies
+   - DSVL: pragmatic centrism, regions, coalition management
+   - Liberalai: market liberalization, startups, deregulation
+   - LVŽS: rural priorities, agriculture, cultural conservatism
+
+4. DISCUSSION CONTENT:
+   - Economic/financial impacts with numbers
+   - Social consequences with concrete programs
+   - Constitutional/procedural disputes
+   - Implementation logistics, budgets, timelines
+   - Alternative proposals, compromises, dissent
+
+5. VOTING REALISM:
+   - Provide exact for/against/abstain counts
+   - Show coalition tensions, dissenting MPs, applause or uproar cues
+
+FORMAT (JSON only):
+{
+  "title": "Detailed session title in English",
+  "topic": "Context-rich topic summary",
+  "language": "${languageCode}",
+  "events": [
+    {
+      "time": minutes_from_start,
+      "timestamp": "HH:MM",
+      "type": "speech",
+      "speaker": "Name Surname",
+      "title": "Role",
+      "party": "Party",
+      "text": "LONG, DATA-RICH SPEECH IN ENGLISH",
+      "update": "Short ticker update in English"
+    }
+  ]
+}
+
+IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
         `;
     }
 
@@ -1089,7 +1727,7 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
             .replace(/'/g, '&#039;');
     }
 
-    async processGeneratedTranscript(transcriptJson, question, apiKey) {
+    async processGeneratedTranscript(transcriptJson, question) {
         try {
             // Handle different response types from Responses API
             let transcriptData;
@@ -1109,6 +1747,10 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
             } else {
                 // If not JSON, convert plain text to structured format
                 transcriptData = this.convertTextToStructuredTranscript(responseText, question);
+            }
+
+            if (!transcriptData.language) {
+                transcriptData.language = this.sessionLanguage;
             }
 
             const transcriptTimestamp = new Date();
@@ -1133,14 +1775,18 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
             let audioMetadata = null;
             if (this.textToSpeechEnabled) {
                 try {
+                    const ttsOptions = this.currentTTSOptions || this.buildDefaultTTSOptions();
                     audioMetadata = await this.prepareTextToSpeechAssets(
                         transcriptData,
-                        apiKey,
                         transcriptTimestamp,
-                        sessionStorageContext
+                        sessionStorageContext,
+                        ttsOptions
                     );
                     if (audioMetadata?.mapping?.length) {
-                        this.addLiveUpdate('10:02', `Sugeneruota ${audioMetadata.mapping.length} unikalių pasisakymų balsų (gpt-4o-mini-tts).`);
+                        const providerLabel = audioMetadata.provider === 'openai'
+                            ? `OpenAI (${audioMetadata.model || this.remoteGenerationSettings?.ttsModel || 'gpt-4o-mini-tts'})`
+                            : `Speaches (${audioMetadata.model || this.getActiveSpeachesModelLabel()})`;
+                        this.addLiveUpdate('10:02', `Sugeneruota ${audioMetadata.mapping.length} balsų (${providerLabel}).`);
                     }
                     if (audioMetadata?.errors?.length) {
                         this.addLiveUpdate('10:02', 'Dalis audio failų nepavyko. Patikrinkite konsolę dėl detalių.');
@@ -1271,19 +1917,14 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
             this.addLiveUpdate('10:01', `Sesijoje rasta ${transcriptData.events.length} įvykių.`);
 
             const audioMetadata = payload.audio;
-            const apiKey = this.apiKeyInput?.value?.trim();
             if (audioMetadata?.storageFolder && audioMetadata?.mapping?.length) {
                 this.addLiveUpdate('10:01', `🔊 Sesijos aplankas: ${audioMetadata.storageFolder}. Naudokite „Atverti sesijos aplanką“, kad būtų įkelti audio failai.`);
             }
 
             if (this.textToSpeechEnabled) {
-                if (apiKey) {
-                    this.updateTextToSpeechStatus('🔄 Pasisakymai bus sintetinti realiu laiku. Spauskite „Paleisti“, kad pradėtumėte srautą.', 'processing');
-                } else {
-                    this.updateTextToSpeechStatus('⚠️ Įveskite OpenAI API raktą, kad balsai būtų sugeneruoti realiu laiku.', 'error');
-                }
+                this.updateTextToSpeechStatus(`🔄 Pasisakymai bus sintetinti realiu laiku (${this.getTTSProviderLabel()}). Spauskite „Paleisti“, kad pradėtumėte srautą.`, 'processing');
             } else if (audioMetadata?.enabled) {
-                this.addLiveUpdate('10:02', 'Ši sesija turi teksto į kalbą metaduomenis. Įjunkite funkciją ir įveskite API raktą, kad atkurtumėte balsus.');
+                this.addLiveUpdate('10:02', 'Ši sesija turi teksto į kalbą metaduomenis. Įjunkite balsų generavimą ir sukonfigūruokite pasirinktą serverį, kad atkurtumėte įrašus.');
             } else {
                 this.updateTextToSpeechStatus('🔇 Teksto į kalbą funkcija išjungta.', 'info');
             }
@@ -1355,7 +1996,6 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
             }
 
             const audioMetadata = payload.audio;
-            const apiKey = this.apiKeyInput?.value?.trim();
             if (audioMetadata?.mapping?.length && this.currentSessionStorageContext.audioFolderHandle) {
                 await this.hydrateAudioAssetsFromDirectory(audioMetadata.mapping, this.currentSessionStorageContext.audioFolderHandle);
                 if (!this.textToSpeechEnabled && this.textToSpeechCheckbox) {
@@ -1373,19 +2013,11 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
             } else if (audioMetadata?.mapping?.length) {
                 this.addLiveUpdate('10:02', 'Sesijos aplanke nerasta audio katalogo, todėl balsai nebuvo įkelti.');
                 if (this.textToSpeechEnabled) {
-                    if (apiKey) {
-                        this.updateTextToSpeechStatus('ℹ️ Audio metaduomenys rasti, tačiau failai neprieinami. Pasisakymai bus atkuriami realiu laiku.', 'processing');
-                    } else {
-                        this.updateTextToSpeechStatus('⚠️ Įveskite OpenAI API raktą, kad sugeneruotumėte balsus realiu laiku.', 'error');
-                    }
+                    this.updateTextToSpeechStatus(`ℹ️ Audio metaduomenys rasti, tačiau failai neprieinami. ${this.getTTSProviderLabel()} sugeneruos balsus realiu laiku.`, 'processing');
                 }
             } else {
                 if (this.textToSpeechEnabled) {
-                    if (apiKey) {
-                        this.updateTextToSpeechStatus('🔄 Ši sesija neturi audio failų. Visi pasisakymai bus įgarsinami realiu laiku.', 'processing');
-                    } else {
-                        this.updateTextToSpeechStatus('⚠️ Įveskite OpenAI API raktą, kad sugeneruotumėte balsus realiu laiku.', 'error');
-                    }
+                    this.updateTextToSpeechStatus(`🔄 Ši sesija neturi audio failų. Visi pasisakymai bus įgarsinami realiu laiku (${this.getTTSProviderLabel()}).`, 'processing');
                 } else {
                     this.updateTextToSpeechStatus('🔇 Ši sesija neturi iš anksto sugeneruotų audio failų.', 'info');
                 }
@@ -1933,18 +2565,21 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
 
         const asset = this.audioAssets.get(eventIndex);
         if (!asset) {
-            if (!this.audioPreparationPromise) {
-                const apiKey = this.apiKeyInput?.value?.trim();
-                if (apiKey) {
-                    const timestamp = this.lastTranscriptTimestamp || new Date();
-                    this.prepareTextToSpeechAssets({
-                        title: this.sessionTitle?.textContent,
-                        topic: this.sessionTopic?.textContent,
-                        events: this.events
-                    }, apiKey, timestamp).catch(error => {
-                        console.warn('Nepavyko generuoti audio pagal poreikį:', error);
-                    });
-                }
+            const provider = this.currentTTSOptions?.provider || this.getTextToSpeechProvider();
+            const hasCredentials = provider === 'openai'
+                ? Boolean((this.currentTTSOptions?.apiKey || this.apiKeyInput?.value?.trim()))
+                : this.ensureSpeachesConfigured();
+            if (!this.audioPreparationPromise && hasCredentials) {
+                const timestamp = this.lastTranscriptTimestamp || new Date();
+                const ttsOptions = this.currentTTSOptions || this.buildDefaultTTSOptions();
+                this.currentTTSOptions = ttsOptions;
+                this.prepareTextToSpeechAssets({
+                    title: this.sessionTitle?.textContent,
+                    topic: this.sessionTopic?.textContent,
+                    events: this.events
+                }, timestamp, this.currentSessionStorageContext, ttsOptions).catch(error => {
+                    console.warn('Nepavyko generuoti audio pagal poreikį:', error);
+                });
             }
             return;
         }
@@ -2008,9 +2643,17 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
             return;
         }
 
-        const apiKey = this.apiKeyInput?.value?.trim();
-        if (!apiKey) {
-            this.updateTextToSpeechStatus('⚠️ Įveskite OpenAI API raktą, kad balsai būtų atkuriami realiu laiku.', 'error');
+        const provider = this.currentTTSOptions?.provider || this.getTextToSpeechProvider();
+        const providerOptions = this.currentTTSOptions || this.buildDefaultTTSOptions();
+        if (provider === 'openai') {
+            const apiKey = providerOptions?.apiKey || this.apiKeyInput?.value?.trim();
+            if (!apiKey || !apiKey.startsWith('sk-')) {
+                this.updateTextToSpeechStatus('⚠️ Įveskite OpenAI API raktą, kad balsai būtų atkuriami realiu laiku.', 'error');
+                this.completeLiveEventWithoutAudio(eventIndex);
+                return;
+            }
+            providerOptions.apiKey = apiKey;
+        } else if (!this.ensureSpeachesConfigured()) {
             this.completeLiveEventWithoutAudio(eventIndex);
             return;
         }
@@ -2020,8 +2663,8 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
 
         const runPlayback = async () => {
             try {
-                this.updateTextToSpeechStatus(`🔄 Generuojamas balsas: ${speakerLabel}`, 'processing');
-                const asset = await this.ensureLiveAudioAsset(eventIndex, event, apiKey);
+                this.updateTextToSpeechStatus(`🔄 Generuojamas balsas (${provider === 'openai' ? 'OpenAI' : 'Speaches'}): ${speakerLabel}`, 'processing');
+                const asset = await this.ensureLiveAudioAsset(eventIndex, event, providerOptions);
                 if (!this.isPlaying || this.liveStreamAbort || generation !== this.liveStreamGeneration) {
                     return;
                 }
@@ -2043,7 +2686,7 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
         runPlayback();
     }
 
-    async ensureLiveAudioAsset(eventIndex, event, apiKey) {
+    async ensureLiveAudioAsset(eventIndex, event, providerOptions = {}) {
         if (this.audioAssets.has(eventIndex)) {
             return this.audioAssets.get(eventIndex);
         }
@@ -2053,8 +2696,9 @@ SVARBU: Generuokite 50-60 įvykių su ypač detaliais, argumentuotais transkript
         }
 
         const promise = (async () => {
+            const provider = providerOptions?.provider || this.getTextToSpeechProvider();
             const voiceProfile = this.getVoiceForSpeaker(event.speaker || `Seimo narys ${eventIndex + 1}`);
-            const audioBlob = await this.requestSpeechFromOpenAI(event.text, voiceProfile, apiKey);
+            const audioBlob = await this.synthesizeSpeech(event.text, voiceProfile, provider, providerOptions);
             const audioUrl = URL.createObjectURL(audioBlob);
             const audioElement = new Audio(audioUrl);
             audioElement.preload = 'auto';

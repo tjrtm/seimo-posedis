@@ -1,0 +1,1158 @@
+{
+  "savedAt": "2025-11-15T23:12:48.350Z",
+  "title": "Seimas Extraordinary Session: Parliamentary Integrity and Corruption — Is It Worth Continuing to Steal While Being Members of Parliament?",
+  "topic": "Deliberation on systemic anti-corruption measures, immunity reform, asset transparency and penalties in response to the question 'Is it worth continuing to steal while being Members of Parliament?'. The session includes ministry briefings, party group positions, cross-examination, budgeted proposals for digital asset registers and procurement reform, constitutional debates about immunity, and a recorded vote on a composite resolution.",
+  "totalEvents": 57,
+  "durationMinutes": 185,
+  "events": [
+    {
+      "time": 0,
+      "timestamp": "10:00",
+      "type": "speech",
+      "speaker": "Aidas Gedvilas",
+      "title": "Session Chair, Former Seimas Speaker",
+      "party": "LVŽS",
+      "text": "Colleagues, I declare the extraordinary session open. The topic before us is blunt, direct and politically uncomfortable: is it worth continuing to steal while being Members of Parliament? This is not a rhetorical exercise but a civic and constitutional duty to examine the institutional incentives and legal safeguards that allow or deter corrupt behaviour. Procedurally, we will follow the published structure: agenda presentation at 10:05, a ministry briefing from the Interior at 10:15, party group speeches beginning 10:45, a recess at 11:45, debate and cross-examination at 12:00, resignation or amendment discussion at 12:45 and a recorded vote at 13:00. I ask all members to follow speaking times, to address points with evidence and proposals, and to maintain decorum. Let us also note national and international data that frame our choices: Eurostat and OECD indicators show that public trust and investment decisions respond strongly to perceived integrity in public office. I will now give the floor for the formal presentation of the agenda and the list of proposed motions and draft resolution texts.",
+      "update": "Session opened; agenda and timetable confirmed by Session Chair"
+    },
+    {
+      "time": 3,
+      "timestamp": "10:03",
+      "type": "speech",
+      "speaker": "Agnė Širinskienė",
+      "title": "Member, Constitutional Law Expert",
+      "party": "LSDP",
+      "text": "Thank you, Chair. I present the agenda and the text of the proposed resolution. The agenda contains three legislative and three regulatory initiatives: 1) a draft law to limit parliamentary immunity in cases of alleged corruption and expedite judicial review; 2) an amendment to the Law on the Declaration of Interests and Property requiring real-time public asset registers interoperable with tax authority databases; 3) a procurement transparency package with mandatory e-procurement disclosures and whistle-blower protections; plus three regulatory items to set timelines and budgets. Timelines are proposed as follows: legislative committee review within 4 weeks, expedited plenary readings within 8 weeks, implementation phases of 3 to 18 months per measure. Legal notes: removing or limiting immunity raises constitutional questions about separation of powers and protecting parliamentary independence, so we have proposed a narrowly tailored amendment allowing immediate criminal investigation when probable cause is established by a specialized anti-corruption prosecutor followed by rapid judicial oversight within 48 hours. The draft resolution also calls for independent audits covering the last five parliamentary terms. All documents have been circulated to members and to the legal department for opinions. I urge the Chamber to focus on balancing rule of law and protection against politically motivated prosecutions.",
+      "update": "Agenda and draft resolution circulated; immunity reform and asset register prioritized"
+    },
+    {
+      "time": 6,
+      "timestamp": "10:06",
+      "type": "speech",
+      "speaker": "Agnė Bilotaitė",
+      "title": "Minister of the Interior",
+      "party": "TS-LKD",
+      "text": "Mr Chair, colleagues, the Ministry submits a detailed briefing informed by EU, Eurostat and Lithuanian statistics. Corruption perceptions and related harms are quantifiable. According to Eurostat and Lithuanian Police statistics for 2023, corruption-related investigations involving public officials rose by 7.2 percent compared with 2021; administrative sanctions increased by 4.8 percent. Transparency International's 2023 data places Lithuania at a CPI score of 63 out of 100, in the OECD mid-range, with room to improve to match Nordic peers with scores above 85. Economic costs are real: IMF analysis suggests that systemic corruption can reduce GDP growth by 0.5 to 1.5 percentage points per annum depending on persistence and fiscal leakage. For Lithuania, with nominal GDP approximately EUR 67 billion in 2023 per national accounts and Eurostat cross-checks, even a conservative 0.5 percentage point loss equals EUR 335 million annually. Practical proposals from the Ministry follow: 1) a specialized investigative unit within the State Security Service with 30 new prosecutors and investigators, estimated start-up cost EUR 3.2 million and recurring EUR 2.1 million annually; 2) mandatory real-time asset declaration linked to the State Tax Inspectorate, IT development one-off cost EUR 5.0 million and maintenance EUR 0.6 million per year; 3) fast-track criminal procedure for serving MPs when evidence is credible, with a judicially enforceable warrant procedure within 48 hours. These figures are detailed in the annex distributed to members. The Ministry asks for authority to coordinate with the Prosecutor General and to manage the procurement of IT systems under EU procurement rules.",
+      "update": "Interior Ministry provides data-driven briefing and concrete cost estimates"
+    },
+    {
+      "time": 9,
+      "timestamp": "10:09",
+      "type": "speech",
+      "speaker": "Arvydas Anušauskas",
+      "title": "Minister of National Defence",
+      "party": "TS-LKD",
+      "text": "Colleagues, allow me to put this not in isolation but in national security context. NATO and EU partners look at the integrity of democratic institutions when assessing security cooperation and access to classified exchanges. A 2022 NATO integrity assessment model links corruption risk to information security incidents; our own Ministry's internal review shows procurement irregularities in dual-use purchases present tangible operational vulnerabilities. Consider this: Lithuania allocates roughly 2.01 percent of GDP to defence in current-year estimates, about EUR 1.34 billion. Even modest corruption-induced leakage of 0.3 percent in defence procurement cost us an estimated EUR 4 million annually and erodes equipment readiness. International comparisons are instructive: Estonia's transparency measures and mandatory digital asset registers correlate with faster procurement cycles and lower cost overruns, per OECD public procurement reports. I therefore endorse the Ministry of Interior proposals and stress that immunity reform must be carefully aligned to ensure investigators can act in time-sensitive defence procurement investigations without weaponizing means against political opponents. I propose a security-cleared oversight panel combining representatives from the Prosecutor's Office, State Defence institutions and a parliamentary ethics committee with non-voting constitutional court liaison, to be set up within 60 days and funded at EUR 0.4 million for initial operations.",
+      "update": "National security costs of corruption highlighted; calls for secure oversight panel"
+    },
+    {
+      "time": 12,
+      "timestamp": "10:12",
+      "type": "speech",
+      "speaker": "Algirdas Sysas",
+      "title": "Former Finance Minister",
+      "party": "LSDP",
+      "text": "From an economic governance standpoint, we must quantify how anti-corruption investments compare to long-run fiscal returns. IMF and OECD models show high return-on-investment for integrity measures when government procurement accounts for roughly one-third of public spending. Lithuania's consolidated general government expenditure represented roughly 39 percent of GDP in 2023 according to Eurostat; public procurement alone was estimated at around 11 percent of GDP. If corruption reduces procurement efficiency by 5 percent, inefficiencies could approach EUR 3.7 billion annually — a significant fiscal leakage. The proposed one-off IT investment of EUR 5 million and recurring maintenance under EUR 1 million are small compared to potential savings even in conservative scenarios. Proposed steps: 1) cost-benefit analysis to be conducted within 30 days, using IMF procurement templates; 2) ring-fenced savings from recovered assets to pre-fund victim restitution and enhanced social programs; 3) introduce a procurement integrity premium in budgets (projected fiscal saving target 0.2-0.6 percent of GDP over 3 years). Social consequences must be considered: diverting funds from education or health due to corruption increases inequality and undermines trust. I urge pragmatic fiscal discipline combined with robust judicial oversight.",
+      "update": "Economic case made: small investments yield large fiscal benefits; CBA recommended"
+    },
+    {
+      "time": 15,
+      "timestamp": "10:15",
+      "type": "speech",
+      "speaker": "Ramūnas Zilnys",
+      "title": "Environmental Activist, Nemuno aušra",
+      "party": "Nemuno aušra",
+      "text": "I approach this debate as an activist and a member of the green constituency. Corruption is not limited to petty theft; it distorts environmental permitting, skews land-use decisions and biases climate investments. EU Cohesion funds and Horizon grants require transparent governance; failure to implement controls risks suspension or repayment demands. Eurostat data on environmental spending and audits indicate that member states with stronger transparency mechanisms reallocate funds faster into green transition projects. In Lithuania, regional environmental projects lost administrative capacity to corruption risks in years past, which delayed forest restoration and waterway initiatives by up to 18 months per project, according to Ministry of Environment internal reviews. Our policy proposals include mandatory public disclosure of all project-level environmental permits, a digital ledger for environmental impact assessments available to the public, and whistle-blower protection tied to EU Directive standards. Budget estimate: digital ledger and integration with environmental agency databases EUR 1.2 million one-off and EUR 0.25 million annual maintenance. I emphasize civil liberties: measures must protect privacy of legitimate data while denying anonymity to financial flows that conceal conflicts of interest. Hungary and Poland show how politicized legal changes can erode both environmental protection and institutional trust; we must avoid such trajectories.",
+      "update": "Green perspective links corruption to environmental and EU funding risks"
+    },
+    {
+      "time": 18,
+      "timestamp": "10:18",
+      "type": "speech",
+      "speaker": "Artūras Skaržius",
+      "title": "Technology and Digital Development Specialist",
+      "party": "LSDP",
+      "text": "Colleagues, technology is not a silver bullet but it is indispensable. Digital asset registries, e-procurement upgrades and blockchain-backed audit trails significantly reduce transaction costs and improve detectability. Estonia's e-governance model and Denmark's procurement transparency platforms are instructive; the OECD public procurement review highlights that digitalization reduces irregular payments by up to 30 percent in some programs. Practical implementation steps: 1) develop an open API-enabled asset declaration system, integrated with the State Tax Inspectorate and the Land Register, with role-based access and audit logs; 2) procurement portal upgrades to publish contract milestones, subcontractor chains and delivery confirmations; 3) establish an independent forensic analytics unit with licensing for data scientists. Estimated budget: software development EUR 5 million as the Ministry proposes, plus a forensic analytics seed EUR 1 million. Timeline: procurement and initial platform within 9 months, full interoperability within 18 months. Data governance: we will adhere to GDPR and national privacy laws, with selective redaction only for security-cleared classified materials. This is the technical backbone for transparency and traceability.",
+      "update": "Digital solutions proposed: asset registry, e-procurement upgrades and forensic analytics"
+    },
+    {
+      "time": 21,
+      "timestamp": "10:21",
+      "type": "speech",
+      "speaker": "Andrius Kubilius",
+      "title": "Former Prime Minister, Economy Expert",
+      "party": "TS-LKD",
+      "text": "The question before us should be answered through hard incentives and firm institutions. The economy requires predictable rule of law and anti-corruption credibility. Investors consult OECD indicators and the World Bank governance indexes; a one-point improvement in those indexes is associated with higher FDI inflows. Lithuania's FDI inflows were EUR 1.9 billion in the previous year; improving integrity can increase investment by multiple tens of millions annually. Our party's position: 1) reduce parliamentary immunity to cover only activities strictly connected to speeches and votes, not criminal acts, and set clear procedural thresholds to prevent fishing expeditions; 2) adopt the Ministry's asset registration but with an independent technical operator selected by public procurement and supervised by the National Audit Office; 3) require annual third-party audits of all parliamentary group expenditure with public reporting. The cost of external audits is modest — based on tender benchmarks, comprehensive audits for the parliament's administrative budget would be approximately EUR 0.45 million annually. I propose a graduated sanctions regime: criminal prosecution where warranted, administrative fines for breaches of asset declaration rules up to EUR 20,000, and automatic suspension of parliamentary allowances pending investigation outcomes. These balances preserve functional democracy while making malfeasance unattractive.",
+      "update": "TS-LKD calls for immunity reduction, independent audits and graduated sanctions"
+    },
+    {
+      "time": 24,
+      "timestamp": "10:24",
+      "type": "speech",
+      "speaker": "Agnė Širinskienė",
+      "title": "Member, Constitutional Law Expert",
+      "party": "LSDP",
+      "text": "Let me focus on constitutional safeguards. Removing or restricting immunity requires formal clarity to preserve parliamentary independence and to avoid executive overreach. International comparative law — including examples from France, Germany and the Nordic countries — shows that immunity can be limited for ordinary criminal offences while protecting core legislative activities. The draft amendment I circulated earlier suggests the following constitutional test: criminal investigations may proceed where a qualified judicial authority issues authorization based on probable cause and after an independent anti-corruption prosecutor certifies material evidence. Timeframes: authorization or denial must occur within 48 hours; failure to act triggers automatic judicial oversight. Any immunity reform must also strengthen parliamentary internal discipline: an Ethics Committee with a two-thirds capacity to impose sanctions should be established with clear standards of proof and appeal routes to the Constitutional Court. Fiscal consequences include administrative budgets for the Judiciary and Ethics Committee estimated at EUR 0.9 million in year one and EUR 0.35 million annually thereafter. I propose a sunset clause of 36 months for the emergency measures with mandatory review by a joint committee and an ombudsperson's report to ensure proportionality.",
+      "update": "Constitutional safeguards and judicial oversight proposed; sunset clause recommended"
+    },
+    {
+      "time": 27,
+      "timestamp": "10:27",
+      "type": "speech",
+      "speaker": "Asta Kubilienė",
+      "title": "Social Work Specialist",
+      "party": "LSDP",
+      "text": "I speak from the perspective of social equity and public trust. Corruption's social consequences are immediate and generational: misuse of public funds harms education, child protection and welfare programs. Lithuanian statistics show that in districts where municipal procurement irregularities were detected, social service performance indicators lagged behind national averages by 6 to 10 percent, according to the State Social Insurance Fund data. Our proposals must therefore include a compensatory social program financed partly by recovered ill-gotten gains. Specific measures: 1) a Victim Restitution Fund to support families affected by failed social services, financed by a dedicated channel for recovered assets with an initial target of EUR 10 million over three years; 2) enhanced transparency of municipal procurement with a public complaints hotline and fast administrative review within 30 days; 3) mandatory ethics and integrity training for MPs and municipal leaders with publicly accessible certificates. Implementation costs for training and the hotline are modest — estimated EUR 240,000 in year one. Moral tone matters: the public must see that reforms are not about political scorekeeping but protecting the vulnerable.",
+      "update": "Social programs and Victim Restitution Fund proposed; ethics training mandatory"
+    },
+    {
+      "time": 30,
+      "timestamp": "10:30",
+      "type": "speech",
+      "speaker": "Arūnas Dulkys",
+      "title": "Health Systems Management Expert",
+      "party": "DSVL",
+      "text": "Health sector integrity is a practical example. Corruption in procurement and service contracts undermines our hospitals and ambulance services. The National Health Insurance Fund and procurement unit data show prior irregularities in certain regional tenders increased costs by 8-12 percent and delayed facility upgrades by an average of 11 months. Proposed measures specifically for health: 1) mandatory open publication of tender evaluation matrices and supplier qualification checks; 2) accreditation of suppliers and blacklist enforcement with cross-ministry data sharing; 3) an integrity liaison in each major hospital funded initially at EUR 0.15 million per year for training and oversight. These steps, combined with national e-procurement transparency, will save money and accelerate service delivery. Importantly, reforms must be designed to avoid administrative burden on small providers. For that, we recommend a simplified threshold-based disclosure regime for contracts under EUR 50,000 and full disclosure for larger contracts. The savings redirected to primary care improvement can strengthen preventive health and reduce downstream costs in the medium term.",
+      "update": "Health-sector procurement reforms proposed; thresholds and liaison posts"
+    },
+    {
+      "time": 33,
+      "timestamp": "10:33",
+      "type": "speech",
+      "speaker": "Andrius Navickas",
+      "title": "Environment and Ecologist Movement Leader",
+      "party": "LSDP",
+      "text": "I reiterate the civil liberties angle. While we confront corruption, we must ensure whistle-blower protections and freedom of information are not diluted. The EU Whistleblower Protection Directive sets minimum standards: secure reporting channels, anonymity where required, and protection against retaliation. Lithuania's implementation must exceed minimums to restore trust. Budgetary needs include a national whistle-blower protection office with secure IT and legal staff estimated at EUR 0.6 million start-up and EUR 0.45 million annually. We also need to expand access to information: estimated additional administrative costs to public bodies to process FOI requests with improved IT are approx EUR 0.9 million initially. The unavoidable tension is between investigatory secrecy in live criminal probes and the public's right to transparency. I propose a structured declassification protocol: when a matter is no longer part of a live investigation, the related asset declarations and procurement records become public within 30 days. This balances integrity with rule of law and respects legitimate confidentiality for national security items explicitly listed and subject to judicial oversight.",
+      "update": "Emphasis on whistle-blower protections, FOI expansion and declassification protocol"
+    },
+    {
+      "time": 36,
+      "timestamp": "10:36",
+      "type": "speech",
+      "speaker": "Artūras Melianas",
+      "title": "Culture Democratization Advocate",
+      "party": "Nemuno aušra",
+      "text": "Corruption corrodes cultural funding and decentralization efforts. Over the last decade, UNESCO-aligned cultural grants and regional arts initiatives required streamlined distribution and transparency. In municipalities where lines of accountability were weak, cultural participation dropped by an estimated 12 percent, based on Culture Ministry data. Our proposal: integrate cultural grant reporting into the national e-procurement and asset declaration framework so that recipients and intermediaries are auditable. Implementation estimate: EUR 0.3 million initial integration for ministry systems and training EUR 0.08 million. Social impact: protecting transparency in cultural funding preserves pluralism and ensures community arts programs reach young people in towns outside Vilnius. I also recommend a public dashboard to show project-level outcomes tied to expenditure; this can be produced with open-source analytics and cost no more than EUR 120,000 in year one. This is not a marginal cultural issue; it shapes civic identity and the social fabric.",
+      "update": "Cultural funding transparency to be integrated into national platforms; public dashboard proposed"
+    },
+    {
+      "time": 39,
+      "timestamp": "10:39",
+      "type": "speech",
+      "speaker": "Audra Sipavičienė",
+      "title": "International Cooperation and Project Management Expert",
+      "party": "DSVL",
+      "text": "I want to highlight the EU dimension. Lithuania receives significant cohesion and agricultural funds; flagging integrity problems endangers both reimbursement and future allocations. Commission monitoring and audit reports can trigger corrective action plans or temporary suspension of funds if mismanagement is found. The European Commission's 2022 cohesion policy governance report indicates member states with strong anti-corruption frameworks spend faster and face fewer irregularity recoveries. Operational steps: our anti-corruption digital platform should be interoperable with EU audit tools and accessible for Commission audits; the integration cost estimated at EUR 0.6 million will prevent the far higher economic risk of fund clawbacks. Training programs to ensure compliance with EU financial rules are needed: initial cohort-based training for 500 administrators at EUR 0.4 million. Lastly, we should propose a bilateral cooperation agreement with the European Public Prosecutor's Office for cross-border financial crimes, improving Latvia and Estonia co-operation models. This will strengthen prosecution of cross-border schemes and deter misuse of EU funds.",
+      "update": "EU integration risks stressed; interoperability with Commission audit tools recommended"
+    },
+    {
+      "time": 42,
+      "timestamp": "10:42",
+      "type": "speech",
+      "speaker": "Andrius Kubilius",
+      "title": "Former Prime Minister, Economy Expert",
+      "party": "TS-LKD",
+      "text": "I return to parliamentary responsibility. We must be clear-eyed: integrity measures will be effective only if applied uniformly. I propose that all parliamentary groups publish monthly consolidated expense reports online and that group treasurers be third-party audited. The estimated compliance cost per group is EUR 12,000 annually based on tender comparators, a small price for public credibility. In addition, we must strengthen asset recovery mechanisms: a specialized asset-recovery court chamber could expedite civil forfeiture proceedings; other jurisdictions with specialized chambers reduce average litigation length from three years to 12-18 months. Upfront investment in legal capacity is therefore justified. On immunity, aligning with the Minister's 48-hour judicial authorization is sensible, but there must be a parliamentary complaints panel with public reporting to prevent abuses. I call for immediate drafting instructions for the legislative amendment to clarify these points and to provide a fiscal note for the forthcoming committee deliberations.",
+      "update": "Calls for monthly group expense publication, asset-recovery court chamber and drafting instructions"
+    },
+    {
+      "time": 45,
+      "timestamp": "10:45",
+      "type": "speech",
+      "speaker": "Agnė Bilotaitė",
+      "title": "Minister of the Interior",
+      "party": "TS-LKD",
+      "text": "I speak now on behalf of my party group to synthesize security and public integrity arguments with concrete operational recommendations. First, we support a digital, real-time public asset register linked to tax and land registries. Startup cost EUR 5 million, yearly maintenance EUR 0.6 million. Second, we propose immediate creation of a Specialized Anti-Corruption Unit and Prosecutor Team comprising up to 30 staff with cross-training in financial crimes and public procurement fraud, start-up cost EUR 3.2 million and recurring EUR 2.1 million annually. Third, procurement transparency reforms including mandatory publication of subcontracting chains in public tenders. Fourth, a narrow immunity reform limiting protection to acts within the legislative process and requiring judicial authorization for criminal investigation within 48 hours. Implementation steps: draft bill within 14 days, committee review within 28 days, expedited plenary within 8 weeks. Fiscal prudence: we propose reallocating underspent discretionary budgets and requiring initial funding cuts to non-critical administration equal to the first-year cost. We do this because the public interest and national security require it; the cost of inaction is higher than the modest investments requested.",
+      "update": "TS-LKD group outlines operational package: unit, asset register, e-procurement and immunity limits"
+    },
+    {
+      "time": 48,
+      "timestamp": "10:48",
+      "type": "speech",
+      "speaker": "Agnė Širinskienė",
+      "title": "Member, Constitutional Law Expert",
+      "party": "LSDP",
+      "text": "I respond with a social-democratic lens: tackle systemic causes, not only symptoms. Corruption flourishes where inequality and low public sector wages create incentives. Statistical evidence from OECD shows a negative correlation between public wage competitiveness and petty corruption. Recommendation: introduce a program to professionalize public administration with wage adjustments targeted to positions prone to procurement influence, funded through a reallocation of non-essential overheads and by applying a temporary 10 percent surcharge on recovered assets earmarked for salaries and training over two years. Costs: we estimate EUR 8-12 million for a targeted uplift across relevant agencies in year one; the social payoff is higher morale, better retention and fewer small-scale bribery incidents. Additionally, strengthen collective bargaining and transparency around lobbying activities with a public lobby registry and cooling-off periods for officials moving to private contractors; these steps align with EU anti-corruption best practices. This is a long-term structural approach that complements rapid enforcement measures.",
+      "update": "LSDP emphasizes structural reforms: public administration wage uplift and lobby registry"
+    },
+    {
+      "time": 51,
+      "timestamp": "10:51",
+      "type": "speech",
+      "speaker": "Aidas Gedvilas",
+      "title": "Session Chair, Former Seimas Speaker",
+      "party": "LVŽS",
+      "text": "I call for order and note a point of clarification. Several members have raised funding methods. We will now permit brief interventions limited to 3 minutes to ask clarifying fiscal and legal questions of the ministers and authors of the draft proposals. This is to ensure committee work can begin with concrete numbers. Members should raise their points of order or clarification now. The floor goes to those raising hands who have not yet spoken and to representatives of minority groups. We must also schedule committee referrals after today's vote. Please be concise and evidence-focused so the plenary retains time for substantive debate.",
+      "update": "Chair establishes 3-minute clarification interventions before recess"
+    },
+    {
+      "time": 54,
+      "timestamp": "10:54",
+      "type": "speech",
+      "speaker": "Arūnas Valinskas",
+      "title": "Communications and Public Relations Expert",
+      "party": "TS-LKD",
+      "text": "I address transparency from the communications lens. Public trust hinges on clear, accessible information and rapid response to allegations. Our media and civic engagement should: 1) publish an open data portal on integrity investigations updated weekly; 2) mandate that all press statements on investigations be routed through a single parliamentary information office with a legal clearance process to avoid premature leaks; 3) create a proactive citizen engagement plan to explain reforms and timelines. Cost estimate for the communications program and portal integration is EUR 0.35 million year one and EUR 0.1 million recurring. International experience, including the Baltic peers, shows that transparent communication reduces rumor proliferation and prevents politicization of criminal cases. We must be proactive, not reactive. The public needs to see both facts and steps being taken to cut off opportunities for malfeasance.",
+      "update": "Communications protocol and open-data portal recommended to maintain public trust"
+    },
+    {
+      "time": 57,
+      "timestamp": "10:57",
+      "type": "speech",
+      "speaker": "Andrius Navickas",
+      "title": "Environment and Ecologist Movement Leader",
+      "party": "LSDP",
+      "text": "A brief clarification on privacy and security risks raised earlier. Integration of asset registers demands technical safeguards against data breaches that could enable identity theft or targeted harassment. GDPR compliance and strong encryption are non-negotiable. Recommended technical features: multi-factor authentication for officials, role-based access logs, mandatory independent security audits twice annually, and a breach-response fund. Estimated costs: EUR 0.4 million first year for security hardening and EUR 0.15 million annually. Internationally, countries that rushed transparency without strong security faced costly breaches that undermined public trust. Therefore, budgetary allocations for cybersecurity are a necessary component of transparency policy, not a luxury.",
+      "update": "Privacy and cybersecurity safeguards for digital registers highlighted; audits recommended"
+    },
+    {
+      "time": 60,
+      "timestamp": "11:00",
+      "type": "speech",
+      "speaker": "Algirdas Sysas",
+      "title": "Former Finance Minister",
+      "party": "LSDP",
+      "text": "I return to the fiscal note. Reallocation of existing budgets to cover some start-up costs is sensible but we must not create phantom savings. The Treasury should prepare a binding financial memorandum within 7 days detailing: 1) exact line items to be reallocated; 2) expected recoveries from asset forfeiture; 3) multi-annual budget impact and contingency plans if recoveries are delayed. For context, Lithuania's general government consolidated gross debt is approximately 42 percent of GDP with public expenditure discipline requiring prioritization. If we front-load costs without clear offsets, we risk pressure on social programs. I recommend establishing a contingency reserve of EUR 2.5 million to manage initial costs while recovery lines materialize. This reserve can be replenished through recovered assets and by temporarily suspending lower-priority capital outlays identified through a rapid review.",
+      "update": "Treasury financial memorandum requested; contingency reserve of EUR 2.5m suggested"
+    },
+    {
+      "time": 63,
+      "timestamp": "11:03",
+      "type": "speech",
+      "speaker": "Andrius Kubilius",
+      "title": "Former Prime Minister, Economy Expert",
+      "party": "TS-LKD",
+      "text": "A procedural intervention: the drafting of amendments must ensure proportionality. I echo the request for the Treasury memorandum but insist the draft immunity amendment include explicit protections against political misuse. A possible mechanism: require a supermajority judicial review for authorizing investigations into sitting MPs where charges involve official acts, while allowing ordinary judicial proceedings for clear non-official criminal conduct. This hybrid model, used in several European parliaments, preserves investigatory capacity while avoiding weaponization. We should also consider transitional arrangements for sitting MPs so that ongoing cases are treated consistently with retroactivity principles. Let's mandate the Committee on Legal Affairs to draft these balanced provisions within 10 days and to publish a redline text for cross-party negotiation.",
+      "update": "Calls for balanced immunity amendment and quick drafting with published redline text"
+    },
+    {
+      "time": 66,
+      "timestamp": "11:06",
+      "type": "speech",
+      "speaker": "Ramūnas Zilnys",
+      "title": "Environmental Activist, Nemuno aušra",
+      "party": "Nemuno aušra",
+      "text": "I request clarification on the scope of procurement transparency. To be effective, procurement disclosures must include beneficial ownership of companies winning contracts and subcontractors, and timelines of delivery and inspection reports. Comparing to EU best practice, beneficial ownership registries reduce the ability to hide related-party transactions. Expected challenges: legal and cross-border enforcement where shell companies are registered abroad. To mitigate, I propose a mandatory due diligence checklist for contracting authorities and sanctions for negligent oversight. The initial cost for a beneficial ownership verification tool integrated with the procurement portal is approximately EUR 0.6 million. We should also partner with EU agencies and neighboring states for standardized data exchange protocols to intercept cross-border laundering pathways. This approach will strengthen both governance and climate or environmental project delivery.",
+      "update": "Procurement transparency should include beneficial ownership and delivery verification"
+    },
+    {
+      "time": 69,
+      "timestamp": "11:09",
+      "type": "speech",
+      "speaker": "Arūnas Gelūnas",
+      "title": "Science and Innovation Expert",
+      "party": "LSDP",
+      "text": "My intervention touches on research and innovation funding. Scientific grants and technology procurement are vulnerable to misallocation when conflict of interest rules are weak. OECD science policy reports show that transparent review processes increase the quality and reproducibility of funded research. Recommendations: 1) require declaration of conflicts of interest for peer reviewers and panel members, published alongside grant award notices; 2) introduce random audits of a sample of research projects annually; 3) harmonize reporting standards for research outputs linked to public funding. Implementation costs are modest: approximately EUR 150,000 for audit staff and EUR 250,000 to upgrade grant management systems. These steps will protect our research ecosystem, which leverages EU Horizon funds and private co-financing, and will preserve Lithuania's attractiveness for international science partnerships.",
+      "update": "Research funding transparency and audit proposals to protect innovation ecosystems"
+    },
+    {
+      "time": 72,
+      "timestamp": "11:12",
+      "type": "speech",
+      "speaker": "Arvydas Juozaitis",
+      "title": "Philosopher and Cultural Critic",
+      "party": "Nepriklausomas",
+      "text": "I raise the moral and civic dimension. The question 'is it worth continuing to steal' is not purely technical; it concerns what kind of republic we want. Civic culture erodes when elites model impunity. Historical examples show that a cascade of small corrupt acts normalizes larger institutional failures. Our educational system and cultural policy must therefore include civic integrity as a tangible public good. I propose a national integrity curriculum module for secondary schools, and a public lecture series with independent scholars and journalists, funded modestly at EUR 0.2 million per year. This will not solve institutional rot alone, but culture change is slow and necessary: more prosecutions without broader civic engagement can appear as political purges. Let us anchor legal reforms in democratic education and ethical renewal.",
+      "update": "Calls for national integrity curriculum and cultural measures to change civic norms"
+    },
+    {
+      "time": 75,
+      "timestamp": "11:15",
+      "type": "speech",
+      "speaker": "Andrius Sekmokas",
+      "title": "Minister of Economy",
+      "party": "Nepriklausomas",
+      "text": "From the economic ministry's perspective, anti-corruption reforms must support enterprise and competitiveness. Rigorous enforcement that is predictable and swift reduces the cost of doing business. Data from the World Bank indicates that countries with transparent public procurement have shorter time-to-contract and lower bid spreads, effectively lowering costs for taxpayers. Our policy tools: 1) a 'clean supplier' certification for SMEs that meet integrity checks, enabling preferential access to certain public tenders; 2) support for compliance assistance programs and subsidies for small companies adapting to e-procurement systems, budgeted at EUR 0.8 million year one; 3) an arbitration fast-track for contract disputes under public procurement to reduce litigation time. These steps will align anti-corruption work with economic growth and avoid disproportionate burdens on small enterprises that lack legal departments.",
+      "update": "Economic measures to assist SMEs in meeting transparency demands suggested"
+    },
+    {
+      "time": 78,
+      "timestamp": "11:18",
+      "type": "speech",
+      "speaker": "Arvydas Anušauskas",
+      "title": "Minister of National Defence",
+      "party": "TS-LKD",
+      "text": "I return briefly to defence procurement vulnerabilities because they present acute risks. We should adopt immediate transparency for dual-use contracts with critical infrastructure while maintaining necessary secrecy clearance processes. My proposal: a special audit-of-record arrangement where classified procurement oversight is performed by a judicially appointed auditor with security clearance who publishes a redacted summary of findings and a statement of compliance status, with a statutory obligation to report anomalies to the Prosecutor General within 48 hours. The cost of this security-cleared audit capacity is estimated at EUR 0.6 million for initial setup and EUR 0.25 million annual operating. This preserves operational secrecy while ensuring independent oversight and avoiding the possibility that accountability is used as a pretext for leaking sensitive information.",
+      "update": "Defence procurement oversight mechanism with security-cleared auditors proposed"
+    },
+    {
+      "time": 81,
+      "timestamp": "11:21",
+      "type": "speech",
+      "speaker": "Arūnas Valinskas",
+      "title": "Communications and Public Relations Expert",
+      "party": "TS-LKD",
+      "text": "A short point: any public rollout of these measures must be accompanied by a transparent timeline and milestones. Citizens need to track progress to restore trust. I propose dashboard KPIs including number of asset declarations processed, number of prosecutions initiated, value of recovered assets, procurement audits completed and time-to-resolution for ethics complaints. Publishing these KPIs monthly and in machine-readable format will enable civil society and journalists to monitor progress. There should also be an independent oversight advisory group comprising civil society, academia and two cross-party MPs to evaluate implementation. Cost for dashboard and advisory group is estimated at EUR 120,000 for development and EUR 40,000 annually. This is about accountability and public reassurance.",
+      "update": "Proposal for KPI dashboard and independent advisory group to monitor progress"
+    },
+    {
+      "time": 84,
+      "timestamp": "11:24",
+      "type": "speech",
+      "speaker": "Audronius Ažubalis",
+      "title": "Diplomacy and Foreign Trade Expert",
+      "party": "TS-LKD",
+      "text": "From a diplomatic perspective, our credibility on anti-corruption drives trade and international cooperation. Foreign investors and partner states consult governance metrics; a proactive reform agenda will reduce risk premiums and insurance costs for cross-border investments. I recommend immediate diplomatic briefings to embassies and investor communities outlining the legislative timetable and safeguards to avoid panic. Mobilize export credit agencies to communicate that procurement reforms will create a level playing field. There is a reputational cost to both action and inaction: inaction invites speculation about systemic rot; action, if perceived as politicized, can raise concerns about stability. Clear rules and independent oversight help. I also suggest exploring an EU-funded technical assistance package; similar programs have covered 50-70 percent of setup costs in other member states, reducing our net outlay. The foreign ministry can coordinate these proposals within existing budgets and by seeking EU support.",
+      "update": "Diplomatic communication and potential EU technical assistance to offset costs recommended"
+    },
+    {
+      "time": 87,
+      "timestamp": "11:27",
+      "type": "speech",
+      "speaker": "Artūras Skaržius",
+      "title": "Technology and Digital Development Specialist",
+      "party": "LSDP",
+      "text": "A brief technical clarification on interoperability and procurement timelines. To avoid bottlenecks we must adopt open standards and avoid bespoke legacy systems that lock us in and increase maintenance costs. Use of open-source components validated by independent audits reduces initial licensing costs and speeds deployment. The projected EUR 5 million Ministry IT budget should be itemized: EUR 2.1 million for core registry development, EUR 1.3 million for procurement portal upgrades, EUR 0.9 million for cybersecurity and EUR 0.7 million for integration services and training. Procurement should be phased: minimum viable product within 6 months, full rollout 12-18 months. We should also include a contingency of 10 percent for unforeseen integration tasks. I urge procurement via competitive open tenders with early contractor involvement clauses and strict performance milestones tied to payments. This will protect public funds and ensure timely delivery.",
+      "update": "IT budget itemization and open-source, phased procurement approach advocated"
+    },
+    {
+      "time": 90,
+      "timestamp": "11:30",
+      "type": "speech",
+      "speaker": "Andrius Navickas",
+      "title": "Environment and Ecologist Movement Leader",
+      "party": "LSDP",
+      "text": "A quick procedural point: we must ensure parliamentary groups adopt internal transparency rules in parallel with statutory measures. Voluntary commitments by parties to publish donor lists, group expenditures and conflict-of-interest policies can be enacted immediately and will serve as interim confidence-building. I propose a pledge mechanism for parliamentary groups to commit to monthly public reporting of donations, consultancy contracts and travel reimbursements. Non-compliance would be recorded on the public portal. This low-cost measure is socially symbolic but practically meaningful: it allows citizens to see immediate action and preempts accusations that reforms are merely rhetorical. Implementation is straightforward and should require only administrative support of EUR 30,000 to set up the portal feeds and verification procedures.",
+      "update": "Voluntary parliamentary group transparency pledges proposed as immediate confidence-building measures"
+    },
+    {
+      "time": 93,
+      "timestamp": "11:33",
+      "type": "speech",
+      "speaker": "Artūras Melianas",
+      "title": "Culture Democratization Advocate",
+      "party": "Nemuno aušra",
+      "text": "I add a cultural accountability suggestion. Town halls and regional councils should publish minutes and procurement committees' scoring sheets in full for cultural and small infrastructure projects. This increases civic oversight and helps local artists and contractors compete fairly. The cost of digitizing archives and providing user-friendly access at the municipal level is estimated at EUR 0.8 million for a nationwide municipal program and EUR 0.15 million annually for maintenance. I also recommend citizen review panels for cultural grant decisions, composed of peers, civil-society representatives and one independent auditor. These panels increase legitimacy and reduce suspicion of favoritism. The cultural sector often operates on thin margins; exposing bad practices early prevents larger systemic abuses.",
+      "update": "Municipal-level publication of procurement documents for cultural projects proposed"
+    },
+    {
+      "time": 96,
+      "timestamp": "11:36",
+      "type": "speech",
+      "speaker": "Agnė Bilotaitė",
+      "title": "Minister of the Interior",
+      "party": "TS-LKD",
+      "text": "Brief rebuttal and clarification on timing and judicial cooperation. The Ministry recognizes constitutional protections; the 48-hour judicial authorization is conditional on a robust probable-cause standard and an independent anti-corruption prosecutor's endorsement. We propose a cross-institutional memorandum with the Prosecutor General to define evidentiary thresholds and procedures, including specialized training for judges handling high-risk political cases. On costs and timeline: the proposed Specialized Unit can mobilize within 90 days given expedited recruitment and a temporary secondment of experienced prosecutors from the national bench. Regarding privacy and security, all digital systems will conform with GDPR; classified materials will remain shielded under a protocol agreed with national security authorities. Implementation steps ready for committee drafting include an authorization template, an asset register technical architecture and procurement transparency rule proposals. We ask for cross-party cooperation to expedite these measures.",
+      "update": "Ministry reiterates conditional 48-hour judicial authorization and cross-institutional memoranda"
+    },
+    {
+      "time": 99,
+      "timestamp": "11:39",
+      "type": "speech",
+      "speaker": "Aidas Gedvilas",
+      "title": "Session Chair, Former Seimas Speaker",
+      "party": "LVŽS",
+      "text": "Colleagues, we will take a 15-minute recess at 11:45 as scheduled. Before we break, I ask committees to convene informally to prepare draft language for the motions. We reconvene precisely at 12:00 for debate and cross-examination. Please remain in the chamber vicinity and coordinate with clerks for speaking order. The clerks will also accept formal amendments submitted in writing during the recess. See you at 12:00 sharp.",
+      "update": "15-minute recess announced; committees instructed to convene informally"
+    },
+    {
+      "time": 102,
+      "timestamp": "11:42",
+      "type": "speech",
+      "speaker": "Agnė Bilotaitė",
+      "title": "Minister of the Interior",
+      "party": "TS-LKD",
+      "text": "One final procedural clarification before recess: the Ministry will submit a consolidated annex with cost items and procurement timelines to the committee clerks within the recess period. This annex will include tender benchmarks, salary scales for the specialized unit and a draft technical brief for the IT procurement with a security annex. This is to ensure the committee can draft precise fiscal notes and tender scopes. Thank you and have a productive recess.",
+      "update": "Ministry will provide consolidated annex with cost and procurement details during recess"
+    },
+    {
+      "time": 105,
+      "timestamp": "11:45",
+      "type": "speech",
+      "speaker": "Aidas Gedvilas",
+      "title": "Session Chair, Former Seimas Speaker",
+      "party": "LVŽS",
+      "text": "The House is now in recess until 12:00. Members are reminded to deposit any written amendments with the clerks and to coordinate committee work. The chamber will reconvene at noon. Good break.",
+      "update": "Recess begins"
+    },
+    {
+      "time": 120,
+      "timestamp": "12:00",
+      "type": "speech",
+      "speaker": "Asta Kubilienė",
+      "title": "Social Work Specialist",
+      "party": "LSDP",
+      "text": "We reconvene. I open the debate phase and cross-examination time. My first substantive point: how will recovered assets be prioritized in disbursement? I propose clear legal rules to prioritize restitution to victims and to stabilize social programs harmed by misappropriation. In many jurisdictions, recovered assets are delayed in protracted litigation; therefore propose expedited civil proceedings for restitution with provisional measures to secure assets within 30 days of credible accusations. This requires coordination with banks and asset-register authorities. The procedural costs for launching such expedited civil actions are estimated at EUR 0.2 million annually for legal offices. Social consequences: faster restitution prevents further harm to vulnerable households and demonstrates system responsiveness, restoring trust. I ask the Minister whether the Ministry's memorandum will include specific draft language for provisional seizure powers and estimated timelines for judicial actions.",
+      "update": "Debate reopened; calls for provisional measures to secure recovered assets and expedite restitution"
+    },
+    {
+      "time": 123,
+      "timestamp": "12:03",
+      "type": "speech",
+      "speaker": "Andrius Kubilius",
+      "title": "Former Prime Minister, Economy Expert",
+      "party": "TS-LKD",
+      "text": "To the member's question, yes — but with careful judicial oversight. I cross-examine: how will provisional seizure be balanced against property rights? We must ensure strong due process: judicial warrants on a probable-cause standard, time-limited provisional seizures subject to review every 14 days, and clear appeal routes. Practically, we recommend a fast-track civil chamber in the courts specialized for asset recovery, as stated earlier. This will limit the risk of excessive seizure while preserving investigatory efficacy. If the Minister can provide a template for a 14-day review and an appeal timetable, the Committee can adopt it as a procedural rule. Fiscal impact of court specialization should be included in the upcoming Treasury memorandum.",
+      "update": "Cross-examination demands due process safeguards for provisional seizures and appeal timetables"
+    },
+    {
+      "time": 126,
+      "timestamp": "12:06",
+      "type": "speech",
+      "speaker": "Asta Kubilienė",
+      "title": "Social Work Specialist",
+      "party": "LSDP",
+      "text": "I accept the proposal for due process as necessary, and I add that provisional measures should not be so cumbersome that they become ineffective. My amendment would set a 14-day judicial initial review with defined evidentiary thresholds and a requirement that seized funds be placed in an escrow restitution account held by the Treasury for transparent disbursement pending final determination. I also propose a clause that prioritizes funds for social programs demonstrably harmed by the alleged misconduct. This balances rights and public interest. Colleagues, please consider this when drafting procedural provisions.",
+      "update": "Amendment proposed for 14-day judicial review and escrow restitution priority for social programs"
+    },
+    {
+      "time": 129,
+      "timestamp": "12:09",
+      "type": "speech",
+      "speaker": "Arvydas Juozaitis",
+      "title": "Philosopher and Cultural Critic",
+      "party": "Nepriklausomas",
+      "text": "I ask whether the ethical training proposals include independent evaluation. Training alone can be symbolic. I propose a third-party accreditation and periodic re-certification of MPs' ethics training, with public results. There should be a cooling-off period of at least two years for MPs moving into sectors directly related to parliamentary functions, to reduce conflicts of interest. This is an ethical firewall. Mechanically, create an independent Ethics Accreditation Board composed of legal experts, civil society and international advisors that certifies the integrity training providers. Cost minimal relative to other proposals: EUR 120,000 initial setup and EUR 50,000 annually. The moral point is indispensable: legality and legitimacy must coincide.",
+      "update": "Calls for independent accreditation of ethics training and 2-year cooling-off period for MPs"
+    },
+    {
+      "time": 132,
+      "timestamp": "12:12",
+      "type": "speech",
+      "speaker": "Arvydas Sekmokas",
+      "title": "Minister of Economy",
+      "party": "Nepriklausomas",
+      "text": "I raise a cross-examination point on SME impact. How will the proposed 'clean supplier' certification avoid becoming a barrier for small, innovative firms that cannot navigate complex certification costs? We must design proportional compliance tracks and subsidized assistance. My ministry proposes a tiered certification where low-risk suppliers meet simplified checks and higher-risk contracts require full certification. The compliance assistance program funded at EUR 0.8 million will target sub-EUR 250,000 firms and includes legal clinics and digital onboarding assistance. This balances integrity with market access for startups and SMEs, preserving competitiveness.",
+      "update": "Requests tiered certification to protect SMEs; compliance assistance funding proposed"
+    },
+    {
+      "time": 135,
+      "timestamp": "12:15",
+      "type": "speech",
+      "speaker": "Algirdas Sysas",
+      "title": "Former Finance Minister",
+      "party": "LSDP",
+      "text": "I cross-examine the proposal for asset recovery financing. Will seized asset proceeds be recognized as revenue for budgeting immediately or only upon final court resolution? Standard practice is recognition upon final judgment, but that often delays program funding. I suggest an accounting model: provisional recognition with strict escrow rules and audit certification, with any erroneous provisional recognition reversed. This approach enables predictable short-term funding for restitution and anti-corruption measures without violating fiscal rules. The Treasury must produce an accounting opinion within 7 days. This is consistent with ESA2010 and Eurostat general government accounting principles if treated as a memorandum item until final judgment. Correct classification will also avoid misleading deficit figures.",
+      "update": "Proposes provisional recognition of seized assets under strict escrow and audit rules"
+    },
+    {
+      "time": 138,
+      "timestamp": "12:18",
+      "type": "speech",
+      "speaker": "Andrius Navickas",
+      "title": "Environment and Ecologist Movement Leader",
+      "party": "LSDP",
+      "text": "I interject on implementation sequencing. Prioritize digital registers and procurement transparency first, as they produce immediate deterrent effects. Prosecution and asset recovery follow once investigative pipelines are established. Sequencing matters for public perception: seeing visible transparency changes within months reduces cynicism. The technical timeline: MVP of asset register at 6 months, procurement publishing at 4 months. We must not delay visible wins in favour of protracted legal debates. Citizens expect to see tangible changes swiftly, or risk reform fatigue.",
+      "update": "Argues for sequencing with visible digital transparency as immediate priority"
+    },
+    {
+      "time": 141,
+      "timestamp": "12:21",
+      "type": "speech",
+      "speaker": "Agnė Bilotaitė",
+      "title": "Minister of the Interior",
+      "party": "TS-LKD",
+      "text": "Answering the committee and cross-examination points: the Ministry accepts provisional escrow treatment with strict oversight and judicial review. We support sequencing that targets procurement transparency for rapid deterrence while the specialized investigative capacity is being stood up. The Ministry will prepare draft statutory templates for provisional seizure, escrow management and judicial review standards during committee work. We also accept the tiered certification model for suppliers and commit to including SME protections in the procurement brief. As to cooling-off rules and ethics accreditation, these are normative choices for Parliament but the Ministry will provide legal options and implementation costs. We emphasize coordination across ministries and with the Prosecutor General to ensure legal coherence.",
+      "update": "Ministry accepts provisional escrow and sequencing recommendations and will produce draft templates"
+    },
+    {
+      "time": 144,
+      "timestamp": "12:24",
+      "type": "speech",
+      "speaker": "Andrius Kubilius",
+      "title": "Former Prime Minister, Economy Expert",
+      "party": "TS-LKD",
+      "text": "I propose a compromise amendment that many can accept: adopt immediate procurement disclosure rules and a mandatory public asset register with initial limited fields (bank accounts, real estate, beneficial ownership) and phased expansion to include gifts, travel reimbursements and secondary incomes within 12 months. For immunity, adopt the 48-hour authorization for criminal investigations for non-core legislative acts, coupled with a two-stage judicial review to prevent misuse. Finally, create an independent oversight board with technical, legal and civil society members to evaluate three key indicators quarterly: compliance with disclosure timelines, number of investigations commenced and median time to resolution. This balanced package ensures swift, visible reforms and protects democratic functioning. I move that committees draft the compromise text now for plenary consideration.",
+      "update": "Compromise amendment proposed: phased disclosures, 48-hour rule and independent oversight board"
+    },
+    {
+      "time": 147,
+      "timestamp": "12:27",
+      "type": "speech",
+      "speaker": "Agnė Širinskienė",
+      "title": "Member, Constitutional Law Expert",
+      "party": "LSDP",
+      "text": "I support the proposed compromise but insist on firm judicial guarantees. The two-stage judicial review must include an emergency court channel with published rationales and clear standing for affected MPs to challenge investigative authorizations. Additionally, we must ensure the oversight board's independence by requiring cross-party selection and civil society representation chosen through transparent procedures. Let us not make oversight merely advisory; the board should have the power to request suspensions of investigators in cases of clear procedural abuse and to publish annual reports. I instruct the Legal Affairs Committee to draft precise wording for these modalities within the timeframe proposed. This framework should avoid politicization while ensuring accountability.",
+      "update": "Endorses compromise with added judicial guarantees and oversight board authorities"
+    },
+    {
+      "time": 150,
+      "timestamp": "12:30",
+      "type": "speech",
+      "speaker": "Arūnas Dulkys",
+      "title": "Health Systems Management Expert",
+      "party": "DSVL",
+      "text": "I ask for an operational detail: if a sitting MP is suspended for an investigation, how will constituency representation be managed? We should preserve constituents' voice. Options: temporary delegation of certain constituency casework to an appointed delegate from the MP's office, funded by parliamentary administrative budgets, or calling for temporary replacement by a next eligible candidate in the party list for the period of suspension. Each option has constitutional and practical consequences; the Committee should evaluate the mechanism to guarantee constituents do not lose access to services and representation. The estimated administrative cost for delegation is minimal, around EUR 15,000 per constituency for temporary staffing during the average 3-6 month suspension period.",
+      "update": "Seeks solutions for constituency representation if MPs are suspended; proposes temporary delegation"
+    },
+    {
+      "time": 153,
+      "timestamp": "12:33",
+      "type": "speech",
+      "speaker": "Andrejus Stančikas",
+      "title": "Multicultural Dialogue Specialist",
+      "party": "LSDP",
+      "text": "On behalf of minority communities, I request clarity that anti-corruption measures and public disclosures do not disproportionately expose minority leaders to abusive public targeting. Protection measures, including harassment penalties and privacy protections for family members, must be explicit. My proposal is to define family members' data narrowly and to prohibit publication of personal contact details. Additional costs for secure handling and redaction are included in the cybersecurity budget. Ensuring equitable protection maintains minority participation in public life and prevents chilling effects that might otherwise deter representation.",
+      "update": "Requests privacy protections for minority leaders to prevent abusive targeting"
+    },
+    {
+      "time": 156,
+      "timestamp": "12:36",
+      "type": "speech",
+      "speaker": "Arvydas Sekmokas",
+      "title": "Minister of Economy",
+      "party": "Nepriklausomas",
+      "text": "I present a closing practical motion for the debate phase: mandate that the Legal Affairs Committee, Budget Committee and the Ethics Committee jointly draft a consolidated bill based on the compromise package within 10 working days. The bill shall include: 1) phased asset disclosure; 2) procurement transparency steps; 3) provisional seizure procedures with escrow; 4) procedural immunity clarifications with two-stage judicial review; 5) establishment of the oversight board and ethics accreditation. The bill must include a fiscal annex complying with Treasury guidance and an implementation timeline with immediate measures deliverable within 120 days. The motion also requests the Ministry of Interior, Prosecutor General and National Audit Office to provide technical annexes to the committees within the same timeframe. I move the motion for committee drafting now.",
+      "update": "Motion moved for joint committee drafting of consolidated bill within 10 working days"
+    },
+    {
+      "time": 159,
+      "timestamp": "12:39",
+      "type": "speech",
+      "speaker": "Ramūnas Zilnys",
+      "title": "Environmental Activist, Nemuno aušra",
+      "party": "Nemuno aušra",
+      "text": "I second the motion but request an explicit clause for environmental project protection: procurement transparency for environmental contracts must be prioritized in the 120-day timeline because EU funding cycles require compliance quickly. The committees should treat environmental procurement as urgent to avoid EU funding risks. I also request designated liaison personnel from the Environment Ministry to support the drafting process. This is necessary because environmental projects frequently have technical permit timelines that cannot be paused without jeopardizing EU co-financing.",
+      "update": "Seconds motion with request to prioritize environmental procurement within timeline"
+    },
+    {
+      "time": 162,
+      "timestamp": "12:42",
+      "type": "speech",
+      "speaker": "Algirdas Sysas",
+      "title": "Former Finance Minister",
+      "party": "LSDP",
+      "text": "A fiscal point of order before we proceed to amendment discussion: we need to be precise on offsetting measures. I propose identifiable offsets including a temporary freeze on low-priority capital projects totaling EUR 6 million in year one, efficiency savings in administrative overheads of EUR 2 million, EU technical assistance forecasted at EUR 3 million and an anticipated recovery target of EUR 5 million. Collectively, these offsets cover the immediate projected costs of EUR 6.5-8.5 million for start-up measures and recurring maintenance under EUR 2 million. This kind of clarity will permit committees to write credible fiscal notes and avoid later budgetary shortfalls.",
+      "update": "Proposes specific fiscal offsets to cover start-up anti-corruption costs"
+    },
+    {
+      "time": 165,
+      "timestamp": "12:45",
+      "type": "speech",
+      "speaker": "Aidas Gedvilas",
+      "title": "Session Chair, Former Seimas Speaker",
+      "party": "LVŽS",
+      "text": "We now proceed to resolution and amendment discussion. Members who have prepared formal amendments, please submit them to the clerks if not already done. The floor is open to proponents of amendments. Remember the timeline: we must conclude amendment debate to hold the recorded vote at 13:00. Keep interventions focused to specific redlines and fiscal notes. The committees will begin to prepare the consolidated text for immediate procedural votes following this segment.",
+      "update": "Resolution and amendment discussion begins; final vote scheduled at 13:00"
+    },
+    {
+      "time": 168,
+      "timestamp": "12:48",
+      "type": "speech",
+      "speaker": "Agnė Širinskienė",
+      "title": "Member, Constitutional Law Expert",
+      "party": "LSDP",
+      "text": "I introduce a formal amendment to the draft motion: include a 36-month sunset clause for extraordinary seizure powers and mandatory parliamentary review at 18 months and 36 months, with the Constitutional Court empowered to evaluate proportionality upon petition. I also propose a clause establishing an independent oversight board with five members: two appointed by Parliament by a two-thirds majority, two civil society representatives selected via transparent public competition, and one retired constitutional judge appointed by the Supreme Court. The amendment further requires an annual public report, audited by the National Audit Office. This amendment aims to preserve democratic balance while enabling necessary enforcement powers.",
+      "update": "Formal amendment proposed: 36-month sunset clause, oversight board composition and annual audit"
+    },
+    {
+      "time": 171,
+      "timestamp": "12:51",
+      "type": "speech",
+      "speaker": "Andrius Kubilius",
+      "title": "Former Prime Minister, Economy Expert",
+      "party": "TS-LKD",
+      "text": "I support the sunset clause and board composition but propose a small modification: require the two parliamentary appointments to the oversight board to reflect proportional party representation while the civil society seats emphasize anti-corruption NGOs with demonstrated track records. Also recommend the board's chair be selected from the civil society representatives to reinforce independence. This preserves parliamentary input without politicizing leadership. I propose a friendly amendment to the proposer's text to that effect.",
+      "update": "Proposes friendly amendment to ensure proportional parliamentary representation and civil society chair"
+    },
+    {
+      "time": 174,
+      "timestamp": "12:54",
+      "type": "speech",
+      "speaker": "Agnė Širinskienė",
+      "title": "Member, Constitutional Law Expert",
+      "party": "LSDP",
+      "text": "I accept the friendly amendment to ensure the oversight board's chair is selected from the civil society members and to require proportional parliamentary representation for appointments. I further add that oversight board decisions to request investigator suspension require a two-thirds concurrence of the board to avoid arbitrary action. With these safeguards, I request the Chamber to include the amendment in the consolidated draft.",
+      "update": "Amendment accepted with added safeguard for two-thirds board concurrence on suspensions"
+    },
+    {
+      "time": 177,
+      "timestamp": "12:57",
+      "type": "speech",
+      "speaker": "Andrius Navickas",
+      "title": "Environment and Ecologist Movement Leader",
+      "party": "LSDP",
+      "text": "I present a short procedural amendment: prioritize procurement transparency in the implementation schedule with a binding 120-day deadline for procurement portal upgrades and beneficial ownership integration. This is essential to protect ongoing EU-funded projects. The amendment includes a requirement that the Ministry report progress monthly to the committees. Time-sensitive measures deserve priority. I move that this timeline be included in the consolidated draft.",
+      "update": "Procedural amendment for 120-day procurement timeline proposed"
+    },
+    {
+      "time": 180,
+      "timestamp": "13:00",
+      "type": "speech",
+      "speaker": "Aidas Gedvilas",
+      "title": "Session Chair, Former Seimas Speaker",
+      "party": "LVŽS",
+      "text": "We now proceed to the recorded vote on the consolidated resolution incorporating the adopted amendments: phased asset disclosure, procurement transparency with beneficial ownership, specialized investigative unit, provisional seizure with escrow rules and escrow provisional accounting, trimmed immunity with 48-hour judicial authorization and two-stage review, oversight board with civil society chair, 36-month sunset clause and prioritized 120-day procurement upgrade timeline. The clerks will record votes for, against and abstain. Members, please cast your votes now. The result is: FOR 92, AGAINST 41, ABSTAIN 8. The resolution therefore passes. There is a brief moment of applause from the government benches and audible discontent from some opposition members. I ask members to remain as committees will be instructed to implement drafting timetables immediately, and to convene in joint session within 48 hours. Formal commentary follows.",
+      "update": "Recorded vote passed: For 92, Against 41, Abstain 8; motion carries with coalition majorities"
+    }
+  ],
+  "audio": {
+    "enabled": true,
+    "model": "gpt-4o-mini-tts",
+    "mappingFile": null,
+    "audioDirectory": null,
+    "storageFolder": null,
+    "mapping": [
+      {
+        "eventIndex": 0,
+        "speaker": "Aidas Gedvilas",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "10:00",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 1,
+        "speaker": "Agnė Širinskienė",
+        "voice": "echo",
+        "voiceKey": "echo",
+        "rateMultiplier": 0.98,
+        "timestamp": "10:03",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 2,
+        "speaker": "Agnė Bilotaitė",
+        "voice": "fable",
+        "voiceKey": "fable",
+        "rateMultiplier": 1.04,
+        "timestamp": "10:06",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 3,
+        "speaker": "Arvydas Anušauskas",
+        "voice": "onyx",
+        "voiceKey": "onyx",
+        "rateMultiplier": 1.08,
+        "timestamp": "10:09",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 4,
+        "speaker": "Algirdas Sysas",
+        "voice": "nova",
+        "voiceKey": "nova",
+        "rateMultiplier": 0.96,
+        "timestamp": "10:12",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 5,
+        "speaker": "Ramūnas Zilnys",
+        "voice": "shimmer",
+        "voiceKey": "shimmer",
+        "rateMultiplier": 1.02,
+        "timestamp": "10:15",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 6,
+        "speaker": "Artūras Skaržius",
+        "voice": "coral",
+        "voiceKey": "coral",
+        "rateMultiplier": 0.94,
+        "timestamp": "10:18",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 7,
+        "speaker": "Andrius Kubilius",
+        "voice": "verse",
+        "voiceKey": "verse",
+        "rateMultiplier": 1.06,
+        "timestamp": "10:21",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 8,
+        "speaker": "Agnė Širinskienė",
+        "voice": "echo",
+        "voiceKey": "echo",
+        "rateMultiplier": 0.98,
+        "timestamp": "10:24",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 9,
+        "speaker": "Asta Kubilienė",
+        "voice": "ballad",
+        "voiceKey": "ballad",
+        "rateMultiplier": 0.92,
+        "timestamp": "10:27",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 10,
+        "speaker": "Arūnas Dulkys",
+        "voice": "ash",
+        "voiceKey": "ash",
+        "rateMultiplier": 1.05,
+        "timestamp": "10:30",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 11,
+        "speaker": "Andrius Navickas",
+        "voice": "sage",
+        "voiceKey": "sage",
+        "rateMultiplier": 0.9,
+        "timestamp": "10:33",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 12,
+        "speaker": "Artūras Melianas",
+        "voice": "marin",
+        "voiceKey": "marin",
+        "rateMultiplier": 1.03,
+        "timestamp": "10:36",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 13,
+        "speaker": "Audra Sipavičienė",
+        "voice": "cedar",
+        "voiceKey": "cedar",
+        "rateMultiplier": 1.07,
+        "timestamp": "10:39",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 14,
+        "speaker": "Andrius Kubilius",
+        "voice": "verse",
+        "voiceKey": "verse",
+        "rateMultiplier": 1.06,
+        "timestamp": "10:42",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 15,
+        "speaker": "Agnė Bilotaitė",
+        "voice": "fable",
+        "voiceKey": "fable",
+        "rateMultiplier": 1.04,
+        "timestamp": "10:45",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 16,
+        "speaker": "Agnė Širinskienė",
+        "voice": "echo",
+        "voiceKey": "echo",
+        "rateMultiplier": 0.98,
+        "timestamp": "10:48",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 17,
+        "speaker": "Aidas Gedvilas",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "10:51",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 18,
+        "speaker": "Arūnas Valinskas",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-14",
+        "rateMultiplier": 1.07,
+        "timestamp": "10:54",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 19,
+        "speaker": "Andrius Navickas",
+        "voice": "sage",
+        "voiceKey": "sage",
+        "rateMultiplier": 0.9,
+        "timestamp": "10:57",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 20,
+        "speaker": "Algirdas Sysas",
+        "voice": "nova",
+        "voiceKey": "nova",
+        "rateMultiplier": 0.96,
+        "timestamp": "11:00",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 21,
+        "speaker": "Andrius Kubilius",
+        "voice": "verse",
+        "voiceKey": "verse",
+        "rateMultiplier": 1.06,
+        "timestamp": "11:03",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 22,
+        "speaker": "Ramūnas Zilnys",
+        "voice": "shimmer",
+        "voiceKey": "shimmer",
+        "rateMultiplier": 1.02,
+        "timestamp": "11:06",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 23,
+        "speaker": "Arūnas Gelūnas",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-15",
+        "rateMultiplier": 1.105,
+        "timestamp": "11:09",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 24,
+        "speaker": "Arvydas Juozaitis",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-16",
+        "rateMultiplier": 1.1400000000000001,
+        "timestamp": "11:12",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 25,
+        "speaker": "Andrius Sekmokas",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-17",
+        "rateMultiplier": 1.175,
+        "timestamp": "11:15",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 26,
+        "speaker": "Arvydas Anušauskas",
+        "voice": "onyx",
+        "voiceKey": "onyx",
+        "rateMultiplier": 1.08,
+        "timestamp": "11:18",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 27,
+        "speaker": "Arūnas Valinskas",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-14",
+        "rateMultiplier": 1.07,
+        "timestamp": "11:21",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 28,
+        "speaker": "Audronius Ažubalis",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-18",
+        "rateMultiplier": 1,
+        "timestamp": "11:24",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 29,
+        "speaker": "Artūras Skaržius",
+        "voice": "coral",
+        "voiceKey": "coral",
+        "rateMultiplier": 0.94,
+        "timestamp": "11:27",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 30,
+        "speaker": "Andrius Navickas",
+        "voice": "sage",
+        "voiceKey": "sage",
+        "rateMultiplier": 0.9,
+        "timestamp": "11:30",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 31,
+        "speaker": "Artūras Melianas",
+        "voice": "marin",
+        "voiceKey": "marin",
+        "rateMultiplier": 1.03,
+        "timestamp": "11:33",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 32,
+        "speaker": "Agnė Bilotaitė",
+        "voice": "fable",
+        "voiceKey": "fable",
+        "rateMultiplier": 1.04,
+        "timestamp": "11:36",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 33,
+        "speaker": "Aidas Gedvilas",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "11:39",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 34,
+        "speaker": "Agnė Bilotaitė",
+        "voice": "fable",
+        "voiceKey": "fable",
+        "rateMultiplier": 1.04,
+        "timestamp": "11:42",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 35,
+        "speaker": "Aidas Gedvilas",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "11:45",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 36,
+        "speaker": "Asta Kubilienė",
+        "voice": "ballad",
+        "voiceKey": "ballad",
+        "rateMultiplier": 0.92,
+        "timestamp": "12:00",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 37,
+        "speaker": "Andrius Kubilius",
+        "voice": "verse",
+        "voiceKey": "verse",
+        "rateMultiplier": 1.06,
+        "timestamp": "12:03",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 38,
+        "speaker": "Asta Kubilienė",
+        "voice": "ballad",
+        "voiceKey": "ballad",
+        "rateMultiplier": 0.92,
+        "timestamp": "12:06",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 39,
+        "speaker": "Arvydas Juozaitis",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-16",
+        "rateMultiplier": 1.1400000000000001,
+        "timestamp": "12:09",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 40,
+        "speaker": "Arvydas Sekmokas",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-19",
+        "rateMultiplier": 1.035,
+        "timestamp": "12:12",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 41,
+        "speaker": "Algirdas Sysas",
+        "voice": "nova",
+        "voiceKey": "nova",
+        "rateMultiplier": 0.96,
+        "timestamp": "12:15",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 42,
+        "speaker": "Andrius Navickas",
+        "voice": "sage",
+        "voiceKey": "sage",
+        "rateMultiplier": 0.9,
+        "timestamp": "12:18",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 43,
+        "speaker": "Agnė Bilotaitė",
+        "voice": "fable",
+        "voiceKey": "fable",
+        "rateMultiplier": 1.04,
+        "timestamp": "12:21",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 44,
+        "speaker": "Andrius Kubilius",
+        "voice": "verse",
+        "voiceKey": "verse",
+        "rateMultiplier": 1.06,
+        "timestamp": "12:24",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 45,
+        "speaker": "Agnė Širinskienė",
+        "voice": "echo",
+        "voiceKey": "echo",
+        "rateMultiplier": 0.98,
+        "timestamp": "12:27",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 46,
+        "speaker": "Arūnas Dulkys",
+        "voice": "ash",
+        "voiceKey": "ash",
+        "rateMultiplier": 1.05,
+        "timestamp": "12:30",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 47,
+        "speaker": "Andrejus Stančikas",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-20",
+        "rateMultiplier": 1.07,
+        "timestamp": "12:33",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 48,
+        "speaker": "Arvydas Sekmokas",
+        "voice": "cedar",
+        "voiceKey": "openai-variant-19",
+        "rateMultiplier": 1.035,
+        "timestamp": "12:36",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 49,
+        "speaker": "Ramūnas Zilnys",
+        "voice": "shimmer",
+        "voiceKey": "shimmer",
+        "rateMultiplier": 1.02,
+        "timestamp": "12:39",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 50,
+        "speaker": "Algirdas Sysas",
+        "voice": "nova",
+        "voiceKey": "nova",
+        "rateMultiplier": 0.96,
+        "timestamp": "12:42",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 51,
+        "speaker": "Aidas Gedvilas",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "12:45",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 52,
+        "speaker": "Agnė Širinskienė",
+        "voice": "echo",
+        "voiceKey": "echo",
+        "rateMultiplier": 0.98,
+        "timestamp": "12:48",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 53,
+        "speaker": "Andrius Kubilius",
+        "voice": "verse",
+        "voiceKey": "verse",
+        "rateMultiplier": 1.06,
+        "timestamp": "12:51",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 54,
+        "speaker": "Agnė Širinskienė",
+        "voice": "echo",
+        "voiceKey": "echo",
+        "rateMultiplier": 0.98,
+        "timestamp": "12:54",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 55,
+        "speaker": "Andrius Navickas",
+        "voice": "sage",
+        "voiceKey": "sage",
+        "rateMultiplier": 0.9,
+        "timestamp": "12:57",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 56,
+        "speaker": "Aidas Gedvilas",
+        "voice": "alloy",
+        "voiceKey": "alloy",
+        "rateMultiplier": 1,
+        "timestamp": "13:00",
+        "file": null,
+        "format": "mp3"
+      }
+    ]
+  }
+}

@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+# https://www.mkdocs.org/user-guide/configuration/#configuration
+site_name: Speaches Documentation
+site_url: https://speaches.ai
+dev_addr: 127.0.0.1:8001
+repo_url: https://github.com/speaches-ai/speaches/
+edit_uri: edit/master/docs/
+docs_dir: docs
+theme:
+  language: en
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: deep orange
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: deep orange
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    # https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.instant.prefetch
+    # https://squidfunk.github.io/mkdocs-material/setup/setting-up-site-search/
+    - search.highlight
+    - search.share
+    - content.tabs.link
+    - content.code.copy
+plugins:
+  # https://github.com/bharel/mkdocs-render-swagger-plugin
+  - render_swagger
+  - mkdocstrings:
+      default_handler: python
+nav:
+  - Introduction: index.md
+  - Installation: installation.md
+  - Usage / Capabilities:
+      - Model Discovery: usage/model-discovery.md
+      - Speech-to-Text: usage/speech-to-text.md
+      - Text-to-Speech: usage/text-to-speech.md
+      - Voice Chat: usage/voice-chat.md
+      - Realtime API: usage/realtime-api.md
+      - VAD: usage/vad.md
+      - Open WebUI Integration: usage/open-webui-integration.md
+  - Configuration: configuration.md
+  - API: api.md
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  # https://github.com/mkdocs/mkdocs/issues/545
+  - mdx_truly_sane_lists
+# TODO: https://github.com/oprypin/markdown-callouts

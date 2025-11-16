@@ -1,0 +1,22 @@
+version: "3"
+tasks:
+  server:
+    cmds:
+      - cmd: lsof -ti :8000 | xargs kill -9
+        ignore_error: true
+      - uvicorn --factory --host 0.0.0.0 speaches.main:create_app {{.CLI_ARGS}}
+    sources:
+      - src/**/*.py
+  test:
+    cmds:
+      - pytest -o log_cli=true -o log_cli_level=DEBUG {{.CLI_ARGS}}
+    sources:
+      - src/**/*.py
+  create-multi-arch-builder: docker buildx create --name main --driver=docker-container
+  ci:
+    cmds:
+      - act --rm --action-offline-mode --secret-file .secrets {{.CLI_ARGS}}
+  # Python's urllib3 takes forever when ipv6 is enabled
+  # https://support.nordvpn.com/hc/en-us/articles/20164669224337-How-to-disable-IPv6-on-Linux
+  disable-ipv6: sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 && sudo sysctl -w net.ipv6.conf.default.disable_ipv6=1
+  enable-ipv6: sudo sysctl -w net.ipv6.conf.all.disable_ipv6=0 && sudo sysctl -w net.ipv6.conf.default.disable_ipv6=0

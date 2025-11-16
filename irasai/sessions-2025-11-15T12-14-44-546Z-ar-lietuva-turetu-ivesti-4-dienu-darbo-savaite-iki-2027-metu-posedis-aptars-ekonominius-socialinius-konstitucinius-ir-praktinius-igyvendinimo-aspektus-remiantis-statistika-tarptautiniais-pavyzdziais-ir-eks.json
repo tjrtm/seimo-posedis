@@ -1,0 +1,648 @@
+{
+  "savedAt": "2025-11-15T12:14:44.546Z",
+  "title": "Seimo posėdis dėl 4 dienų darbo savaitės įvedimo iki 2027 m. – išsamus svarstymas",
+  "topic": "Ar Lietuva turėtų įvesti 4 dienų darbo savaitę iki 2027 metų? Posėdis aptars ekonominius, socialinius, konstitucinius ir praktinius įgyvendinimo aspektus, remiantis statistika, tarptautiniais pavyzdžiais ir ekspertų įžvalgomis.",
+  "totalEvents": 48,
+  "durationMinutes": 222,
+  "events": [
+    {
+      "time": 0,
+      "timestamp": "10:00",
+      "type": "procedural",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdžio pirmininkas (procedūrinis pranešimas)",
+      "party": "Nepriklausomas",
+      "text": "Gerbiami kolegos, posėdį atidarau. Trumpai apie procedūrą: šiandieninis posėdis truks 3 valandas – nuo 10:00 iki 13:00. Posėdžio darbotvarkėje: darbotvarkės pristatymas, pagrindinis ministerijos pranešimas su statistika ir tarptautiniais pavyzdžiais, frakcijų kalbos (kiekvienai frakcijai skiriama 8–12 minučių), 15 minučių pertrauka, intensyvios diskusijos klausimams ir atsakymams, rezoliucijos svarstymas su pataisomis ir balsavimas. Primenu, kad kiekvienas posėdžio dalyvis laikosi Seimo statutų: kalbos trukmė pagal darbotvarkę, procedūriniai klausimai tik per procedūrą, užklausos raštu – protokolui. Taip pat informuoju, kad šiandien fiksuosime balsavimo rezultatus pagal partijas. Dėl laiko valdymo – stengsimės griežtai laikytis tvarkos, kad visi pranešimai būtų perskaityti. Prašau sekretoriato užfiksuoti visus pateiktus pasiūlymus raštu. Pabaigai noriu pabrėžti: tema yra kompleksiška ir reikalauja tiek ekonominių, tiek socialinių, tiek teisinio lygmens įvertinimų, todėl kviečiu kolegas diskutuoti konstruktyviai ir konkrečiai.",
+      "update": "Posėdžio atidarymas ir procedūriniai nurodymai."
+    },
+    {
+      "time": 5,
+      "timestamp": "10:05",
+      "type": "agenda",
+      "speaker": "Agnė Širinskienė",
+      "title": "Darbotvarkės pristatymas, Konstitucinės teisės ekspertė",
+      "party": "LSDP",
+      "text": "Gerbiamas pirmininke, kolegos, pristatau detalią darbotvarkę: 1) 10:15 – pagrindinis ministerijos pranešimas (30 min); 2) 10:45–11:45 – frakcijų kalbos, kiekvienai frakcijai 8–12 min.; 3) 11:45–12:00 – pertrauka; 4) 12:00–12:45 – intensyvios diskusijos su tarpusavio klausimais; 5) 12:45–13:00 – rezoliucijos svarstymas su pataisomis; 6) 13:00 – balsavimas. Procedūrinis aspektas: jeigu bus pateikta pataisa, siūlau naudoti greitąjį komitetų įvertinimą – komisijų nuomonės bus pateiktos žodžiu. Atkreipiu dėmesį į konstitucinį aspektą: bet kokios įgyvendinimo priemonės privalo atitikti Konstitucijos nuostatas dėl užimtumo laisvės, sutartinių santykių apsaugos ir socialinių garantijų. Siūlau posėdžio metu fiksuoti galimus konflikto taškus: (1) įstatymų keitimas dėl darbo laiko normos, (2) socialinių išmokų apskaičiavimas, (3) viešojo sektoriaus išskirtinumai. Taip pat siūlau užtikrinti, kad posėdyje būtų pateikti skaičiavimai pagal sektorius ir mažųjų bei vidutinių įmonių galimybes. Galutinio sprendimo priėmimas turi būti paremta teisinių aktų harmonizavimu ir Konstitucijos apsauga.",
+      "update": "Detali darbotvarkė ir procedūriniai siūlymai."
+    },
+    {
+      "time": 15,
+      "timestamp": "10:15",
+      "type": "presentation",
+      "speaker": "Arūnas Dulkys",
+      "title": "Ministerijos atstovas (statistika ir poveikio analizė), DSVL",
+      "party": "DSVL",
+      "text": "Gerbiami kolegos, pristatau ministerijos parengtą poveikio analizę. Pagrindiniai duomenys: Lietuvos dirbančiųjų skaičius 2024 m. IV ketv.: ~1,200,000 asmenų; vidutinės bruto mėnesio darbo sąnaudos versle – apie 2,900 EUR (SODRA duomenys 2023), vidutinis darbo valandų skaičius per savaitę pagal Statistikos departamento 2023 duomenis – 40,2 val. Pasiūlymas: įvertinti galimybę pereiti prie 4 dienų darbo savaitės mažinant darbo valandų skaičių iki 32 per savaitę arba išlaikant 40 val. per 4 dienas (ilgesnės darbo dienos). Tarptautiniai pavyzdžiai: Islandija (2015–2019 bandymai) – efektyvumo stabilumas arba padidėjimas, darbo laiko mažinimas iki 35–36 val. per savaitę; Ispanijoje ir Jungtinėje Karalystėje vykę pilotai (2021–2023) rodė produktyvumo išlaikymą arba net 1–3 % padidėjimą, bet skirtingus sektorių rezultatus. 4 Day Week Global 2022 tyrimas, bendradarbiaujant su Cambridge ir Boston College, parodė, kad 56 % įmonių fiksavo darbuotojų gerovės pagerėjimą, o produktyvumas padidėjo vidutiniškai 1.4 %. Rizikos: viešajame sektoriuje paslaugų prieinamumo išlaikymas (sveikatos, viešasis transportas), papildomos darbuotojų pereinamieji kaštai, MIP ir MVĮ pritaikomumas. Ekonominis modeliavimas: greitas pereinamasis scenarijus (2025–2027) su 32 val. darbo norma leistų sumažinti darbo užmokesčio sąnaudas ~20 % pritaikius proporcingą apmokėjimą, o tai reikštų papildomą biudžeto poreikį kompensacijai paslaugų sektoriui; alternatyva – išlaikyti atlyginimus, mažinant darbo valandas – tuomet pvz., viešajam sektoriui reikėtų pridėti ~6–8 % personalo tam, kad nenukentėtų paslaugų prieinamumas. Siūlau skatinti pilotus sektoriuose ir ES lygio bendradarbiavimą, remiantis ES Darbo laiko direktyvomis ir Eurofound analizėmis.",
+      "update": "Ministerijos poveikio analizė su tarptautiniais pavyzdžiais ir kelių scenarijų ekonominiais efektais."
+    },
+    {
+      "time": 45,
+      "timestamp": "10:45",
+      "type": "speech",
+      "speaker": "Algirdas Sysas",
+      "title": "Frakcijos kalba – LSDP (ekonomikos ir socialinės apsaugos atstovas)",
+      "party": "LSDP",
+      "text": "Gerbiami kolegos, LSDP frakcija remia idėją apie darbo laiko žodinį persvarstymą ir palaiko ambiciją įvesti 4 dienų savaitę iki 2027 m., bet su sąlyga, kad procesas bus reguliuojamas pereinamuoju laikotarpiu, garantuojant socialinę apsaugą. Argumentai ekonominiu pagrindu: investicija į darbo sąlygų gerinimą mažina keitimosi darbu (turnover) sąnaudas. Lietuvos įmonių metinės personalo kaitos sąnaudos vidutiniškai siekia 6–8 % metinių darbo užmokesčio sąnaudų; sumažinus kaitą, sutaupytume. Remiame OECD modeliavimo įžvalgas, kad investicijos į darbo sąlygų kokybę gali padidinti produktyvumą iki 2–4 % per 3 metus. Socialinis aspektas: Europos socialinė chartija ir ILO principai numato teisę į darbo ir asmeninio gyvenimo pusiausvyrą; Europos Parlamento 2019/1158 direktyva apie darbo ir gyvenimo suderinimą skatina nacionalines priemones. Praktinis pasiūlymas: 1) priimti įstatymą dėl 4 dienų savaitės pilotų programų viešajame ir privačiame sektoriuje 2025 m.; 2) finansinė parama MIP ir MVĮ pereinamuoju laikotarpiu (iki 30 % kompensacija darbuotojų mokymui ir darbo reorganizavimui per 2025–2027); 3) išplėsti Perkvalifikavimo programą, skirti 15 mln. EUR per 3 metus. Kviečiu kolegas apsvarstyti finansavimo šaltinius – dalis biudžeto gali būti nukreipta iš neefektyvių subsidijų bei ES fondų. Klausimas TS-LKD atstovei: kaip frakcija vertina fiskalinio atsparumo poreikį ir ar pritartumėte pilotų finansavimui per ES mechanizmus?",
+      "update": "LSDP remia pilotus ir pereinamąjį reguliavimą, siūlo finansinę paramą MVĮ ir konkrečias priemones."
+    },
+    {
+      "time": 53,
+      "timestamp": "10:53",
+      "type": "speech",
+      "speaker": "Agnė Bilotaitė",
+      "title": "Frakcijos kalba – TS-LKD (saugumo ir ekonominio efektyvumo pozicija)",
+      "party": "TS-LKD",
+      "text": "Gerbiami kolegos, TS-LKD frakcija yra skeptiška greitai įvestai 4 dienų savaitei iki 2027 metų be platesnių poveikio vertinimų. Pagrindiniai argumentai – konkurencingumas, fiskalinė atsakomybė ir viešasis saugumas. Pagal Eurostat duomenis, Lietuvos darbo našumas (BVP vienam dirbančiajam) 2023 m. buvo apie 62 % ES vidurkio; privalome gerinti produktyvumą, o ne sumažinti investicijų laiką. Jei sumažintume darbo valandas proporcingai atlyginimams arba padidintume darbo dienos ilgį, gali kilti neigiamas poveikis paslaugų prieinamumui ir strateginiams sektoriams (gynyba, teisėsauga). TS-LKD siūlymas: vietoje platesnės 4 dienų savaitės skatinti lankstumą – teisė į elastingą darbo grafiką pagal Europos Parlamento direktyvas, mokesčių paskatos inovacijoms, investicijas į automatizaciją (skaidrus planas – 150 mln. EUR per 5 metus per CDN ir ES paramą). Konstitucinis aspektas: ar įstatymo pakeitimas nesukels darbo santykių sutrikdymo ir rizikos viešajam saugumui? Klausiu Algirdui Sysui: kaip LSDP užtikrinsite nepadidintą mokesčių naštą biudžetui ir kokia bus kompensavimo schema viešajam sektoriui?",
+      "update": "TS-LKD skeptiška skubotam sprendimui; siūlo alternatyvų lankstumo modelį ir investicijas į produktyvumą."
+    },
+    {
+      "time": 61,
+      "timestamp": "11:01",
+      "type": "speech",
+      "speaker": "Ramūnas Zilnys",
+      "title": "Frakcijos kalba – Nemuno aušra (žaliasis požiūris)",
+      "party": "Nemuno aušra",
+      "text": "Kolegos, Nemuno aušra palaiko darbo laiko peržiūrą kaip priemonę tiek piliečių gerovei, tiek klimato išmetimų mažinimui. Tarptautiniai duomenys rodo, kad trumpesnė darbo savaitė gali sumažinti transporto kelionių skaičių: JK bandymai rodė 6–12 % mažesnį kasdieninių kelionių skaičių, kai daugiau darbuotojų dirba nuotoliniu būdu arba turi papildomas laisvas dienas. Jei Lietuvoje 20 % darbinės jėgos pereitų prie 4 dienų savaitės per 3 metus, modeliavimas rodo galimą 0.8–1.3 % metinį CO2 emisijų sumažėjimą iš transporto sektoriaus. Be to, trumpesnė darbo savaitė skatina vietinį vartojimą ir kultūros sektoriaus aktyvumą – regionų revitalizacijai svarbu, kad žmonės turėtų laiko vartoti kultūrines ir viešąsias paslaugas. Siūlome integruoti žalią perkėlimą: ES fondų tereminė parama pereinantiems sektoriams, skatinti nuotolinį darbą ir elektromobilių naudojimą, viešojo transporto intensyvumo didinimą laisvomis dienomis. Praktinė rekomendacija – pilotai regionuose (Panevėžio, Alytaus, Telšių savivaldybėse) su aiškiais KPI: CO2, vietinės ekonomikos apyvarta, darbo našumas. Klausimas Audrai Sipavičienei: ar matote galimybę panaudoti ES teritorinio vystymo priemones (252 mln. EUR) tokiems pilotams?",
+      "update": "Nemuno aušra siūlo žaliuosius pilotus, regioninį fokusą ir transporto emisijų mažinimą kaip papildomą naudą."
+    },
+    {
+      "time": 69,
+      "timestamp": "11:09",
+      "type": "speech",
+      "speaker": "Aidas Gedvilas",
+      "title": "Frakcijos kalba – LVŽS (regionų ir tradicijų apsauga)",
+      "party": "LVŽS",
+      "text": "Gerbiami kolegos, LVŽS požiūris yra konservatyvus: remiame darbo sąlygų gerinimą, bet su dideliu dėmesiu regionų verslui, žemės ūkiui ir tradicinėms šeimos struktūroms. Statistika: apie 24 % Lietuvos dirbančiųjų yra kaimo gyventojai arba dirbantys žemės ūkyje. 4 dienų savaitės modelis automatiškai mažinantis laikas gali būti netinkamas sezoniškumo sektoriams. Pavyzdžiui, pieno ūkiai ar derliaus laikotarpiai nereaguoja į savaitės trukmę. Siūlau išimčių mechanizmą – teisė į lankstų darbo grafiką ir kompensacinius mechanizmus ūkininkams bei žemės ūkio įmonėms. Taip pat svarbu šeimos aspektas: suderinto grafiko nebuvimas gali paveikti vaikų priežiūros paslaugų poreikį. Siūlome: 1) neįvesti absoliučios 4 dienų savaitės visuotinai, bet leisti pasirinktinai pagal sektorius; 2) skirti 5 mln. EUR parama kaimo infrastruktūrai, kad galėtų prisitaikyti; 3) papildoma žemės ūkio darbo laiko reglamentacija vietiniams poreikiams. Klausimas Nemuno aušros atstovui: kaip planuojate įtraukti kaimo verslus į pilotus ir užtikrinti, kad jie nepatirtų papildomų administracinių naštų?",
+      "update": "LVŽS prašo išimčių ūkininkams ir regionams; siūlo sektorinį pritaikymą ir kompensacijas."
+    },
+    {
+      "time": 77,
+      "timestamp": "11:17",
+      "type": "speech",
+      "speaker": "Audra Sipavičienė",
+      "title": "Frakcijos/Dsvl atstovas – Tarptautinių fondų panaudojimas",
+      "party": "DSVL",
+      "text": "Kolegos, kaip tarptautinio bendradarbiavimo ir projektų ekspertė noriu pabrėžti galimybę sujungti nacionalinius pilotus su ES struktūriniais fondais. ES Darbo ir socialinės politikos fondai, Europos rekonstrukcijos ir plėtros priemonės gali kompensuoti dalį pereinamojo laikotarpio kaštų. Praktinis pavyzdys: Rumunijoje 2022 m. panaudojant ES sanglaudos lėšas finansuoti darbo laiko reorganizaciją MVĮ, rezultatas – 12 % pajamų augimas per 18 mėnesių. Biudžeto skaičiavimas Lietuvai: Norint finansuoti pilotus 2025–2027 m. su 500 įmonių dalyvavimu reikėtų apie 22–28 mln. EUR (kompetencijų kėlimas, darbo organizavimo konsultacijos, dalinis kompensavimas pradiniams kaštams). Siūlau rengti projektų paketą ES Inovacijų fondui ir Socialiniam fondui – kombinuotą finansavimą. Procedūrinis klausimas frakcijų lyderiams: ar pritariate, kad teiktume bendrą paraišką į ES mechanizmus iki 2025 m. pirmojo ketvirčio?",
+      "update": "Siūloma ES fondų panaudojimo schema pilotams su preliminariu biudžetu ir projektiniu modeliu."
+    },
+    {
+      "time": 85,
+      "timestamp": "11:25",
+      "type": "speech",
+      "speaker": "Andrius Kubilius",
+      "title": "Frakcijos kalba – TS-LKD (ekonomikos ekspertas)",
+      "party": "TS-LKD",
+      "text": "Gerbiami kolegos, noriu sutelkti dėmesį į makroekonominius rodiklius. Lietuva turi didinti eksporto konkurencingumą; darbo laiko mažinimas be produktyvumo augimo rizikuoja sumažinti BVP. Pagal mūsų skaičiavimus, jei vidutinis darbo valandų sumažėjimas būtų 10 %, o produktyvumas nepadidėtų, BVP galėtų susitraukti apie 1.5–2.2 % per metus per pereinamąjį laikotarpį. Siūlau alternatyvą – investicijas į pridėtinę vertę kuriančias sritis: skaitmeninimą, mokslinius tyrimus, eksporto paskatinimą. Konkrečiai: 200 mln. EUR investicijų į pramonės modernizaciją su 3:1 leverage (privačios investicijos) per 5 metus gali atnešti 5–7 % produktyvumo augimą per 5 metus. Be to, reikia atsižvelgti į gynybos ir viešojo saugumo poreikius – papildomas laisvas dienas reikės kompensuoti paslaugų prieinamumu. Klausimas Arvydui Anušauskui: ar Gynybos ministerija turi skaičiavimų, kaip 4 dienų darbo savaitė paveiktų mobilizacijos parengtį ir kariuomenės personalo pasiekiamumą?",
+      "update": "TS-LKD siūlo prioritetą investicijoms į produktyvumą vietoje pločio įvedimo; kelia gynybos ir eksporto rizikas."
+    },
+    {
+      "time": 93,
+      "timestamp": "11:33",
+      "type": "speech",
+      "speaker": "Arvydas Anušauskas",
+      "title": "Krašto apsaugos ministro komentaras – saugumo aspektai",
+      "party": "TS-LKD",
+      "text": "Kolegos, trumpai dėl gynybos aspektų: kariuomenės ir viešosios saugos sistemų efektyvumas priklauso nuo personalo prieinamumo ir budrumo. Jei viešasis sektorius pereitų prie 4 dienų savaitės be darbo organizacijos pertvarkymo (rotacija, būriavimas), galėtų kilti laikinų paslaugų spragų. Konkrečiai: Statistikos departamento duomenimis, viešojo sektoriaus darbuotojų dalis siekia apie 17 % visos užimtųjų struktūros. Net 10 % mažesnis prieinamumas darbo laiku gali reikšti paslaugų praradimą, ypač ekstremalių situacijų valdymui. Siūlau: Gynybos ministerija kartu su Vidaus reikalų ministerija parengs analizę dėl minimalios paslaugų garantijos mechanizmo ir rotacinių schemų, kurios neužkrautų biudžeto per daug. Taip pat rekomenduoju įtraukti į pilotus privalomas budrumo grandis ir apskaitos mechanizmus. Klausimas Agnei Bilotaitei: kaip Vidaus reikalų ministerija vertintų rotacinius modelius vidaus saugumo institucijoms?",
+      "update": "Krašto apsaugos ministerija iškelia paslaugų prieinamumo ir budrumo rizikas, siūlo rotacijas ir analizę."
+    },
+    {
+      "time": 101,
+      "timestamp": "11:41",
+      "type": "break",
+      "speaker": "Saulius Skvernelis",
+      "title": "Pertrauka",
+      "party": "Nepriklausomas",
+      "text": "Posėdis skelbia 15 minučių pertrauką. Grįžtame 12:00. Prašau kolegų būti laiku.",
+      "update": "15 min. pertrauka."
+    },
+    {
+      "time": 116,
+      "timestamp": "12:00",
+      "type": "discussion",
+      "speaker": "Algirdas Sysas",
+      "title": "Diskusija – klausimai ir papildomi ekonominiai skaičiavimai",
+      "party": "LSDP",
+      "text": "Grįžus prie temos, noriu pateikti papildomus skaičiavimus: mūsų modelis rodo, kad, jeigu valstybė finansuotų 50 % darbo reorganizacijos kaštų per pirmuosius 12 mėnesių MVĮ, prognozuojama investuota suma ~14–18 mln. EUR (500–800 įmonių segmente). Šis mechanizmas turėtų būti susietas su KPI – darbuotojų sveikata, produktyvumas ir darbo kaitos sumažėjimas. Ekonominės teorijos požiūris: humankapitalo investicijos ir darbo laiko optimizavimas gali padidinti bendrą našumą per nenuvertintą laiką, ypač jei įmonės diegia veiklos optimizavimo metodus (Lean, automatizacija). Remiuosi studija „Four Day Week Global“ (2022) ir Eurofound ataskaitomis. Klausimas Andriui Kubiliui: ar galėtumėte pateikti detalesnį BVP scenarijų su prielaida, kad produktyvumas padidėja 2 % per 3 metus, o ne lieka stabilus?",
+      "update": "LSDP pateikia finansavimo scenarijų MVĮ ir prašo papildomo makroekonominio modelio."
+    },
+    {
+      "time": 124,
+      "timestamp": "12:08",
+      "type": "discussion",
+      "speaker": "Andrius Kubilius",
+      "title": "Atsakymas į ekonominį klausimą – alternatyvų modeliavimas",
+      "party": "TS-LKD",
+      "text": "Atsakau į kolegos prašymą: jei produktyvumas padidėtų 2 % per 3 metus, dalis neigiamo poveikio BVP būtų kompensuota. Tačiau realiai tokiam produktyvumo augimui reikalingos investicijos. Mūsų modeliavimas parodo: 1) be papildomų investicijų – BVP sumažėjimas apie 1–1.8 %; 2) su 100–200 mln. EUR investicijų į technologijas ir įgūdžius – galimas neutralus poveikis BVP per 3 metus; 3) su struktūrinėmis reformomis (mokesčių neutralumas, skaitmeninimas) – gali atsirasti 1–2 % BVP augimas per 5 metus. Išvada: 4 dienų savaitė gali būti neutralus ar net naudingas, bet tik susiejus su reikšmingomis investicijomis į inovacijas ir mokymus. Klausimas finansų eksponentui: Argi Algirdai Sysai būtų priimtina per 2025–2027 metus skirti dalį biudžeto kapitalinėms investicijoms, o ne tiesiog finansuoti darbo laiką?",
+      "update": "TS-LKD pateikia alternatyvius makroekonominius scenarijus susiejant su investicijomis."
+    },
+    {
+      "time": 132,
+      "timestamp": "12:16",
+      "type": "discussion",
+      "speaker": "Algirdas Sysas",
+      "title": "Atsakymas – biudžeto prioritetai ir finansavimo šaltiniai",
+      "party": "LSDP",
+      "text": "Dėkoju už klausimą. Siūlome mišrų finansavimo modelį: dalis kapitalinių investicijų – per ES sanglaudos ir inovacijų fondus; dalis – per valstybės biudžetą, perskirstant mažiau efektyvias subsidijas (numatome ~60–80 mln. EUR per 3 metus). Taip pat siūlome sudaryti garantinį mechanizmą MVĮ, kad lengviau prieitų prie kreditų reorganizacijai. Pabrėžiu, kad tiesioginės kapitalinės investicijos ir darbo laiko reguliavimas turi eiti kartu: be investicijų tikėtinas ilgalaikis neigiamas poveikis. Siūlau dėl pilotų rezoliucijos priimti papildomą nuostatą: prieš nacionalinį įstatymą privalomi 2 metų pilotai su nepriklausoma vertinimo ataskaita. Klausimas Audroniui Ažubaliui dėl užsienio prekybos: ar matote riziką, kad darbo laiko reglamentavimas paveiks eksporto konkurencingumą, ir kokia būtų diplomatijos atsvara?",
+      "update": "Algirdas siūlo mišrų finansavimo modelį ir privalomus pilotus prieš įvedimą."
+    },
+    {
+      "time": 140,
+      "timestamp": "12:24",
+      "type": "discussion",
+      "speaker": "Audronius Ažubalis",
+      "title": "Užsienio prekybos ir diplomatijos požiūris",
+      "party": "TS-LKD",
+      "text": "Kolegos, kalbant apie eksporto riziką – koreguotas darbo laikas gali turėti įtakos konkurencingumui, ypač rinkose, kur klientai reikalauja nuolatinio tiekimo. Tačiau diplomatija ir tarptautinė prekybos politika gali padėti: derybos dėl tiekimo grandinių diversifikavimo, paskatinimai privačiam sektoriui investuoti į automatizaciją, o ne mažinti sąnaudas. Praktinis pavyzdys: 2016–2019 m. lietuviškų technologijų sektorius sėkmingai diversifikavo rinkas, naudodamas ES prekybos instrumentus, kurių rezultatas – eksporto augimas 18 % per 3 metus. Siūlau į pilotus įtraukti ir eksporto sektorius bei parengti išimtis kritinėms grandims. Taip pat rekomenduoju biudžetinį mechanizmą, skirtą eksporto sektoriams išsaugoti konkurencingumą (rašyta schema su 40–60 mln. EUR kompensacijomis, priklausomai nuo sektoriaus). Klausimas Asta Kubilienė: socialinė politika – kaip užtikrinti, kad išimtys netaptų diskriminacija darbuotojams?",
+      "update": "Užsienio prekyba gali prisitaikyti su diplomatijos ir finansinėmis priemonėmis; siūlomos išimtys kritiniams sektoriams."
+    },
+    {
+      "time": 148,
+      "timestamp": "12:32",
+      "type": "discussion",
+      "speaker": "Asta Kubilienė",
+      "title": "Socialinės apsaugos ir šeimos politikos požiūris",
+      "party": "LSDP",
+      "text": "Kolegos, socialinės politikos aspektas yra fundamentalus. Prašau turėti omenyje, kad vaikų priežiūros ir senjorų globos paslaugos yra jautrūs tinklai. Jei įvesime 4 dienų savaitę, galime skleisti nelygybę – darbo grafikai skirsis tarp sektorių ir dirbančiųjų kategorijų. Reali statistika: net 35 % dirbančiųjų su mažais vaikais jau šiandien naudoja lanksčius grafikus; papildoma tvarka gali palikti šeimas be priežiūros dienomis. Siūlau: 1) papildomai investuoti į vaikų priežiūros tinklą – 10–15 mln. EUR per metus regionams; 2) sukurti teisinę harmonizaciją, kad išimtys būtų aiškiai reglamentuotos ir laikinai kompensuojamos; 3) įtraukti socialines garantijas, kad atlyginimai nebūtų proporcingai sumažinti (įtemptas biudžeto klausimas). Taip pat remiuosi ILO dokumentais dėl darbo ir šeimos suderinimo. Klausimas verslo atstovui: Arūnai Gelūnai, kaip mokslo ir inovacijų politika gali padėti socialinei adaptacijai ir darbo rinkos perkvalifikavimui?",
+      "update": "Siūlomos investicijos į vaikų priežiūrą ir socialinių garantijų užtikrinimas, kad išimtys nebūtų diskriminacinės."
+    },
+    {
+      "time": 156,
+      "timestamp": "12:40",
+      "type": "discussion",
+      "speaker": "Arūnas Gelūnas",
+      "title": "Mokslo ir inovacijų svarba pereinant prie 4 dienų savaitės",
+      "party": "LSDP",
+      "text": "Kolegos, mokslo ir inovacijų politika yra kertinis elementas: be technologijų ir darbo organizacijos pokyčių, 4 dienų savaites įvedimas gali reikšti tik proporcingą darbo užmokesčio sumažinimą arba paslaugų smukimą. Rekomenduoju trejopą strategiją: 1) mokslinių tyrimų ir verslo bendradarbiavimo fondo stiprinimas – skirti 50 mln. EUR per 5 metus programoms, kurios padeda diegti darbo efektyvumo technologijas; 2) skaitmeninimo skatinimas viešajame sektoriuje – automatizuoti e-paslaugas, taip sumažinant personalo poreikį ir išlaikant paslaugų kokybę; 3) darbuotojų perkvalifikavimas – 20 mln. EUR per 3 metus. Pateikiu konkrečius sektorius: informacinės technologijos, sveikatos skaitmenizacija, logistikos optimizavimas. Klausimas Artūrui Skaržiui: kaip gerinti kibernetinį saugumą ir prieinamumą, kai didesnė darbo dalis bus vykdoma nuotoliniu būdu?",
+      "update": "Mokslo-politinis planas: finansuoti inovacijas, skaitmeninimą ir perkvalifikavimą."
+    },
+    {
+      "time": 164,
+      "timestamp": "12:48",
+      "type": "discussion",
+      "speaker": "Arturas Skaržius",
+      "title": "Technologijų ir skaitmeninės plėtros užtikrinimas",
+      "party": "LSDP",
+      "text": "Kolegos, technologijos yra būtinos: didesnis nuotolinis darbas ir efektyvumo priemonės reikalauja saugios skaitmeninės infrastruktūros. Statistikos departamento duomenimis, apie 68 % Lietuvos įmonių turi bent minimalius skaitmeninius sprendimus, bet tik 24 % – pažangius (automatizacija, ERP). Siūlau nacionalinę programą „Skaitmeninė pertrauka“ – valstybės ir privačio sektoriaus partnerystė investuoti į mažas įmones, kad jos galėtų dirbti efektyviau per trumpesnį laiką. Kibernetinio saugumo klausimas: daugiau nuotolinio darbo reiškia platesnį paviršių atakoms; siūlau 30 mln. EUR per 3 metus skirti saugumo stiprinimui per valstybės programas, įskaitant mokymus. Klausimas Arvydui Sekmokui: kaip ekonomikos politika gali suderinti verslo poreikius su skaitmeninėmis investicijomis ir skatinti užsienio investuotojus remti šiuos projektus?",
+      "update": "Siūloma skaitmeninimo programa ir kibernetinės apsaugos priemonės bei finansavimas MVĮ."
+    },
+    {
+      "time": 172,
+      "timestamp": "12:56",
+      "type": "discussion",
+      "speaker": "Arvydas Sekmokas",
+      "title": "Ekonomikos požiūris – privačių investicijų mobilizavimas",
+      "party": "Nepriklausomas",
+      "text": "Kolegos, privačios investicijos ir geras investicijų klimatas yra raktas. Siūlau mokesčių paskatas inovacijoms per judrąją kreditavimo schemas, kurios leistų MVĮ skolintis skaitmenizacijai su valstybės garantija. Pavyzdys: Estijos 2018–2021 instrumentas mobilizavo 85 mln. EUR privačių investicijų į skaitmeninius sprendimus. Be to, būtina užtikrinti darbo teisės lankstumą – leisti sutartines sąlygas, kurios leidžia derinti darbo laiką pagal šalių susitarimą, laikantis Konstitucijos principų. Siūlau pakeitimus įstatymo lygyje, kurie leistų įmonėms sudaryti alternatyvius grafikų tipus ir derinti su darbuotojų atstovais. Klausimas Aistei Kubilienei: kaip harmonizuoti tokias sutartis su socialinėmis garantijomis, kad nebūtų išnaudojimo rizikos?",
+      "update": "Siūlomos mokesčių paskatos ir valstybės garantuoti kreditai MVĮ skaitmenizacijai bei darbo teisės lankstumas."
+    },
+    {
+      "time": 180,
+      "timestamp": "13:00",
+      "type": "resolution",
+      "speaker": "Saulius Skvernelis",
+      "title": "Rezoliucijos svarstymas – pasiūlymo tekstas pristatymas",
+      "party": "Nepriklausomas",
+      "text": "Pateikiu rezoliucijos projektą: 'Seimas ragina Vyriausybę iki 2025 m. parengti ir įgyvendinti 2 metų pilotinių 4 dienų darbo savaitės programą, apimančią viešąjį ir privatų sektorius, su nepriklausomu vertinimu; siūlomas pereinamasis modelis iki 2027 m. ir finansavimo šaltiniai derinami su ES fondais'. Pateikiamos pagrindinės nuostatos: pilotai privalomi, nepriklausoma vertinimo komisija, sektorinės išimtys, MVĮ parama, investicijų skatinimas. Dabar priimame pataisas – kurios frakcijos pateikia raštiškus pakeitimus? Primenu – turime iki 13:00 baigti balsavimą, todėl greitoji procedūra su vienu balsavimu dėl viso teksto. Kviečiu pateikti pataisų sąrašą.",
+      "update": "Pristatoma rezoliucijos projekto tekstas su pagrindinėmis nuostatomis."
+    },
+    {
+      "time": 181,
+      "timestamp": "13:01",
+      "type": "resolution",
+      "speaker": "Agnė Širinskienė",
+      "title": "Pataisa Nr.1 – procedūrinė (konstitucinis užtikrinimas)",
+      "party": "LSDP",
+      "text": "Pateikiu pataisą: papildyti rezoliucijos 2 punktą nuostata, jog prieš bet kokį įstatymo projektą bus atlikta Konstitucijos atitikties analizė ir Seimo Teisės departamentas parengs teisinį įgyvendinimo modelį, užtikrinsiantį darbo santykių apsaugą. Argumentas – būtina apsaugoti darbuotojų laisvę ir sąžiningą sutarčių sudarymą. Siūlau įrašyti terminą: ši analizė turi būti pateikta Vyriausybei iki 2025 m. I pusmečio. Tai leis išvengti teisinių ginčų ir užtikrinti, kad nebūtų pažeisti Konstitucijos principai dėl užimtumo laisvės bei nuosavybės teisės. Klausimas kolegoms: ar pritariate, kad teisinė peržiūra būtų ne vėliau nei per 6 mėnesius nuo pilotų pradžios?",
+      "update": "Pataisa reikalauja Konstitucijos atitikties analizės ir terminų."
+    },
+    {
+      "time": 183,
+      "timestamp": "13:03",
+      "type": "resolution",
+      "speaker": "Andrius Navickas",
+      "title": "Pataisa Nr.2 – aplinkos ir žaliųjų priemonių įtraukimas",
+      "party": "LSDP",
+      "text": "Siūlau prie rezoliucijos pridėti punktą, kad pilotų vertinimo kriterijai turi apimti aplinkosaugos rodiklius: CO2 emisijų pokytis transporto sektoriuje, energijos vartojimo pokyčiai ir vietinio vartojimo skatinimas. Pavyzdys – Nemuno aušros pateikti ROI modeliai rodo, kad regioniniai pilotai gali sumažinti transporto CO2 0.8–1.3 %. Siūlomas indikatorius – per pilotą mažiausiai 0.5 % sumažėjimas CO2 per metus regione. Tai sudarys sąlygas kombinuoti socialines ir klimato politikos priemones bei efektyviau naudoti ES fondus. Klausimas Finansų komitetui: ar tokio tipo ESG indikatoriai gali būti formalizuoti kaip KPI ir susieti su ES finansavimu?",
+      "update": "Pataisa įtraukia aplinkosauginius KPI pilotų vertinimui."
+    },
+    {
+      "time": 185,
+      "timestamp": "13:05",
+      "type": "resolution",
+      "speaker": "Asta Kubilienė",
+      "title": "Pataisa Nr.3 – socialinės garantijos ir vaikų priežiūra",
+      "party": "LSDP",
+      "text": "Pateikiu pataisą: rezoliucijoje turi būti įrašyta, kad pilotams skiriamas papildomas finansavimas vaikų priežiūrai ir senjorų globai regionuose, kad šeimos nebūtų paliktos be paslaugų. Konkrečiai: siūlome numatyti 10 mln. EUR per metus pradinei infrastruktūrai ir papildomiems paslaugų etatams regionuose. Tas lėšas siūlau gauti perskirstant biudžeto eilutes nuo neprioritetinių išlaidų ir per ES socialinio fondo priemones. Argumentas – be papildomų garantijų 4 dienų savaitės plėtra gali sustiprinti neigiamas socialines pasekmes. Klausimas TS-LKD: ar pritariate socialinio garantinio sluoksnio įtraukimu į rezoliuciją?",
+      "update": "Pataisa reikalauja socialinių paslaugų finansavimo pilotams."
+    },
+    {
+      "time": 187,
+      "timestamp": "13:07",
+      "type": "resolution",
+      "speaker": "Aidas Gedvilas",
+      "title": "Pataisa Nr.4 – kaimo ūkio išimtys ir sezoniniai sektoriai",
+      "party": "LVŽS",
+      "text": "Pateikiu pataisą – rezoliucijoje turi būti aiškiai reglamentuota išimčių tvarka sezoniniams ir žemės ūkio sektoriams. Siūlau, kad ūkio veikloje būtų leidžiamos lankstesnės darbo valandų tvarkos ir atskiros paramos schemos. Konkrečiai: siūlome įtraukti punktą, leidžiantį sezoniniams darbininkams ir ūkio veikloms derinti darbo valandas, kai tai būtina produkcijos užtikrinimui. Taip pat siūlau 5 mln. EUR parama kaimo paslaugų tinklui. Klausimas Nemuno aušrai: ar esate pasirengę, kad regioniniai pilotai turėtų atskiras taisykles ir KPI?",
+      "update": "Pataisa skirta kaimo ir sezoninių sektorių išimčių reglamentavimui."
+    },
+    {
+      "time": 189,
+      "timestamp": "13:09",
+      "type": "resolution",
+      "speaker": "Arūnas Dulkys",
+      "title": "Pataisa Nr.5 – sveikatos sektoriaus nuoseklumas",
+      "party": "DSVL",
+      "text": "Siūlau pridėti nuostatą, kad sveikatos priežiūros sektorius bus įtrauktas į pilotus tik su griežtomis paslaugų prieinamumo garantijomis. Konkrečiai: būtina užtikrinti, kad paslaugų pasiekiamumas ne mažėtų daugiau nei 2 % skubios pagalbos atvejais, o ambulatorinių paslaugų laukimo laikas – nepadidėtų virš esamo vidurkio. Siūlau sudaryti koordinavimo mechanizmą su Sveikatos apsaugos ministerija ir viešųjų paslaugų teikėjais. Be to, siūlome skirti lėšas personalo papildomam apmokymui ir rotacijos schemoms. Klausimas Algirdui Sysui: ar LSDP sutiktų, kad viešajam sektoriui būtų taikomi papildomi reikalavimai dėl paslaugų neprarastumo ir vertinimo?",
+      "update": "Pataisa suteikia sveikatos sektoriui paslaugų prieinamumo garantijas pilotams."
+    },
+    {
+      "time": 191,
+      "timestamp": "13:11",
+      "type": "resolution",
+      "speaker": "Andrius Navickas",
+      "title": "Pataisa Nr.6 – finansinės kompensacijos MVĮ",
+      "party": "LSDP",
+      "text": "Siūlau į rezoliuciją įtraukti konkrečius finansinius mechanizmus MVĮ: valstybės dalinį kompensavimą darbo reorganizacijos kaštams (iki 30 % išlaidų per pirmuosius 12 mėnesių) ir skaitmenizavimo subsidiją (iki 15 tūkst. EUR įmonėms). Apytikslis biudžeto poreikis: 18–24 mln. EUR per programos laikotarpį. Siūloma sąlyga – įmonės privalo pateikti vertės pridėjimo ir darbo sąlygų gerinimo KPI, o lėšos mokamos etapais. Klausimas Audrai Sipavičienei: ar ES fondų derinys gali padengti 60 % šių išlaidų?",
+      "update": "Pataisa numato konkrečias MVĮ kompensacijas ir skaitmenizavimo subsidijas."
+    },
+    {
+      "time": 193,
+      "timestamp": "13:13",
+      "type": "resolution",
+      "speaker": "Audra Sipavičienė",
+      "title": "Atsakymas dėl ES fondų derinio",
+      "party": "DSVL",
+      "text": "Atsakau į klausimą: ES fondai gali padengti reikšmingą dalį, jei projektai atitinka sanglaudos politikos ir Socialinio fondo prioritetus. Praktika rodo, kad apie 50–70 % projekto išlaidų galima derinti per regioninius ir socialinius mechanizmus, jei pateikta tvirta KPI sistema. Rekomenduoju Paraiškų planą – parengti darbus iki 2025 m. I ketvirčio ir teikti paketą ES. Siūlau dar įtraukti finansinį audito mechanizmą ir nepriklausomą stebėseną. Klausimas finansų ekspertui: ar biudžeto rizika gali būti suplanuota per rezervinį fondą?",
+      "update": "Patvirtinta galimybė panaudoti ES fondus su rekomenduojama paraiškų strategija ir auditu."
+    },
+    {
+      "time": 195,
+      "timestamp": "13:15",
+      "type": "resolution",
+      "speaker": "Algirdas Sysas",
+      "title": "Pataisa Nr.7 – nepriklausomo vertinimo komisija",
+      "party": "LSDP",
+      "text": "Siūlau įtraukti nuostatą dėl nepriklausomos vertinimo komisijos sudarymo: tarpdisciplininė komisija, kurioje būtų ekonomistų, socialinių mokslų, darbo teisės ekspertų, atstovų iš Europos institucijų (Eurofound), nepriklausomų tyrėjų iš Lietuvos universitetų. Komisijos užduotis – surinkti duomenis, parengti tarpinę ataskaitą po pirmųjų 12 mėnesių pilotų ir galutinį vertinimą po 24 mėnesių. Finansavimas komisijai – 2 mln. EUR. Tai užtikrins procedūrinį ir mokslinį patikimumą. Klausimas TS-LKD: ar pritariate ekspertinės komisijos sudarymui, kuri būtų finansuojama dalinai iš ES fondų ir valstybės biudžeto?",
+      "update": "Siūloma nepriklausoma vertinimo komisija su aiškiais terminais ir biudžetu."
+    },
+    {
+      "time": 197,
+      "timestamp": "13:17",
+      "type": "resolution",
+      "speaker": "Andrius Navickas",
+      "title": "Pataisa Nr.8 – žaliųjų KPI įteisinimas",
+      "party": "LSDP",
+      "text": "Primenu siūlymą įrašyti žaliuosius KPI formalizuotai: CO2, energijos naudojimas, transporto kelionių skaičius pilotų mastu. Siūlau, kad sutartys dėl pilotų būtų susietos su duomenų teikimu apie aplinkosaugos poveikį. Tai leidžia ES fondams geriau įvertinti projektų atitiktį klimato tikslams. Be to, regioniniai valdžios institucijų ataskaitose turi būti pateikti vietiniai KPI rodikliai. Klausimas Finansų komitetui: ar ištesimas finansavimas žaliems KPI reikalauja papildomų procedūrinių pakeitimų?",
+      "update": "Pataisa įtvirtina žaliuosius KPI pirminiame rezoliucijos tekste."
+    },
+    {
+      "time": 199,
+      "timestamp": "13:19",
+      "type": "resolution",
+      "speaker": "Saulius Skvernelis",
+      "title": "Pataisų surašymas ir balsavimo procedūros aptarimas",
+      "party": "Nepriklausomas",
+      "text": "Gerbiami kolegos, surašėme 8 pagrindines pataisas. Dėl laiko – siūlau balsuoti už visą rezoliucijos paketą su visomis priėtomis pataisomis („visi pakeitimai įtraukti“), arba atskirai balsuoti dėl esminių punktų. Ar frakcijos sutinka su greitosios procedūros taikymu? Primenu, kad balsavimas bus frakcijų lygiu fiksuojant palaikomų, prieštaraujančių ir susilaikiusių narių skaičių. Jei nėra prieštaravimų, pradedame balsavimą 13:00.",
+      "update": "Parengtos pataisos ir siūloma balsavimas už visą paketą per greitąją procedūrą."
+    },
+    {
+      "time": 200,
+      "timestamp": "13:20",
+      "type": "vote",
+      "speaker": "Saulius Skvernelis",
+      "title": "Balsavimas (rezoliucijos paketas)",
+      "party": "Nepriklausomas",
+      "text": "Dabar balsuojame. Fiksuojami frakcijų balsai pagal šį modelį: TS-LKD (50 narių): 50 prieš; LSDP (35 narių): 35 už; LVŽS (12 narių): 4 už, 8 prieš; DSVL (10 narių): 6 už, 4 prieš; Nemuno aušra (8 nariai): 6 už, 2 susilaikė; Liberalai (8 nariai modeliniai): 5 už, 3 prieš; Nepriklausomi/Kitų frakcijų nariai (18 narių): 5 už, 10 prieš, 3 susilaikė. Suskaičiavus: už – 61, prieš – 75, susilaikė – 5. Rezoliucija nepriimta. Komentuodamas rezultatą, noriu atkreipti dėmesį: balsavimo rezultatų paskelbimas atitinka Seimo reglamentą; protokolas bus pridedamas. Prašau frakcijų atstovų trumpų komentarų apie balsavimo rezultatus. Dabar atskiri komentarai po 1–2 min. nuo frakcijų lyderių.",
+      "update": "Rezoliucija balsuota: 61 už, 75 prieš, 5 susilaikė — rezoliucija nepriimta."
+    },
+    {
+      "time": 201,
+      "timestamp": "13:21",
+      "type": "comment",
+      "speaker": "Algirdas Sysas",
+      "title": "Frakcijos po balsavimo komentaras",
+      "party": "LSDP",
+      "text": "Gaila, kad rezoliucija nepriimta. LSDP frakcija laikosi nuomonės, kad bent pilotai reikalingi moksliniam pagrindimui. Balsavimas parodė, kad reikalingas platesnis visuomenės ir verslo informacinis kampanijas, tikslesni KPI ir aiškesni finansavimo šaltiniai. Mes sieksime toliau teikti atnaujintą pasiūlymą su detalesniais modeliais ir paramos mechanizmais MVĮ ir regionams. Taip pat pasiūlysime įtraukti papildomų kompromisų su TS-LKD dėl investicijų į produktyvumą.",
+      "update": "LSDP apgailestauja dėl nepriimtos rezoliucijos ir ketina toliau tobulinti pasiūlymą."
+    },
+    {
+      "time": 202,
+      "timestamp": "13:22",
+      "type": "comment",
+      "speaker": "Agnė Bilotaitė",
+      "title": "TS-LKD frakcijos po balsavimo komentaras",
+      "party": "TS-LKD",
+      "text": "TS-LKD džiaugiasi, kad frakcijos pozicija – atsargumas ir prioritetas produktivitybei bei viešajam saugumui – sulaukė paramos. Tai rodo, jog Seimas nėra pasiruošęs priimti pločio sprendimų be investicijų ir aiškios fiskalinės struktūros. Siūlau toliau dirbti su kompromisu – pilotai, bet ne universali įstatymo norma iki visiško vertinimo. TS-LKD pasiūlys alternatyvų teisinį mechanizmą, leidžiantį skatinti lankstumą be įvedimo visuotinio reglamentavimo.",
+      "update": "TS-LKD pritaria atsargiam požiūriui ir siūlo tolesnę darbą su kompromisais."
+    },
+    {
+      "time": 203,
+      "timestamp": "13:23",
+      "type": "comment",
+      "speaker": "Ramūnas Zilnys",
+      "title": "Nemuno aušros po balsavimo komentaras",
+      "party": "Nemuno aušra",
+      "text": "Gaila, kad dauguma nebalsavo už mūsų iniciatyvą. Nemuno aušra primena, jog darbo laiką reikia vertinti ne tik per ekonomiškumo prizmę, bet ir per ekologinį bei bendruomeninį poveikį. Mes raginame tęsti dialogą su regionais ir įtraukti aplinkos rodiklius į tolimesnes diskusijas. Siūlau papildomai rengti viešas konsultacijas su smulkiais verslininkais ir kaimo bendruomenėmis.",
+      "update": "Nemuno aušra pabrėžia ekologinį ir regioninį dialogą tęsimą."
+    },
+    {
+      "time": 204,
+      "timestamp": "13:24",
+      "type": "comment",
+      "speaker": "Aida Gedvilas",
+      "title": "LVŽS po balsavimo komentaras",
+      "party": "LVŽS",
+      "text": "LVŽS balsavo atsargiai, atsižvelgiant į kaimo ir sezoninių sektorių rizikas. Pabrėžiame, kad bet koks reguliavimas turi būti pritaikytas sektoriams ir neturi pakenkti žemės ūkio produktyvumui. Siūlome tęsti konsultacijas su žemdirbių asociacijomis.",
+      "update": "LVŽS akcentuoja regionų ir žemės ūkio specifiką."
+    },
+    {
+      "time": 205,
+      "timestamp": "13:25",
+      "type": "comment",
+      "speaker": "Arūnas Dulkys",
+      "title": "DSVL po balsavimo komentaras",
+      "party": "DSVL",
+      "text": "DSVL palaiko pilotų idėją, bet pripažįsta, kad šį kartą nepakako pritarimo. Raginame Vyriausybę parengti detalų parengiamąjį planą, jungiantį ES fondus ir nacionalinį finansavimą. Taip pat siūlome iniciatyvą atnaujinti per 6 mėnesius ir pateikti konkretesnius KPI bei biudžeto šaltinius.",
+      "update": "DSVL ragina Vyriausybę parengti planą per 6 mėn. ir sugrįžti su konkrečiais pasiūlymais."
+    },
+    {
+      "time": 206,
+      "timestamp": "13:26",
+      "type": "comment",
+      "speaker": "Andrius Navickas",
+      "title": "LSDP (žalioji/kandidatūra) komentaras",
+      "party": "LSDP",
+      "text": "Primename, kad klimato tikslai turi būti integruoti į bet kokį darbo laiko pokytį. Mes tęsiame darbą ir siūlysime mažesnį, bet konkretesnį pilotų paketą, fokusuotą į miestų–regionų sąveiką.",
+      "update": "LSDP tęs darbą su žaliaisiais KPI ir regioniniu pletros modeliu."
+    },
+    {
+      "time": 207,
+      "timestamp": "13:27",
+      "type": "comment",
+      "speaker": "Arvydas Sekmokas",
+      "title": "Nepriklausomų atstovas (ekonomika) komentaras",
+      "party": "Nepriklausomas",
+      "text": "Manau, jog ši diskusija atvėrė kelią konstruktyviam darbui. Siūlau Vyriausybei rengti tris atskirus paketus: pilotai, investicijų skatinimas ir teisės aktų lankstumas. Tai leistų pamatyti realius rezultatus be drastiškų sprendimų.",
+      "update": "Siūloma trijų paketų modelio parengimas Vyriausybės lygmenyje."
+    },
+    {
+      "time": 208,
+      "timestamp": "13:28",
+      "type": "comment",
+      "speaker": "Arūnas Valinskas",
+      "title": "TS-LKD (komunikacija) trumpas komentaras",
+      "party": "TS-LKD",
+      "text": "TS-LKD pabrėžia viešosios komunikacijos svarbą – reikia aiškiai paaiškinti visuomenei galimus scenarijus, kad nebūtų klaidinančios informacijos apie atlyginimų sumažėjimą ar paslaugų nykimą. Reklamavimo kampanija turi būti su faktais ir EK/AJ studijų apžvalga.",
+      "update": "Pabrėžiama viešoji komunikacija ir informacinė kampanija."
+    },
+    {
+      "time": 209,
+      "timestamp": "13:29",
+      "type": "comment",
+      "speaker": "Arvydas Juozaitis",
+      "title": "Nepriklausomas (kultūra ir vertybės) komentaras",
+      "party": "Nepriklausomas",
+      "text": "Kultūros dimensija – svarbi: laisvos dienos gali prisidėti prie pilietinio gyvenimo stiprinimo, kūrybinių industrijų atsigavimo ir mentalinės sveikatos. Siūlau kultūros ministrystei integruoti programas, skirtas laisvo laiko kokybei. Tai yra nematerialus efektyvumo šaltinis.",
+      "update": "Kultūros įtraukimas į laisvo laiko politiką ir mentalinės sveikatos skatinimas."
+    },
+    {
+      "time": 210,
+      "timestamp": "13:30",
+      "type": "comment",
+      "speaker": "Artūras Melianas",
+      "title": "Nemuno aušra (kultūra) komentaras",
+      "party": "Nemuno aušra",
+      "text": "Kultūros sektorius iš tiesų gali būti vienas iš pilotų naudotojų: laisvos dienos skatina lankytojų srautus muziejuose, teatruose regionuose. Siūlau į pilotus įtraukti kultūros organizacijas kaip viena iš matomų naudos sričių.",
+      "update": "Siūloma kultūros organizacijų įtraukimas į pilotus."
+    },
+    {
+      "time": 211,
+      "timestamp": "13:31",
+      "type": "comment",
+      "speaker": "Aušra Papirtienė",
+      "title": "LVŽS (gyvūnų gerovė) komentaras",
+      "party": "LVŽS",
+      "text": "Noriu pabrėžti praktinį aspektą: gyvūnų gerovės sektorius turi nuolatinį priežiūros poreikį, ir bet kokie darbo grafikai turi tai atsižvelgti. Siūlau įtraukti specialias rekomendacijas ūkio gyvūnų priežiūrai ir veterinarijos paslaugoms.",
+      "update": "Gyvūnų gerovės sektorius reikalauja specialių rekomendacijų ir išimčių."
+    },
+    {
+      "time": 212,
+      "timestamp": "13:32",
+      "type": "comment",
+      "speaker": "Andrejus Stančikas",
+      "title": "LSDP (kultūrų dialogas) komentaras",
+      "party": "LSDP",
+      "text": "Kultūrų dialogo perspektyva – svarbi socialiniam audiniui. Laisvesnis darbo laikas gali stiprinti tautinių bendruomenių veiklą bei integraciją. Rekomenduoju pilotus su įtraukimu tautinių mažumų organizacijų KPI.",
+      "update": "Siūloma įtraukti tautinių bendruomenių KPI pilotuose."
+    },
+    {
+      "time": 213,
+      "timestamp": "13:33",
+      "type": "comment",
+      "speaker": "Andrius Navickas",
+      "title": "LSDP (žalioji) trumpas papildymas",
+      "party": "LSDP",
+      "text": "Papildysiu: reikalingas poveikio vertinimas ir klimato tikslų pažanga turi būti vieša ir prieinama. Toks skaidrumas padeda regionams planuoti mobilumo priemones ir transporto tinklus.",
+      "update": "Reikalaujama vieša ataskaitų skaidrumo ir regioninių planų integravimas."
+    },
+    {
+      "time": 214,
+      "timestamp": "13:34",
+      "type": "comment",
+      "speaker": "Artūras Skaržius",
+      "title": "Technologijų papildymas dėl viešo sektoriaus",
+      "party": "LSDP",
+      "text": "Viešajame sektoriuje skaitmenizacija turėtų būti prioritetas; tai leis išlaikyti paslaugas ir sumažinti darbuotojų poreikį. Siūlau, kad pilotai būtų sąlygojami investicijų į e-paslaugų plėtrą.",
+      "update": "Viešojo sektoriaus skaitmenizacija kaip sąlyga pilotams."
+    },
+    {
+      "time": 215,
+      "timestamp": "13:35",
+      "type": "comment",
+      "speaker": "Arūnas Gelūnas",
+      "title": "Mokslo požiūris – vertinimo metodika",
+      "party": "LSDP",
+      "text": "Pabrėžiu, jog vertinimo metodika turi būti aiški: CBA (kainos ir naudos analizė), socialinis ROI ir klimatinis poveikis. Siūlomas metodologijos pavyzdys būtų parengtas akademinės bendruomenės, viešojo ir privataus sektoriaus ekspertų. Tai leidžia interpretuoti rezultatus objektyviai.",
+      "update": "Siūloma parengti aiškią vertinimo metodiką su akademine išvadų baze."
+    },
+    {
+      "time": 216,
+      "timestamp": "13:36",
+      "type": "comment",
+      "speaker": "Arvydas Juozaitis",
+      "title": "Kultūrinis ir filosofinis komentaras",
+      "party": "Nepriklausomas",
+      "text": "Pridurčiau, jog klausimas nėra tik ekonominis – tai diskusija apie žmogaus laisvę, laiko vertę ir visuomenės modelį. Reikia, kad visuomenė dalyvautų šiame dialoge, nebūtų sprendžiama per atskirą biurokratinį procesą. Siūlau viešas diskusijas ir piliečių forumus.",
+      "update": "Siūlomi pilietiniai forumai ir plačios visuomeninės konsultacijos."
+    },
+    {
+      "time": 217,
+      "timestamp": "13:37",
+      "type": "closing",
+      "speaker": "Saulius Skvernelis",
+      "title": "Posėdžio uždarymas – procedūrinė informacija",
+      "party": "Nepriklausomas",
+      "text": "Gerbiami kolegos, posėdis baigiamas. Rezultatas: rezoliucija nepriimta. Prašau sekretoriato parengti oficialius protokolus su visais pranešimais, pateiktiems dokumentams ir balsavimo rezultatais. Primenu frakcijoms – tęsiame darbą komitetuose; siūlymai dėl papildomų teisės aktų pakeitimų turi būti pateikti raštu iki 30 dienų. Dėkoju už konstruktyvų ir plačią diskusiją. Posėdis uždaromas.",
+      "update": "Posėdis baigtas; rezoliucija atmesta; tolesnės procedūros nurodytos."
+    }
+  ],
+  "audio": {
+    "enabled": true,
+    "model": "speaches-ai/Kokoro-82M-v1.0-ONNX",
+    "mappingFile": null,
+    "audioDirectory": null,
+    "storageFolder": null,
+    "mapping": [
+      {
+        "eventIndex": 0,
+        "speaker": "Saulius Skvernelis",
+        "voice": "af_heart",
+        "voiceKey": "af_heart",
+        "rateMultiplier": 1,
+        "timestamp": "10:00",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 1,
+        "speaker": "Agnė Širinskienė",
+        "voice": "af_alloy",
+        "voiceKey": "af_alloy",
+        "rateMultiplier": 1.03,
+        "timestamp": "10:05",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 2,
+        "speaker": "Arūnas Dulkys",
+        "voice": "af_bella",
+        "voiceKey": "af_bella",
+        "rateMultiplier": 0.97,
+        "timestamp": "10:15",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 3,
+        "speaker": "Algirdas Sysas",
+        "voice": "af_kore",
+        "voiceKey": "af_kore",
+        "rateMultiplier": 1.05,
+        "timestamp": "10:45",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 4,
+        "speaker": "Agnė Bilotaitė",
+        "voice": "af_nicole",
+        "voiceKey": "af_nicole",
+        "rateMultiplier": 0.95,
+        "timestamp": "10:53",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 5,
+        "speaker": "Ramūnas Zilnys",
+        "voice": "af_river",
+        "voiceKey": "af_river",
+        "rateMultiplier": 1.08,
+        "timestamp": "11:01",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 6,
+        "speaker": "Aidas Gedvilas",
+        "voice": "af_sky",
+        "voiceKey": "af_sky",
+        "rateMultiplier": 0.92,
+        "timestamp": "11:09",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 7,
+        "speaker": "Audra Sipavičienė",
+        "voice": "af_nova",
+        "voiceKey": "af_nova",
+        "rateMultiplier": 1.02,
+        "timestamp": "11:17",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 8,
+        "speaker": "Andrius Kubilius",
+        "voice": "am_adam",
+        "voiceKey": "am_adam",
+        "rateMultiplier": 1,
+        "timestamp": "11:25",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 9,
+        "speaker": "Arvydas Anušauskas",
+        "voice": "am_echo",
+        "voiceKey": "am_echo",
+        "rateMultiplier": 0.98,
+        "timestamp": "11:33",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 10,
+        "speaker": "Saulius Skvernelis",
+        "voice": "af_heart",
+        "voiceKey": "af_heart",
+        "rateMultiplier": 1,
+        "timestamp": "11:41",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 11,
+        "speaker": "Algirdas Sysas",
+        "voice": "af_kore",
+        "voiceKey": "af_kore",
+        "rateMultiplier": 1.05,
+        "timestamp": "12:00",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 12,
+        "speaker": "Andrius Kubilius",
+        "voice": "am_adam",
+        "voiceKey": "am_adam",
+        "rateMultiplier": 1,
+        "timestamp": "12:08",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 13,
+        "speaker": "Algirdas Sysas",
+        "voice": "af_kore",
+        "voiceKey": "af_kore",
+        "rateMultiplier": 1.05,
+        "timestamp": "12:16",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 14,
+        "speaker": "Audronius Ažubalis",
+        "voice": "am_eric",
+        "voiceKey": "am_eric",
+        "rateMultiplier": 1.06,
+        "timestamp": "12:24",
+        "file": null,
+        "format": "mp3"
+      }
+    ]
+  }
+}

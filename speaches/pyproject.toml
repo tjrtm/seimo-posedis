@@ -1,0 +1,110 @@
+[project]
+name = "speaches"
+version = "0.1.0"
+requires-python = "==3.12.*"
+# https://packaging.python.org/en/latest/specifications/version-specifiers/#id5
+dependencies = [
+    "ctranslate2>=4.5.0",
+    "fastapi>=0.121.1",
+    "faster-whisper>=1.1.1",
+    "huggingface-hub[hf-transfer]>=0.33.4",
+    "kokoro-onnx[gpu]>=0.4.5,<0.5.0",
+    "numpy>=2.3.1",
+    "piper-tts>=1.3.0",
+    "pydantic-settings>=2.10.1",
+    "pydantic>=2.11.7",
+    "python-multipart>=0.0.10",
+    "sounddevice>=0.5.2",
+    "soundfile>=0.13.1",
+    "uvicorn>=0.35.0",
+    "aiostream>=0.7.0",
+    "cachetools>=6.1.0",
+    "httpx-ws>=0.7.2",
+    "aiortc>=1.13.0",
+    "httpx>=0.28.1",
+    "onnx-asr>=0.7.0",
+    "openai[realtime]>=2.7.1",
+    "gradio>=5.49.1",
+    "httpx-sse>=0.4.1",
+    "opentelemetry-distro>=0.50b0",
+    "opentelemetry-exporter-otlp>=1.27.0",
+    "opentelemetry-instrumentation-asgi==0.50b0",
+    "opentelemetry-instrumentation-asyncio==0.50b0",
+    "opentelemetry-instrumentation-logging==0.50b0",
+    "opentelemetry-instrumentation-threading==0.50b0",
+    "opentelemetry-instrumentation-urllib==0.50b0",
+    # "opentelemetry-instrumentation-wsgi==0.50b0"
+    "opentelemetry-instrumentation-fastapi==0.50b0",
+    "opentelemetry-instrumentation-grpc==0.50b0",
+    "opentelemetry-instrumentation-httpx==0.50b0",
+    "opentelemetry-instrumentation-requests==0.50b0",
+    "opentelemetry-instrumentation-urllib3==0.50b0",
+    "opentelemetry-instrumentation-openai-v2>=2.1b0",
+    "opentelemetry-instrumentation-openai>=0.37.1",
+]
+
+[dependency-groups]
+dev = [
+  {include-group = "docs"},
+  {include-group = "lint"},
+  {include-group = "test"}
+]
+docs = [
+    "mdx-truly-sane-lists>=1.3",
+    "mkdocs-material>=9.6.15",
+    "mkdocs-render-swagger-plugin>=0.1.2",
+    "mkdocstrings[python]>=0.29.1",
+]
+lint = [
+    "basedpyright>=1.33.0",
+    "pre-commit>=4.2.0",
+    "ruff>=0.14.4",
+]
+test = [
+    "anyio>=4.9.0",
+    "datamodel-code-generator>=0.31.2",
+    "pytest-antilru>=2.0.0",
+    "pytest-asyncio>=1.0.0",
+    "pytest-mock>=3.14.1",
+    "pytest-xdist>=3.8.0",
+    "pytest>=8.4.1",
+    "srt>=3.5.3",
+    "webvtt-py>=0.5.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function" # this fixes pytest warning
+filterwarnings = [
+    'ignore::DeprecationWarning'
+]
+# https://docs.pytest.org/en/stable/how-to/mark.html#registering-marks
+markers = [
+    "requires_openai",
+]
+
+[tool.uv]
+required-version = "~=0.8.14"
+constraint-dependencies = ["llvmlite>=0.40.0"]
+# TODO: create an issue on https://github.com/thewh1teagle/kokoro-onnx regarding this
+override-dependencies = ["onnxruntime-gpu>=1.22.0 ; platform_machine == 'x86_64'", "onnxruntime>=1.22.0 ; platform_machine != 'x86_64'"]
+
+# [tool.uv.sources]
+# piper-phonemize = [
+#   { url = "https://github.com/fedirz/piper-phonemize/raw/refs/heads/master/dist/piper_phonemize-1.2.0-cp312-cp312-manylinux_2_28_aarch64.whl", marker = "platform_machine == 'aarch64' and sys_platform == 'linux'" },
+#   { url = "https://github.com/fedirz/piper-phonemize/raw/refs/heads/master/dist/piper_phonemize-1.2.0-cp312-cp312-manylinux_2_28_x86_64.whl", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+# ]
+#
+# [[tool.uv.dependency-metadata]]
+# name = "piper-tts"
+# version = "1.2.0"
+# requires-dist = ["piper-phonemize"]
+
+[tool.uv.workspace]
+members = [
+    "packages/speaches-cli",
+    # "misc/onnx_export",
+]
