@@ -1,24 +1,22 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- `seimas_live_stream_enhanced.html` – primary UI and controls.
-- `seimas_stream_enhanced.js` – core simulation, AI integration, timeline, storage.
-- `animated_face.js` – optional speaking face animation.
-- `seimas_members_data.js` – embedded member metadata for offline use.
+- `src/` (React) – primary UI, layout, and controls (`App.jsx`, hooks, styles).
+- `public/legacy/seimas_stream_enhanced.js` – core simulation, AI integration, timeline, storage (shared by React + Node archyvas API).
+- `public/legacy/animated_face.js` – optional speaking face animation (attached globally).
+- `public/legacy/seimas_members_data.js` – embedded member metadata for offline use.
 - `seimas/` – 141 member profiles as Markdown (`First_Lastname-####.md`).
 - `sessions/` – generated transcripts (JSON); kept empty by default (`.gitkeep`).
-- `test_members.html` – quick manual verification of member data rendering.
 - `README.md` and other docs – product overview and usage.
 
 ## Runtime Services & Build Commands
-- **Web assets**: serve locally (no build step) via `python3 -m http.server 8000`, then open `http://localhost:8000/seimas_live_stream_enhanced.html`. Direct file loads work but break File System API.
+- **Web assets**: run `npm install && npm run dev` (Vite) and open `http://localhost:5173`. Production preview via `npm run preview`. Legacy HTML serving is no longer supported.
 - **Local TTS**: start Speaches (`cd speaches && docker compose -f compose.cpu.yaml up speaches`). Configure `ALLOW_ORIGINS=["http://127.0.0.1:5500","http://localhost:8000"]` when serving via dev servers to avoid CORS blocks.
 - **Model preparation**: download the Kokoro TTS model once (`uvx speaches-cli model download speaches-ai/Kokoro-82M-v1.0-ONNX`) or add aliases in `speaches/model_aliases.json`.
-- Quick data check: open `test_members.html` to validate member rendering and console cleanliness.
+- Quick data check: load the React UI and open the member modal; `window.SEIMAS_MEMBERS_DATA` is injected via `public/legacy/seimas_members_data.js`.
 
-## Coding Style & Naming Conventions
-- JavaScript: 4‑space indentation, single quotes, semicolons, ES6 classes.
-- Keep modules dependency‑free (vanilla JS, no bundlers).
+- React/JSX: functional components with hooks, 4‑space indentation, single quotes, semicolons. Legacy controllers remain ES6 classes.
+- Keep legacy modules dependency‑free (vanilla JS) but feel free to use React ecosystem inside `src/`.
 - Filenames: snake_case for JS/HTML; member profiles keep Lithuanian diacritics and use `First_Lastname-####.md`.
 - Prefer small, focused methods; document non‑obvious logic with brief comments.
 
@@ -33,12 +31,11 @@
 - Local mode validation requires both `localOllamaBaseUrlInput` and `localOllamaModelInput`. Remote mode requires an OpenAI API key starting with `sk-`.
 - When extending functionality, always add provider-aware copy (statuses, logs, docs) so we never assume Speaches or OpenAI is the only pipeline.
 
-## Testing Guidelines
 - Manual verification in modern Chromium/Firefox:
   - Playback controls, timeline updates, and speaker info update correctly.
   - Transcript generation flow works with an API key and saves to `sessions/` when permitted.
   - No errors in DevTools console.
-- Use `test_members.html` to validate member data loads and UI renders.
+- Use the React modal to validate member data loads and ensure `SEIMAS_MEMBERS_DATA` is attached before initialization.
 - Local TTS smoke test: with Speaches running, enable the TTS checkbox, confirm POST `http://localhost:8000/v1/audio/speech` returns 200 and that generated audio plays in the timeline.
 
 ## Commit & Pull Request Guidelines

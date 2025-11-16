@@ -1,0 +1,58 @@
+{
+  "savedAt": "2025-11-16T00:57:32.890Z",
+  "title": "Seimo posėdis",
+  "topic": "Kiek ežiukui yra metų ir kodėl jis toks protingas?",
+  "totalEvents": 2,
+  "durationMinutes": 10,
+  "events": [
+    {
+      "time": 0,
+      "timestamp": "10:00",
+      "type": "opening",
+      "speaker": "Saulius Skvernelis",
+      "title": "Seimo pirmininkas",
+      "party": "DSVL",
+      "text": "Pradedame Lietuvos Respublikos Seimo posėdį. Šiandien svarstysime klausimą: \"Kiek ežiukui yra metų ir kodėl jis toks protingas?\"",
+      "update": "Posėdis pradėtas"
+    },
+    {
+      "time": 5,
+      "timestamp": "10:05",
+      "type": "closing",
+      "speaker": "Saulius Skvernelis",
+      "title": "Seimo pirmininkas",
+      "party": "DSVL",
+      "text": "Posėdis baigtas. Dėkoju visiems dalyvavusiems.",
+      "update": "Posėdis oficialiai baigtas"
+    }
+  ],
+  "audio": {
+    "enabled": true,
+    "model": "speaches-ai/Kokoro-82M-v1.0-ONNX",
+    "mappingFile": null,
+    "audioDirectory": null,
+    "storageFolder": null,
+    "mapping": [
+      {
+        "eventIndex": 0,
+        "speaker": "Saulius Skvernelis",
+        "voice": "af_heart",
+        "voiceKey": "af_heart",
+        "rateMultiplier": 1,
+        "timestamp": "10:00",
+        "file": null,
+        "format": "mp3"
+      },
+      {
+        "eventIndex": 1,
+        "speaker": "Saulius Skvernelis",
+        "voice": "af_heart",
+        "voiceKey": "af_heart",
+        "rateMultiplier": 1,
+        "timestamp": "10:05",
+        "file": null,
+        "format": "mp3"
+      }
+    ]
+  }
+}

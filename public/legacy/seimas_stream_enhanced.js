@@ -1843,6 +1843,12 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
                 return { success: true, path: `sessions/${folderName}/${fileName}`, method: 'node' };
             }
 
+            const nodeArchiveResult = await this.trySaveTranscriptViaNodeService(folderName, fileName, serialized);
+            if (nodeArchiveResult?.success && nodeArchiveResult.path) {
+                this.recordSavedSession(nodeArchiveResult.path, timestamp, 'node-api');
+                return { success: true, path: nodeArchiveResult.path, method: 'node-api' };
+            }
+
             if (window.isSecureContext && typeof window.showDirectoryPicker === 'function') {
                 try {
                     let context = sessionStorageContext;
@@ -2160,6 +2166,52 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
 
         const directoryName = options.folderName || directoryHandle.name || 'sessions';
         return `${directoryName}/${fileName}`;
+    }
+
+    async trySaveTranscriptViaNodeService(folderName, fileName, contents) {
+        if (typeof window === 'undefined' || typeof window.fetch !== 'function') {
+            return null;
+        }
+
+        const origin = window.location?.origin || '';
+        if (!origin || origin.startsWith('file://')) {
+            return null;
+        }
+
+        const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timeoutId = controller ? setTimeout(() => controller.abort(), 6000) : null;
+
+        try {
+            const response = await fetch('/api/sessions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ folderName, fileName, contents }),
+                signal: controller?.signal
+            });
+
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+
+            if (!response.ok) {
+                throw new Error(`Serverio atsakymas: ${response.status}`);
+            }
+
+            const result = await response.json();
+            if (!result?.path) {
+                throw new Error('Neteisingas serverio atsakas (trūksta kelio)');
+            }
+
+            return { success: true, path: result.path };
+        } catch (error) {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            console.warn('Nepavyko išsaugoti per Node sesijų API:', error);
+            return null;
+        }
     }
 
     async getSessionDirectoryHandle() {
@@ -2823,7 +2875,10 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
     }
 }
 
-// Initialize the enhanced stream when page loads
-document.addEventListener('DOMContentLoaded', () => {
-    new EnhancedSeimasLiveStream();
-});
+// Expose initializer so React UI can trigger once the DOM is ready
+window.initializeSeimasLiveStream = function initializeSeimasLiveStream() {
+    if (!window.__seimasLiveStreamInstance) {
+        window.__seimasLiveStreamInstance = new EnhancedSeimasLiveStream();
+    }
+    return window.__seimasLiveStreamInstance;
+};

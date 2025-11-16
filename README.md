@@ -9,10 +9,10 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
   - Valid OpenAI API key with GPT-5-mini access (used only for transcript generation).
   - Running Speaches server on the stakeholder device (`http://localhost:8000/v1`) with at least one Kokoro-derived TTS model downloaded.
   - (For local simulations) An Ollama instance with the chosen LLM pulled locally (e.g., `ollama pull llama3.1:70b`).
-- **UI Highlights:** refreshed dark-corporate interface with mode cards (local vs. OpenAI), bilingual prompts, and contextual status badges improves stakeholder demos without extra configuration.
+- **UI Highlights:** refreshed dark-corporate React interface with mode cards (local vs. OpenAI), bilingual prompts, and contextual status badges improves stakeholder demos without extra configuration.
 - **Data Residency & Privacy:** No external calls beyond OpenAI’s Responses endpoint. All outputs, cached keys, and session files stay in the stakeholder’s browser storage or the local `sessions/` folder selected via the File System Access API.
 - **Evaluation Checklist:** 
-  1. Launch the HTML over `python3 -m http.server 8000`.
+  1. Run `npm install && npm run dev`, then open `http://localhost:5173`.
   2. Fill topic + choose Lithuanian/English.
   3. Provide API key and local Speaches details, enable “Naudoti lokalią Speaches teksto į kalbą tarnybą.”
   4. Generate a full session and confirm JSON download + optional audio playback.
@@ -34,9 +34,9 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 - Gilios diskusijos su tarpusavio klausimais ir atsakymais
 
 ### 💾 Sesijų archyvavimas
-- Sugeneruota stenograma automatiškai įrašoma į `sessions/` katalogą (naudojant Node.js aplinką)
-- Naršyklėje stenogramos atsisiunčiamos JSON formatu arba įrašomos pasirinktame aplanke naudojant Failų sistemos API
-- `sessions/` kataloge kaupiama chronologinė posėdžių istorija JSON formatu
+- `npm run dev` ir `npm run preview` paleidžia Node API (`POST /api/sessions`), kuris automatiškai išsaugo sugeneruotas stenogramas į `sessions/` katalogą (poaplankyje pagal sesijos datą).
+- Naršyklėje stenogramos atsisiunčiamos JSON formatu arba įrašomos pasirinktame aplanke naudojant Failų sistemos API, jeigu nenaudojate Node API.
+- `sessions/` kataloge kaupiama chronologinė posėdžių istorija JSON formatu ir garso išklotinėms paruoštuose aplankuose.
 
 ### 🌐 Dvikalbė generacija
 - Vienu jungikliu pasirinkite lietuvių (numatytoji) arba anglų kalbą
@@ -74,29 +74,36 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 
 ## Naudojimas
 
-1. **Atidarykite** `seimas_live_stream_enhanced.html`.
-2. **Spauskite** "⚙️ Generuoti naują posėdį".
-3. **Įveskite** posėdžio temą (pvz.: "Ar turėtų būti įvesta 4 dienų darbo savaitė?").
-4. **Pasirinkite** posėdžio kalbą (Lietuvių pagal nutylėjimą arba English).
-5. **Pasirinkite** generavimo režimą:
-   - *Lokalus:* nurodykite Ollama API adresą (pvz., `http://localhost:11434`) ir modelio pavadinimą (`llama3.1:70b`), taip pat Speaches TTS URL/modelį ir pageidaujamą audio formatą.
-   - *Debesų (OpenAI):* įveskite OpenAI API raktą su GPT-5-mini ir gpt-4o-mini-tts prieiga.
-6. **Spauskite** "🚀 Generuoti Seimo posėdį".
-7. Jei naršyklė palaiko Failų sistemos API, pasirinkite `sessions` katalogą automatiškam išsaugojimui (nuspręskite, ar saugoti audio failus).
-8. **Stebėkite** gyvą simuliaciją ir naudokite tamsųjį UI režimą analizėms ar prezentacijoms.
+1. **Diegimas:** paleiskite `npm install` projekto šaknyje.
+2. **Dev serveris:** vykdykite `npm run dev` ir atidarykite `http://localhost:5173`.
+3. **Inicializacija:** paspauskite "⚙️ Generuoti naują posėdį" viršutinėje juostoje.
+4. **Tema:** įveskite klausimą (pvz. „Ar turėtų būti įvesta 4 dienų darbo savaitė?“) ir pasirinkite kalbą (lt/en).
+5. **Režimai:**
+   - *Lokalus:* nurodykite Ollama API (`http://localhost:11434`), modelį (`llama3.1:70b`), Speaches URL ir modelį bei pasirinktą audio formatą.
+   - *Debesų (OpenAI):* pateikite OpenAI API raktą su GPT-5-mini ir gpt-4o-mini-tts prieiga.
+6. **Generavimas:** spauskite "🚀 Generuoti Seimo posėdį" ir, jei norite automatinio įrašymo, pasirinkite `sessions` aplanką per File System Access.
+7. **Transliacija:** stebėkite gyvą simuliaciją, naudokite TTS, sesijos archyvų įrašymą ar atsisiuntimus JSON formatu.
 
 ## Failų struktūra
 
 ```
-├── seimas_live_stream_enhanced.html    # Pagrindinis UI
-├── seimas_stream_enhanced.js           # AI integracija ir logika
-├── seimas/                             # 141 parlamentaro profilis
-│   ├── Saulius_Skvernelis-0001.md
-│   ├── Ingrida_Simonyte-0002.md
-│   └── ... (139 daugiau)
+├── index.html                          # Vite įkrovos failas + legacy skriptai
+├── package.json / vite.config.js       # React build įrankiai
+├── src/
+│   ├── App.jsx                         # React UI (kortelės, valdikliai)
+│   ├── App.css                         # Modernus tamsus stilius
+│   └── main.jsx                        # React įkrova
+├── public/
+│   ├── favicon.ico
+│   └── legacy/
+│       ├── seimas_stream_enhanced.js   # Branduolio logika + Node sesijų archyvai
+│       ├── seimas_members_data.js      # 141 nario duomenys (globalus Array)
+│       └── animated_face.js            # WebGL veido animacija
+├── seimas/                             # 141 parlamentaro profilis (Markdown)
+├── sessions/                           # Sugeneruotų sesijų JSON išrašai
 ├── seimas_session_transcript.md        # Pavyzdinis posėdis
-├── seimas_event_setup.md              # Posėdžio organizacija
-└── seimas_members_assignment.md       # Narių išdėstymas salėje
+├── seimas_event_setup.md               # Posėdžio organizacija
+└── seimas_members_assignment.md        # Narių išdėstymas salėje
 ```
 
 ## API Requirements
