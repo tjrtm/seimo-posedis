@@ -64,7 +64,7 @@ A sophisticated WebGL-based animated face that speaks and lip-syncs with the gen
 - **Speed Adaptation:** Animation timing adapts to playback speed (0.25x - 10x)
 
 **Technical Implementation:**
-- File: `animated_face.js` (450 lines)
+- File: `public/legacy/animated_face.js` (450 lines)
 - Technology: Three.js r128 + WebGL
 - Performance: 60 FPS rendering
 - Memory Usage: ~30-40 MB
@@ -275,17 +275,17 @@ A comprehensive, responsive dark-themed UI with excellent UX:
      - Click for detailed profile
 
 **Design System:**
-- **Color Scheme:** Dark theme (#1a1a1a background)
-- **Accent Color:** Lithuanian flag red (#d4232a)
+- **Color Scheme:** Deep navy gradient (#030711 → #07122b)
+- **Accent Color:** Cyan/blue blend (#38bdf8 / #3b82f6)
 - **Typography:** Modern sans-serif, excellent readability
 - **Spacing:** Consistent 8px grid system
 - **Responsive:** Works on desktop, tablet, mobile
 
 **Technical Implementation:**
-- File: `seimas_live_stream_enhanced.html` (746 lines)
-- CSS Rules: ~400 rules for comprehensive styling
-- Layout: CSS Grid and Flexbox
-- Animations: CSS transitions and keyframe animations
+- Files: `src/App.jsx` (React layout) + `src/App.css` (gradient theme)
+- Legacy controller: `public/legacy/seimas_stream_enhanced.js`
+- Layout: CSS Grid + Flexbox with CSS custom properties
+- Animations: `pulse` (live dot), hover transitions, modal fades
 
 ---
 
@@ -309,7 +309,7 @@ Secure, user-friendly API key storage and management:
 - User education on key security recommended
 
 **Technical Implementation:**
-- File: `seimas_stream_enhanced.js` (lines 100-130)
+- File: `public/legacy/seimas_stream_enhanced.js` (lines 100-130)
 - Storage: `localStorage.setItem('openai_api_key', key)`
 - Retrieval: Automatic on page load
 - Validation: Checks for key presence before API calls
@@ -319,20 +319,19 @@ Secure, user-friendly API key storage and management:
 #### ✅ Speech Synthesis Integration
 **Status:** FULLY IMPLEMENTED | **Quality:** Good
 
-Web Speech API integration for text-to-speech functionality:
+Provider-aware TTS pipeline that can run locally or remotely:
 
 **Features:**
-- **Voice Selection:** Lithuanian voice preference (falls back to default)
-- **Speed Control:** Matches playback speed (0.25x - 10x)
-- **Automatic Playback:** Triggered with each speech event
-- **Stop/Start Control:** Pauses with playback
-- **Browser Compatibility:** Works in Chrome, Edge, Safari
+- **Dual Providers:** Speaches (local Docker) or OpenAI `gpt-4o-mini-tts`, selected via UI toggle.
+- **Audio Persistence:** Saves MP3/WAV/OGG assets next to the transcript when a File System Access folder or `/api/sessions` endpoint is available.
+- **Streaming Playback:** Automatically queues audio per event, syncing playback rate with the global speed selector (0.25x–10x).
+- **Fallback Handling:** If saving fails, the UI downgrades to in-memory playback and logs status badges.
+- **Live Updates:** Each synthesis batch posts confirmations/errors into the "Gyva būsena" feed.
 
 **Technical Implementation:**
-- File: `animated_face.js` (lines 200-250)
-- API: Web Speech Synthesis API
-- Voice Loading: Asynchronous voice list retrieval
-- Integration: Called from `displayEvent()` method
+- File: `public/legacy/seimas_stream_enhanced.js` (methods `prepareTextToSpeechAssets`, `_prepareTextToSpeechAssets`, `updateTextToSpeechStatus`).
+- APIs: Speaches REST (`/v1/audio/speech`) and OpenAI Responses + TTS endpoints.
+- Storage: File System Access API or Node middleware (`POST /api/sessions`).
 
 ---
 
@@ -486,7 +485,7 @@ Professional software engineering patterns applied:
 | **Factory** | Member creation | seimas_members_data.js |
 | **Strategy** | Multiple save methods | Session persistence |
 | **State Machine** | Playback states | Play/pause/restart |
-| **Template Method** | Speech synthesis | animated_face.js |
+| **Template Method** | Speech synthesis | public/legacy/animated_face.js |
 | **Builder** | Transcript construction | JSON builder |
 
 ---
@@ -1181,15 +1180,15 @@ The project successfully achieves its goals of creating an educational parliamen
 ## Appendix A: File Inventory
 
 ### Core Application Files
-- `/home/user/seimo-posedis/seimas_live_stream_enhanced.html` - Main UI
-- `/home/user/seimo-posedis/seimas_stream_enhanced.js` - Core logic
-- `/home/user/seimo-posedis/animated_face.js` - 3D avatar
-- `/home/user/seimo-posedis/seimas_members_data.js` - Member profiles
-- `/home/user/seimo-posedis/members.json` - Member metadata
+- `/home/user/seimo-posedis/index.html` - Vite entry (loads legacy scripts + React bundle)
+- `/home/user/seimo-posedis/src/App.jsx` - Main React UI layout
+- `/home/user/seimo-posedis/src/App.css` - Styling system
+- `/home/user/seimo-posedis/public/legacy/seimas_stream_enhanced.js` - Core logic + OpenAI/Speaches integration
+- `/home/user/seimo-posedis/public/legacy/seimas_members_data.js` - Embedded member profiles
+- `/home/user/seimo-posedis/public/legacy/animated_face.js` - Placeholder avatar component
 
 ### Legacy Files (Still Present)
-- `/home/user/seimo-posedis/seimas_stream.js` - Original implementation
-- `/home/user/seimo-posedis/test_members.html` - Test page
+- `/home/user/seimo-posedis/seimas_stream.js` - Original implementation (unused)
 
 ### Documentation Files
 - `/home/user/seimo-posedis/README.md`
@@ -1212,10 +1211,10 @@ The project successfully achieves its goals of creating an educational parliamen
 ## Appendix B: Quick Reference Links
 
 ### Key Files to Review
-1. Main application: `seimas_stream_enhanced.js`
-2. 3D animation: `animated_face.js`
-3. UI layout: `seimas_live_stream_enhanced.html`
-4. Member data: `seimas_members_data.js`
+1. React UI shell: `src/App.jsx`
+2. Legacy simulation engine: `public/legacy/seimas_stream_enhanced.js`
+3. Embedded member data: `public/legacy/seimas_members_data.js`
+4. Optional avatar stub: `public/legacy/animated_face.js`
 
 ### Documentation Entry Points
 1. Quick start: `README.md`

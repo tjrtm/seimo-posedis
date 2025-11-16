@@ -3,7 +3,7 @@
 Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Generuoja realistiškus parlamentinius posėdžius su visais 141 Seimo nariu.
 
 ## Stakeholder Brief
-- **Status (2025-11-15):** Feature-complete beta. Core simulator, bilingual prompt scaffolding, and local text-to-speech all operate via the latest `seimas_live_stream_enhanced.html`.
+- **Status (2025-11-15):** Feature-complete beta. Core simulator, bilingual prompt scaffolding, and local text-to-speech now run inside a React + Vite SPA (`src/App.jsx`) backed by the legacy simulation controller.
 - **Value Proposition:** Enables communications, policy, and research teams to dry-run plenary debates with controllable topics, factions, and scripted realism before public sessions. Delivers JSON transcripts, live-playback UI, and optional audio for debriefs or press prep.
 - **Required Inputs:** 
   - Valid OpenAI API key with GPT-5-mini access (used only for transcript generation).
