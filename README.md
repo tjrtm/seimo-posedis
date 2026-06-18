@@ -11,6 +11,20 @@ npm run dev      # paleisti dev serverį
 
 Atidarykite naršyklėje adresą, kurį parodo Vite (paprastai **http://localhost:5173**; jei portas užimtas, Vite pasirenka kitą, pvz. `5174`).
 
+## Sąsajos ekrano nuotraukos
+
+### Gyvas posėdžio vaizdas
+
+![Gyvas posėdžio transliacijos vaizdas su kalbančio veido animacija](docs/screenshots/ui-live-console.png)
+
+### Nustatymai ir generavimo tiekėjai
+
+![Nustatymų modalas su lokalaus, OpenAI ir xAI generavimo režimais](docs/screenshots/ui-settings-modal.png)
+
+### Mobilus vaizdas
+
+![Mobilus Seimas AI Generator vaizdas su kalbančio veido scena](docs/screenshots/ui-mobile.png)
+
 ## 🔑 Išbandymas be API rakto (offline peržiūra)
 
 **Programą galima visiškai išbandyti be jokio API rakto** – tiesiog importuokite jau sugeneruotą sesiją su garsu. Repozitorijoje yra paruoštas pavyzdys: [`test-import-offline-preview.zip`](test-import-offline-preview.zip) (posėdžio JSON + iš anksto sugeneruoti `.mp3` balsai).
@@ -98,7 +112,7 @@ Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutin
 - Speaches serverio URL, modelio ID ir formatas kontroliuojami tiesiai programos UI ir saugomi naršyklėje
 
 ### 👥 Narių duomenų bazė
-- Išsami visų 141 narių informacija
+- Išsami visų 141 narių informacija iš viešai prieinamų šaltinių (wikipedia.lt)
 - Modal dialogas su profiliais
 - Paieška pagal partijas
 - Detali biografinė informacija
