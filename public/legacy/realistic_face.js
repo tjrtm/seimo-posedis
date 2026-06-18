@@ -106,6 +106,15 @@
             this.head = { x: 0, y: 0 };
             this.headTarget = { x: 0, y: 0 };
             this.energy = 0;
+            this.expression = {
+                jaw: 0,
+                cheek: 0,
+                brow: 0,
+                nostril: 0,
+                ear: 0,
+                squint: 0,
+                lipTension: 0
+            };
 
             // Audio analysis
             this.audioEl = null;
@@ -193,6 +202,7 @@
         // ---- Per-speaker deterministic appearance ------------------------
         _buildProfile(name, party) {
             const rng = mulberry32(hashString((name || 'default') + '|' + (party || '')));
+            const hasName = Boolean((name || '').trim());
             const female = inferFemale(name);
             const pick = arr => arr[Math.floor(rng() * arr.length)];
             const grayBias = rng();
@@ -212,12 +222,12 @@
                 // and (almost always) longer hair so gender reads clearly.
                 faceWidth: (female ? 0.80 : 0.88) + rng() * 0.16,
                 jaw: (female ? 0.62 : 0.85) + rng() * 0.22,
-                bald: !female && rng() > 0.78,
-                receding: !female && rng() > 0.55,
+                bald: hasName && !female && rng() > 0.78,
+                receding: hasName && !female && rng() > 0.55,
                 longHair: female ? rng() > 0.12 : false,
                 glasses: rng() > (female ? 0.8 : 0.58),
-                beard: !female && rng() > 0.66,
-                mustache: !female && rng() > 0.8,
+                beard: hasName && !female && rng() > 0.74,
+                mustache: hasName && !female && rng() > 0.84,
                 earrings: female && rng() > 0.45,
                 blush: female,
                 browThick: (female ? 0.35 : 0.7) + rng() * (female ? 0.4 : 0.7),
@@ -338,6 +348,8 @@
             this.target = Object.assign({}, VISEMES.sil);
         }
 
+        detachExternalAudio() { this._detachAudio(); }
+
         destroy() {
             this.stop();
             cancelAnimationFrame(this._raf);
@@ -437,6 +449,21 @@
             this.mouth.wide += (this.target.wide - this.mouth.wide) * k * 0.7;
             this.mouth.round += (this.target.round - this.mouth.round) * k * 0.7;
 
+            const speechDrive = this.isSpeaking ? Math.max(this.energy, this.mouth.open * 0.55) : 0;
+            const vowelTension = Math.max(0, this.mouth.wide - this.mouth.round * 0.45);
+            const expTarget = {
+                jaw: this.mouth.open,
+                cheek: speechDrive * 0.7 + vowelTension * 0.18,
+                brow: speechDrive * 0.28 + Math.sin(this._time * 1.7) * 0.035,
+                nostril: speechDrive * 0.45 + this.mouth.round * 0.12,
+                ear: speechDrive * 0.2 + Math.sin(this._time * 2.1 + (this.profile.seed || 0) * 6) * 0.025,
+                squint: Math.min(0.45, speechDrive * 0.22 + this.mouth.wide * 0.08),
+                lipTension: Math.max(0, this.mouth.wide - this.mouth.round) * 0.55
+            };
+            Object.keys(expTarget).forEach(key => {
+                this.expression[key] += (expTarget[key] - this.expression[key]) * dt * 8;
+            });
+
             // Blink.
             this.blinkTimer += dt;
             if (this.blinkTimer > 2.8 + (this.profile.seed || 0.5) * 2.5) {
@@ -462,6 +489,16 @@
             }
             this._microHead.x += (this._microHead.tx - this._microHead.x) * dt * 1.6;
             this._microHead.y += (this._microHead.ty - this._microHead.y) * dt * 1.6;
+
+            this._saccade.t -= dt;
+            if (this._saccade.t <= 0) {
+                const speakingBias = this.isSpeaking ? 1.35 : 0.7;
+                this._saccade.tx = (Math.random() - 0.5) * 0.12 * speakingBias;
+                this._saccade.ty = (Math.random() - 0.5) * 0.08 * speakingBias;
+                this._saccade.t = 0.35 + Math.random() * (this.isSpeaking ? 1.1 : 2.4);
+            }
+            this._saccade.x += (this._saccade.tx - this._saccade.x) * dt * 9;
+            this._saccade.y += (this._saccade.ty - this._saccade.y) * dt * 9;
 
             this._draw();
         }
@@ -489,15 +526,18 @@
             const ctx = this.faceCtx, W = this.Wi, H = this.Hi, p = this.profile;
 
             const bg = ctx.createLinearGradient(0, 0, 0, H);
-            bg.addColorStop(0, '#10141b');
-            bg.addColorStop(1, '#06080d');
+            bg.addColorStop(0, '#111827');
+            bg.addColorStop(0.55, '#070a12');
+            bg.addColorStop(1, '#04060b');
             ctx.fillStyle = bg;
             ctx.fillRect(0, 0, W, H);
             const halo = ctx.createRadialGradient(W / 2, H * 0.42, 8, W / 2, H * 0.42, Math.max(W, H) * 0.6);
-            halo.addColorStop(0, this._rgba(p.tie, 0.22));
+            halo.addColorStop(0, this._rgba(p.tie, 0.25));
+            halo.addColorStop(0.32, 'rgba(230,181,74,0.08)');
             halo.addColorStop(1, 'rgba(0,0,0,0)');
             ctx.fillStyle = halo;
             ctx.fillRect(0, 0, W, H);
+            this._drawBroadcastDome(ctx, W, H);
 
             const cx = W / 2 + (this.head.y + this._microHead.y) * W * 0.35;
             const baseR = Math.min(W, H) * 0.24;
@@ -521,14 +561,15 @@
             ctx.rotate((this.head.y + this._microHead.y) * 0.2);
             this._drawShoulders(ctx, p, baseR, H, cy);
             this._drawNeck(ctx, p, baseR);
-            this._drawHead(ctx, p, baseR);
             this._drawEars(ctx, p, baseR);
+            this._drawHead(ctx, p, baseR);
+            this._drawFacialMuscleField(ctx, p, baseR);
             this._drawHair(ctx, p, baseR);
+            if (p.beard) this._drawBeard(ctx, p, baseR);
             this._drawBrows(ctx, p, baseR);
             this._drawEyes(ctx, p, baseR);
             this._drawNose(ctx, p, baseR);
             this._drawMouth(ctx, p, baseR);
-            if (p.beard) this._drawBeard(ctx, p, baseR);
             if (p.mustache) this._drawMustache(ctx, p, baseR);
             if (p.glasses) this._drawGlasses(ctx, p, baseR);
             ctx.restore();
@@ -549,6 +590,7 @@
             const t = this._time;
             const { cx, cy, R } = this._faceCenter;
             const mouthX = this._mouthPos.x, mouthY = this._mouthPos.y;
+            const eyeLx = this._eyePos.lx, eyeRx = this._eyePos.rx, eyeY = this._eyePos.y;
             const open = this.mouth.open;
 
             // Build coarse flow grid (px displacement) + a face mask.
@@ -570,6 +612,16 @@
                     const mMask = Math.exp(-(mdx * mdx + mdy * mdy));
                     dy += open * R * 0.22 * mMask * (py > mouthY - R * 0.12 ? 1 : 0.25);
                     dx += open * R * 0.05 * mMask * (px < mouthX ? -1 : 1);
+                    const eyeDistL = ((px - eyeLx) / (R * 0.34)) ** 2 + ((py - eyeY) / (R * 0.24)) ** 2;
+                    const eyeDistR = ((px - eyeRx) / (R * 0.34)) ** 2 + ((py - eyeY) / (R * 0.24)) ** 2;
+                    const eyeMask = Math.exp(-Math.min(eyeDistL, eyeDistR));
+                    dx += this._saccade.x * R * 0.08 * eyeMask;
+                    dy += this._saccade.y * R * 0.06 * eyeMask - this.expression.squint * R * 0.035 * eyeMask;
+                    const earMask = Math.max(
+                        Math.exp(-(((px - (cx - R * 1.05)) / (R * 0.28)) ** 2 + ((py - cy) / (R * 0.52)) ** 2)),
+                        Math.exp(-(((px - (cx + R * 1.05)) / (R * 0.28)) ** 2 + ((py - cy) / (R * 0.52)) ** 2))
+                    );
+                    dx += Math.sign(px - cx) * this.expression.ear * R * 0.05 * earMask;
                     const i = gy * GX + gx;
                     fX[i] = dx; fY[i] = dy;
                 }
@@ -680,6 +732,56 @@
             ctx.fillRect(0, 0, W, H);
         }
 
+        _drawBroadcastDome(ctx, W, H) {
+            const y = H * 0.9;
+            const cx = W * 0.5;
+            const rx = W * 0.46;
+            const ry = H * 0.24;
+            ctx.save();
+            ctx.strokeStyle = 'rgba(230,181,74,0.16)';
+            ctx.lineWidth = Math.max(1, W * 0.002);
+            ctx.beginPath();
+            ctx.ellipse(cx, y, rx, ry, 0, Math.PI, Math.PI * 2);
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(61,217,211,0.08)';
+            for (let i = -4; i <= 4; i++) {
+                const x = cx + (i / 4) * rx;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.quadraticCurveTo(cx + (i / 8) * rx, y - ry * 0.78, cx, y - ry);
+                ctx.stroke();
+            }
+            for (let j = 1; j <= 3; j++) {
+                ctx.beginPath();
+                ctx.ellipse(cx, y, rx * (j / 3), ry * (j / 3), 0, Math.PI, Math.PI * 2);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
+
+        _drawFacialMuscleField(ctx, p, R) {
+            const e = this.expression;
+            const cheekAlpha = 0.06 + e.cheek * 0.18;
+            ctx.save();
+            ctx.globalCompositeOperation = 'soft-light';
+            [-1, 1].forEach(s => {
+                const g = ctx.createRadialGradient(s * R * 0.42, R * 0.25, 0, s * R * 0.42, R * 0.25, R * 0.42);
+                g.addColorStop(0, `rgba(255,220,190,${cheekAlpha})`);
+                g.addColorStop(0.72, `rgba(184,92,99,${cheekAlpha * 0.35})`);
+                g.addColorStop(1, 'rgba(255,220,190,0)');
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.ellipse(s * R * 0.42, R * 0.28 - e.cheek * R * 0.06, R * 0.38, R * 0.28, s * 0.18, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.fillStyle = `rgba(105,65,48,${0.08 + e.jaw * 0.16})`;
+            ctx.beginPath();
+            ctx.ellipse(0, R * (0.82 + e.jaw * 0.1), R * 0.62, R * (0.16 + e.jaw * 0.12), 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
         _drawPhoto(ctx, p, cx, cy, baseR, W, H) {
             const img = p.photoImg;
             const size = baseR * 4.4;
@@ -711,7 +813,10 @@
 
         _drawShoulders(ctx, p, R, H, cy) {
             const y = R * 1.7;
-            ctx.fillStyle = '#1b2430';
+            const suit = ctx.createLinearGradient(0, R * 1.25, 0, R * 3.25);
+            suit.addColorStop(0, '#20283a');
+            suit.addColorStop(1, '#080b13');
+            ctx.fillStyle = suit;
             ctx.beginPath();
             ctx.moveTo(-R * 2.6, R * 3.2);
             ctx.quadraticCurveTo(-R * 1.9, y, 0, y - R * 0.1);
@@ -719,7 +824,7 @@
             ctx.closePath();
             ctx.fill();
             // Shirt collar
-            ctx.fillStyle = '#eef1f5';
+            ctx.fillStyle = '#f4f1e8';
             ctx.beginPath();
             ctx.moveTo(-R * 0.5, R * 1.45);
             ctx.lineTo(0, R * 2.0);
@@ -781,15 +886,21 @@
 
         _drawEars(ctx, p, R) {
             const rx = R * p.faceWidth;
+            const e = this.expression;
             [-1, 1].forEach(s => {
+                const pulse = e.ear * R * 0.18;
                 ctx.fillStyle = this._darken(p.skin, 6);
                 ctx.beginPath();
-                ctx.ellipse(s * rx * 0.98, R * 0.05, R * 0.16, R * 0.26, 0, 0, Math.PI * 2);
+                ctx.ellipse(s * (rx * 0.99 + pulse * 0.1), R * (0.05 - e.cheek * 0.035), R * (0.16 + pulse * 0.02), R * (0.26 + pulse * 0.03), s * 0.04, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = this._rgba(this._darken(p.skin, 24), 0.28);
+                ctx.beginPath();
+                ctx.ellipse(s * rx * 1.0, R * 0.06, R * 0.07, R * 0.15, s * 0.18, 0, Math.PI * 2);
                 ctx.fill();
                 if (p.earrings) {
                     ctx.fillStyle = '#e8d27a';
                     ctx.beginPath();
-                    ctx.arc(s * rx * 0.98, R * 0.34, R * 0.045, 0, Math.PI * 2);
+                    ctx.arc(s * rx * 0.98, R * (0.34 + e.ear * 0.03), R * 0.045, 0, Math.PI * 2);
                     ctx.fill();
                 }
             });
@@ -839,15 +950,16 @@
         _eyeX(R) { return R * 0.42 * this.profile.eyeSpacing; }
 
         _drawBrows(ctx, p, R) {
-            const ey = this._eyeY(R) - R * 0.34;
+            const ey = this._eyeY(R) - R * (0.34 + this.expression.brow * 0.16);
             const ex = this._eyeX(R);
             ctx.strokeStyle = this._darken(p.hair, 10);
             ctx.lineWidth = R * 0.07 * p.browThick;
             ctx.lineCap = 'round';
             [-1, 1].forEach(s => {
                 ctx.beginPath();
-                ctx.moveTo(s * ex - R * 0.18, ey + R * 0.03);
-                ctx.quadraticCurveTo(s * ex, ey - R * 0.06, s * ex + R * 0.18, ey + R * 0.02);
+                const asym = Math.sin(this._time * 1.4 + s) * R * 0.025 * (0.4 + this.energy);
+                ctx.moveTo(s * ex - R * 0.18, ey + R * 0.03 + asym);
+                ctx.quadraticCurveTo(s * ex, ey - R * (0.06 + this.expression.brow * 0.06), s * ex + R * 0.18, ey + R * 0.02 - asym);
                 ctx.stroke();
             });
         }
@@ -855,7 +967,8 @@
         _drawEyes(ctx, p, R) {
             const ey = this._eyeY(R);
             const ex = this._eyeX(R);
-            const ew = R * 0.24, eh = R * 0.14 * this.eyeOpen + 0.5;
+            const ew = R * (0.19 + this.expression.squint * 0.012);
+            const eh = R * 0.095 * this.eyeOpen * (1 - this.expression.squint * 0.34) + 0.5;
             [-1, 1].forEach(s => {
                 const x = s * ex;
                 // white
@@ -865,18 +978,19 @@
                 ctx.fill();
                 if (this.eyeOpen > 0.2) {
                     // iris + pupil, slight gaze drift
-                    const gaze = Math.sin(Date.now() * 0.0006 + (p.seed || 0) * 6) * R * 0.04;
+                    const gazeX = this._saccade.x * R + Math.sin(Date.now() * 0.0006 + (p.seed || 0) * 6) * R * 0.018;
+                    const gazeY = this._saccade.y * R;
                     ctx.fillStyle = p.eye;
                     ctx.beginPath();
-                    ctx.arc(x + gaze, ey, R * 0.105, 0, Math.PI * 2);
+                    ctx.arc(x + gazeX, ey + gazeY, R * 0.076, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.fillStyle = '#10100f';
                     ctx.beginPath();
-                    ctx.arc(x + gaze, ey, R * 0.05, 0, Math.PI * 2);
+                    ctx.arc(x + gazeX, ey + gazeY, R * 0.035, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.fillStyle = 'rgba(255,255,255,0.8)';
                     ctx.beginPath();
-                    ctx.arc(x + gaze - R * 0.03, ey - R * 0.03, R * 0.018, 0, Math.PI * 2);
+                    ctx.arc(x + gazeX - R * 0.024, ey + gazeY - R * 0.022, R * 0.014, 0, Math.PI * 2);
                     ctx.fill();
                 }
                 // upper lid line
@@ -902,6 +1016,7 @@
 
         _drawNose(ctx, p, R) {
             const len = R * 0.5 * p.noseLen;
+            const flare = this.expression.nostril;
             ctx.strokeStyle = this._darken(p.skin, 18);
             ctx.lineWidth = R * 0.03;
             ctx.lineCap = 'round';
@@ -912,26 +1027,42 @@
             ctx.stroke();
             // nostril shadow
             ctx.fillStyle = this._rgba(this._darken(p.skin, 40), 0.5);
+            [-1, 1].forEach(s => {
+                ctx.beginPath();
+                ctx.ellipse(s * R * (0.06 + flare * 0.03), len + R * (0.02 + flare * 0.015), R * (0.065 + flare * 0.035), R * (0.038 + flare * 0.02), s * 0.12, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.fillStyle = this._rgba('#fff2d6', 0.09 + this.energy * 0.08);
             ctx.beginPath();
-            ctx.ellipse(0, len + R * 0.02, R * 0.13, R * 0.07, 0, 0, Math.PI * 2);
+            ctx.ellipse(-R * 0.09, len - R * 0.12, R * 0.045, R * 0.18, 0.22, 0, Math.PI * 2);
             ctx.fill();
         }
 
         _drawMouth(ctx, p, R) {
-            const my = R * 0.72;
+            const e = this.expression;
+            const my = R * (0.72 + e.jaw * 0.12);
             const open = this.mouth.open * R * 0.55;
-            const widthF = (0.5 + this.mouth.wide * 0.6) * (1 - this.mouth.round * 0.4);
+            const widthF = (0.5 + this.mouth.wide * (0.58 + e.lipTension * 0.12)) * (1 - this.mouth.round * 0.46);
             const w = R * 0.6 * widthF * p.lipFull;
+            const roundPucker = this.mouth.round * R * 0.08;
 
             // lips outer
-            ctx.fillStyle = this._darken(p.lipTint || '#b56b63', 4);
+            const lipGrad = ctx.createRadialGradient(-w * 0.18, my - R * 0.03, 0, 0, my, w + R * 0.18);
+            lipGrad.addColorStop(0, this._lighten(p.lipTint || '#b56b63', 18));
+            lipGrad.addColorStop(0.58, this._darken(p.lipTint || '#b56b63', 4));
+            lipGrad.addColorStop(1, this._darken(p.lipTint || '#b56b63', 24));
+            ctx.fillStyle = lipGrad;
             ctx.beginPath();
-            ctx.ellipse(0, my, w + R * 0.04, open + R * 0.08, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, my, w + R * 0.04 - roundPucker, open + R * (0.08 + this.mouth.round * 0.04), 0, 0, Math.PI * 2);
             ctx.fill();
             // mouth interior
-            ctx.fillStyle = '#5a2630';
+            const inner = ctx.createRadialGradient(0, my + open * 0.2, 0, 0, my, Math.max(R * 0.08, open + w * 0.2));
+            inner.addColorStop(0, '#8f3440');
+            inner.addColorStop(0.62, '#481821');
+            inner.addColorStop(1, '#18080d');
+            ctx.fillStyle = inner;
             ctx.beginPath();
-            ctx.ellipse(0, my, w, Math.max(1, open), 0, 0, Math.PI * 2);
+            ctx.ellipse(0, my, Math.max(R * 0.07, w - roundPucker), Math.max(1, open), 0, 0, Math.PI * 2);
             ctx.fill();
             // teeth (upper) when open enough
             if (open > R * 0.07) {
@@ -939,6 +1070,14 @@
                 ctx.beginPath();
                 ctx.ellipse(0, my - open * 0.55, w * 0.82, open * 0.28, 0, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.strokeStyle = 'rgba(95,72,62,0.3)';
+                ctx.lineWidth = Math.max(0.6, R * 0.006);
+                for (let i = -2; i <= 2; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo((i / 3) * w * 0.56, my - open * 0.78);
+                    ctx.lineTo((i / 3) * w * 0.5, my - open * 0.36);
+                    ctx.stroke();
+                }
                 // tongue
                 ctx.fillStyle = '#b85c63';
                 ctx.beginPath();
@@ -950,7 +1089,13 @@
             ctx.lineWidth = R * 0.02;
             ctx.beginPath();
             ctx.moveTo(-w - R * 0.04, my);
-            ctx.quadraticCurveTo(0, my - R * 0.06, w + R * 0.04, my);
+            ctx.quadraticCurveTo(0, my - R * (0.06 + e.lipTension * 0.06), w + R * 0.04, my);
+            ctx.stroke();
+            ctx.strokeStyle = `rgba(255,236,218,${0.18 + this.energy * 0.16})`;
+            ctx.lineWidth = R * 0.012;
+            ctx.beginPath();
+            ctx.moveTo(-w * 0.45, my - open * 0.25 - R * 0.035);
+            ctx.quadraticCurveTo(0, my - open * 0.42 - R * 0.02, w * 0.45, my - open * 0.25 - R * 0.035);
             ctx.stroke();
         }
 

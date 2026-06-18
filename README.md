@@ -1,15 +1,45 @@
 # Seimas AI Live Stream Generator
 
-Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Generuoja realistiškus parlamentinius posėdžius su visais 141 Seimo nariu.
+Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI, xAI (Grok) ir lokalia (Ollama + Speaches) integracija. Generuoja realistiškus parlamentinius posėdžius su visais 141 Seimo nariu.
+
+## 🚀 Greitas startas
+
+```bash
+npm install      # įdiegti priklausomybes (vieną kartą)
+npm run dev      # paleisti dev serverį
+```
+
+Atidarykite naršyklėje adresą, kurį parodo Vite (paprastai **http://localhost:5173**; jei portas užimtas, Vite pasirenka kitą, pvz. `5174`).
+
+## 🔑 Išbandymas be API rakto (offline peržiūra)
+
+**Programą galima visiškai išbandyti be jokio API rakto** – tiesiog importuokite jau sugeneruotą sesiją su garsu. Repozitorijoje yra paruoštas pavyzdys: [`test-import-offline-preview.zip`](test-import-offline-preview.zip) (posėdžio JSON + iš anksto sugeneruoti `.mp3` balsai).
+
+1. Paleiskite programą (`npm run dev`) ir atidarykite ją naršyklėje.
+2. Viršutinėje juostoje spauskite **📥 Importuoti**.
+3. Failų lange pasirinkite **`test-import-offline-preview.zip`** (galima rinktis ir kelis failus arba aplanką su `*.json` + `audio/`).
+4. Sesija įsikels iškart – matysite posėdžio pavadinimą, kalbėtojus ir darbotvarkę. Spauskite **▶️ Paleisti**.
+5. Balsai grojami tiesiai iš ZIP archyvo, **API raktas nereikalingas** ir nesiunčiama jokia užklausa į išorę. Garso generavimas (TTS) reikalingas tik tada, kai norite sukurti **naują** posėdį pasirinktu tiekėju.
+
+> 💡 Patarimas: importuotą sesiją galima vėl eksportuoti per **📦 Eksportuoti** – gausite tokį patį `.zip`, tinkamą pakartotinei peržiūrai be papildomų kaštų.
+
+## 🖥️ Platus vaizdo srautas (šoninio skydelio slėpimas)
+
+Po vaizdo grotuvu, valdiklių eilutėje, yra mygtukas **⛶ Platus vaizdas**. Jį paspaudus dešinysis skydelis (būsena / rezultatai / statistika) paslepiamas, o kalbantis veidas išsiplečia per visą plotį – patogu transliacijai ar pristatymui. Pakartotinis paspaudimas (**◀ Rodyti skydelį**) jį grąžina. Pasirinkimas įsimenamas naršyklėje.
+
+## ⚙️ Nustatymai (modalas)
+
+Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutinėje juostoje (arba mygtuką **✨ Generuoti posėdį**) ir rodomi moderniame modaliniame lange virš posėdžio turinio. Modalas tvarkingai suskirstytas į tris sekcijas: *Tema ir kalba*, *Generavimo tiekėjas* (Lokalus / OpenAI / xAI) ir *Įgarsinimas*. Uždaroma kryžiuku, paspaudus už lango arba klavišu `Esc`.
 
 ## Stakeholder Brief
 - **Status (2025-11-15):** Feature-complete beta. Core simulator, bilingual prompt scaffolding, and local text-to-speech now run inside a React + Vite SPA (`src/App.jsx`) backed by the legacy simulation controller.
 - **Value Proposition:** Enables communications, policy, and research teams to dry-run plenary debates with controllable topics, factions, and scripted realism before public sessions. Delivers JSON transcripts, live-playback UI, and optional audio for debriefs or press prep.
 - **Required Inputs:** 
-  - OpenAI or OpenAI-compatible API key/token plus the transcript and TTS models you want to use.
-  - Running Speaches server on the stakeholder device (`http://localhost:8000/v1`) with at least one Kokoro-derived TTS model downloaded.
+  - *None for a quick demo* — import `test-import-offline-preview.zip` via **📥 Importuoti** to replay a fully generated session (with audio) without any key.
+  - For generating new sessions, one of: an OpenAI-compatible API key, an xAI (Grok) API key, or a local Ollama + Speaches stack.
+  - Running Speaches server on the stakeholder device (`http://localhost:8000/v1`) with at least one Kokoro-derived TTS model downloaded (local mode only).
   - (For local simulations) An Ollama instance with the chosen LLM pulled locally (e.g., `ollama pull llama3.1:70b`).
-- **UI Highlights:** refreshed dark-corporate React interface with mode cards (local vs. OpenAI), bilingual prompts, and contextual status badges improves stakeholder demos without extra configuration.
+- **UI Highlights:** refreshed dark-corporate React interface with a settings modal (⚙️ icon), three provider cards (Local / OpenAI / xAI Grok), a collapsible sidebar for wide-screen video, bilingual prompts, and contextual status badges improves stakeholder demos without extra configuration.
 - **Data Residency & Privacy:** Local mode stays on Ollama + Speaches. Remote mode calls the configured OpenAI-compatible Responses and TTS endpoints. All outputs, cached keys, and session files stay in the stakeholder’s browser storage or the local `sessions/` folder selected via the File System Access API.
 - **Evaluation Checklist:** 
   1. Run `npm install && npm run dev`, then open `http://localhost:5173`.
@@ -43,10 +73,11 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 - Parinktis veikia tiek GPT stenogramoms, tiek tiesioginiams atnaujinimams
 - Kalbos pasirinkimas įsimenamas naršyklėje, tad nereikia keisti kiekvieną kartą
 
-### ⚙️ Dvigubas generavimo režimas
-- **Lokalus režimas:** stenogramos kuriamos per jūsų Ollama serverį, balsai – per Speaches TTS. Galima nurodyti Ollama modelį, temperatūrą, `num_predict` ir papildomą `options` JSON.
-- **Debesų režimas:** naudoja pasirinktą OpenAI arba OpenAI-compatible Responses endpointą stenogramoms ir atskirą TTS endpointą balsams.
-- Abiem atvejais galima pasirinkti kalbą, audio formatą, konkretų modelį, bazinį URL ir papildomus tiekėjo nustatymus.
+### ⚙️ Trys generavimo tiekėjai
+- **🔒 Lokalus režimas:** stenogramos kuriamos per jūsų Ollama serverį, balsai – per Speaches TTS. Galima nurodyti Ollama modelį, temperatūrą, `num_predict` ir papildomą `options` JSON.
+- **☁️ OpenAI režimas:** naudoja pasirinktą OpenAI arba OpenAI-compatible Responses endpointą stenogramoms ir atskirą `/audio/speech` TTS endpointą balsams.
+- **🚀 xAI (Grok) režimas:** stenogramos kuriamos per OpenAI-suderinamą Grok `/chat/completions` endpointą (`grok-4`, `grok-4-fast`, `grok-3-mini` ir kt.), o balsai – per xAI Grok `/v1/tts` (balsai *Eve, Ara, Leo, Rex, Sal* priskiriami automatiškai pagal kalbėtojo lytį).
+- Visais atvejais galima pasirinkti kalbą, audio formatą, konkretų modelį, bazinį URL ir papildomus tiekėjo nustatymus. Tiekėjas perjungiamas kortelėmis nustatymų modale.
 
 ### 🌓 Moderni tamsi sąsaja
 - Visi komponentai perkurti į profesionalų, korporatyvinį dark theme dizainą.
@@ -75,14 +106,16 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 ## Naudojimas
 
 1. **Diegimas:** paleiskite `npm install` projekto šaknyje.
-2. **Dev serveris:** vykdykite `npm run dev` ir atidarykite `http://localhost:5173`.
-3. **Inicializacija:** paspauskite "⚙️ Generuoti naują posėdį" viršutinėje juostoje.
-4. **Tema:** įveskite klausimą (pvz. „Ar turėtų būti įvesta 4 dienų darbo savaitė?“) ir pasirinkite kalbą (lt/en).
-5. **Režimai:**
-   - *Lokalus:* nurodykite Ollama API (`http://localhost:11434`), modelį (`llama3.1:70b`), temperatūrą/`num_predict` jei reikia, Speaches URL ir modelį bei pasirinktą audio formatą.
-   - *Debesų (OpenAI):* pateikite API raktą/tokeną, Responses bazinį URL, stenogramos modelį, TTS bazinį URL, TTS modelį ir papildomą JSON, jei endpointui reikia nestandartinių parametrų.
-6. **Generavimas:** spauskite "🚀 Generuoti Seimo posėdį" ir, jei norite automatinio įrašymo, pasirinkite `sessions` aplanką per File System Access.
-7. **Transliacija:** stebėkite gyvą simuliaciją, naudokite TTS, sesijos archyvų įrašymą ar atsisiuntimus JSON formatu.
+2. **Dev serveris:** vykdykite `npm run dev` ir atidarykite Vite parodytą adresą (paprastai `http://localhost:5173`).
+3. **Greita peržiūra be rakto:** norėdami tik pamatyti rezultatą, spauskite **📥 Importuoti** ir įkelkite `test-import-offline-preview.zip` (žr. „Išbandymas be API rakto" aukščiau). Toliau einantys žingsniai skirti **naujo** posėdžio generavimui.
+4. **Nustatymai:** spauskite **⚙️** (arba **✨ Generuoti posėdį**) viršutinėje juostoje – atsidarys nustatymų modalas.
+5. **Tema:** įveskite klausimą (pvz. „Ar turėtų būti įvesta 4 dienų darbo savaitė?“) ir pasirinkite kalbą (lt/en).
+6. **Tiekėjas:** pasirinkite kortelę:
+   - *🔒 Lokalus:* nurodykite Ollama API (`http://localhost:11434`), modelį (`llama3.1:70b`), temperatūrą/`num_predict` jei reikia, Speaches URL ir modelį bei pasirinktą audio formatą.
+   - *☁️ OpenAI:* pateikite API raktą/tokeną, Responses bazinį URL, stenogramos modelį, TTS bazinį URL, TTS modelį ir papildomą JSON, jei endpointui reikia nestandartinių parametrų.
+   - *🚀 xAI (Grok):* pateikite xAI API raktą (`xai-...` iš `console.x.ai`), bazinį URL (`https://api.x.ai/v1`), Grok modelį (pvz. `grok-4`), TTS kalbą (`auto` arba BCP-47 kodą) ir audio formatą.
+7. **Generavimas:** spauskite "🚀 Generuoti Seimo posėdį" ir, jei norite automatinio įrašymo, pasirinkite `sessions` aplanką per File System Access.
+8. **Transliacija:** stebėkite gyvą simuliaciją, naudokite TTS, sesijos archyvų įrašymą ar atsisiuntimus JSON formatu. Norėdami pilno ekrano vaizdo – spauskite **⛶ Platus vaizdas**.
 
 ## Failų struktūra
 
@@ -117,15 +150,21 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
   - Papildomas Responses JSON sujungiamas į stenogramos užklausą; reikšmė `null` pašalina pasirinktinį numatytąjį lauką, pvz. `{"reasoning": null}`.
   - Raktas saugomas lokaliai naršyklėje; kainodara priklauso nuo pasirinkto tiekėjo ir modelio.
   - Grąžinami JSON atsakymai su visa stenogramos struktūra
+- **xAI (Grok) režimas**
+  - Reikalingas xAI API raktas (`xai-...`) iš [console.x.ai](https://console.x.ai).
+  - Stenogramos: OpenAI-suderinamas `POST https://api.x.ai/v1/chat/completions` su `model`, `messages`, `max_tokens`, `temperature` (papildomas Chat JSON sujungiamas į užklausą).
+  - Balsai: `POST https://api.x.ai/v1/tts` su `text`, `voice_id`, `language` ir `output_format.codec` (`mp3` / `wav` / `pcm`). Balsai `eve`, `ara`, `leo`, `rex`, `sal` priskiriami kiekvienam kalbėtojui automatiškai pagal lytį.
+  - Raktas saugomas lokaliai naršyklėje (`localStorage`); kainodara pagal xAI modelį ir TTS simbolių kiekį.
+  - Be šio režimo galima naudoti ir vien importuotą `.zip` peržiūrą – jokio rakto.
 
 ## Technologijos
 
-- **Vanilla JavaScript** - jokių priklausomybių
-- **OpenAI-compatible Responses API** - pasirenkami endpointai, modeliai ir request options
-- **CSS Grid/Flexbox** - responsive dizainas
-- **Local Storage** - API rakto saugojimas
+- **React + Vite** - SPA sąsaja (`src/App.jsx`) virš legacy simuliacijos valdiklio
+- **Trys tiekėjai** - OpenAI Responses API, xAI Grok (`/chat/completions` + `/v1/tts`) ir lokalus Ollama + Speaches
+- **CSS Grid/Flexbox** - responsive dizainas, slepiamas šoninis skydelis, modalinis nustatymų langas
+- **Local Storage** - API raktų ir nustatymų saugojimas naršyklėje
 - **Embedded Data** - 141 narių profiliai kode (jokių HTTP užklausų)
-- **JSON structured outputs** - tikslūs API atsakymai
+- **Store-only ZIP import/export** - offline sesijų peržiūra su garsu, be API rakto
 
 ## Pavyzdžiai
 

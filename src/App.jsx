@@ -38,7 +38,8 @@ function App() {
               <span>GYVAI</span>
             </div>
             <div className="header-buttons">
-              <button className="generate-btn" id="toggleSetupBtn">⚙️ Generuoti posėdį</button>
+              <button className="icon-btn" id="settingsModalOpenBtn" title="Nustatymai (modelis, balsai, raktai)">⚙️</button>
+              <button className="generate-btn" id="toggleSetupBtn">✨ Generuoti posėdį</button>
               <button className="ghost-btn" id="importBundleBtn" title="Įkelti sesijos JSON + audio (kelis failus arba .zip)">📥 Importuoti</button>
               <button className="ghost-btn" id="exportSessionBtn" title="Eksportuoti visą posėdį su audio" disabled>📦 Eksportuoti</button>
               <button className="ghost-btn" id="loadSessionBtn">📂 JSON</button>
@@ -54,11 +55,20 @@ function App() {
 
       <div className="content-shell">
         <div className="content-inner">
-          <div className="main-grid">
+          <div className="main-grid" id="mainGrid">
             <div className="left-stack">
               <section className="card live-stage">
                 <div className="parliament-chamber">
+                  <div className="stage-aurora" aria-hidden="true"></div>
+                  <div className="stage-scanlines" aria-hidden="true"></div>
+                  <div className="broadcast-topline" aria-hidden="true">
+                    <span>POSĖDIS · PLENARINIS SRAUTAS</span>
+                    <span className="broadcast-topline__live"><i></i> GYVAI</span>
+                  </div>
                   <div className="chambers-view" id="chambersView"></div>
+                  <div className="face-telemetry" aria-hidden="true">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
                   <div className="chamber-overlay">
                     <div className="stage-pill">Dabartinis kalbėtojas</div>
                     <div className="speaker-info" id="speakerInfo">
@@ -67,7 +77,7 @@ function App() {
                       <div className="speaker-party" id="speakerParty"></div>
                     </div>
                     <div className="current-speech" id="currentSpeech">
-                      Sukurkite naują posėdį spustelėję „⚙️ Generuoti posėdį", arba „📥 Importuoti", kad įkeltumėte jau sugeneruotą sesiją su audio.
+                      Sukurkite naują posėdį spustelėję „✨ Generuoti posėdį", arba „📥 Importuoti", kad įkeltumėte jau sugeneruotą sesiją su audio.
                     </div>
                   </div>
                 </div>
@@ -87,6 +97,7 @@ function App() {
                         <option value="10">10x</option>
                       </select>
                     </div>
+                    <button className="control-btn sidebar-toggle" id="toggleSidebarBtn" title="Paslėpti šoninį skydelį ir žiūrėti platų vaizdo srautą">⛶ Platus vaizdas</button>
                   </div>
                   <div className="stage-timeline">
                     <div className="timeline-track" id="timelineTrack">
@@ -132,212 +143,21 @@ function App() {
             <div className="right-stack">
               <section className="card panel-card">
                 <div className="panel-tabs" id="panelTabs">
-                  <button className="tab-btn active" data-tab-btn="settings">⚙️ Nustatymai</button>
+                  <button className="tab-btn active" data-tab-btn="live">📡 Būsena</button>
                   <button className="tab-btn" data-tab-btn="results">📊 Rezultatai <span className="tab-count"></span></button>
                   <button className="tab-btn" data-tab-btn="stats">📈 Statistika</button>
-                  <button className="tab-btn" data-tab-btn="live">📡 Būsena</button>
                 </div>
 
-                {/* SETTINGS TAB */}
-                <div className="tab-panel active" data-tab-panel="settings">
-                  <div className="setup-panel active" id="setupPanel">
-                    <div className="setup-form">
-
-                      <div className="settings-section">
-                        <button type="button" className="section-head" data-accordion>
-                          <span>📝 Tema ir kalba</span><span className="chevron">▾</span>
-                        </button>
-                        <div className="section-body">
-                          <div className="form-field form-field--full">
-                            <label htmlFor="questionInput">Posėdžio tema / klausimas</label>
-                            <textarea
-                              id="questionInput"
-                              placeholder="Pvz.: Ar Lietuva turėtų įvesti 4 dienų darbo savaitę iki 2027 metų?"
-                              defaultValue="Ar Lietuva turėtų įvesti 4 dienų darbo savaitę iki 2027 metų?"
-                            ></textarea>
-                          </div>
-                          <div className="form-field">
-                            <label htmlFor="sessionLanguageSelect">Posėdžio kalba</label>
-                            <select id="sessionLanguageSelect" defaultValue="lt">
-                              <option value="lt">Lietuvių (numatytasis)</option>
-                              <option value="en">English</option>
-                            </select>
-                            <small>Valdo, kuria kalba generuojami pasisakymai, santraukos ir rezoliucijos.</small>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="settings-section">
-                        <button type="button" className="section-head" data-accordion>
-                          <span>🧠 Generavimo režimas</span><span className="chevron">▾</span>
-                        </button>
-                        <div className="section-body">
-                          <div className="mode-toggle" id="generationModeToggle">
-                            <button className="mode-option active" data-mode="local">
-                              <div>🔒 Lokalus</div>
-                              <p>Ollama + Speaches jūsų kompiuteryje.</p>
-                            </button>
-                            <button className="mode-option" data-mode="remote">
-                              <div>☁️ OpenAI</div>
-                              <p>OpenAI Responses + TTS modeliai.</p>
-                            </button>
-                          </div>
-
-                          <div className="config-panels">
-                            <div className="config-panel" id="localConfigPanel">
-                              <div className="panel-title">Lokalus generavimas</div>
-                              <div className="dual-grid">
-                                <div className="form-field">
-                                  <label htmlFor="localOllamaBaseUrlInput">Ollama API URL</label>
-                                  <input type="text" id="localOllamaBaseUrlInput" placeholder="http://localhost:11434" />
-                                  <small>Įsitikinkite, kad Ollama veikia ir modelis atsisiųstas.</small>
-                                </div>
-                                <div className="form-field">
-                                  <label htmlFor="localOllamaModelInput">Ollama modelio pavadinimas</label>
-                                  <input type="text" id="localOllamaModelInput" placeholder="llama3.1:70b" />
-                                  <small>Tas pats pavadinimas, kurį naudojate su <code>ollama run</code>.</small>
-                                </div>
-                              </div>
-                              <div className="dual-grid">
-                                <div className="form-field">
-                                  <label htmlFor="localOllamaTemperatureInput">Temperatūra</label>
-                                  <input type="number" id="localOllamaTemperatureInput" min="0" max="2" step="0.05" placeholder="0.35" />
-                                  <small>Mažesnė – stabilesnis JSON, didesnė – kūrybiškesnės kalbos.</small>
-                                </div>
-                                <div className="form-field">
-                                  <label htmlFor="localOllamaNumPredictInput">num_predict</label>
-                                  <input type="number" id="localOllamaNumPredictInput" min="-1" step="1" placeholder="-1" />
-                                  <small>-1 arba tuščia – neriboti atsakymo.</small>
-                                </div>
-                              </div>
-                              <div className="form-field">
-                                <label htmlFor="localOllamaOptionsInput">Papildomi Ollama options JSON</label>
-                                <textarea id="localOllamaOptionsInput" className="compact-textarea" placeholder='{"top_p":0.9,"repeat_penalty":1.1}'></textarea>
-                                <small>Sujungiami į <code>/api/chat</code> lauką <code>options</code>.</small>
-                              </div>
-                              <div className="dual-grid">
-                                <div className="form-field">
-                                  <label htmlFor="speachesBaseUrlInput">Speaches TTS adresas</label>
-                                  <input type="text" id="speachesBaseUrlInput" placeholder="http://localhost:8000/v1" />
-                                  <small>Paleiskite Speaches docker compose ir nurodykite bazinį URL.</small>
-                                </div>
-                                <div className="form-field">
-                                  <label htmlFor="speachesModelInput">Speaches modelio ID / alias</label>
-                                  <input type="text" id="speachesModelInput" placeholder="speaches-ai/Kokoro-82M-v1.0-ONNX" />
-                                  <small>Galima naudoti alias (pvz. <code>tts-1</code>).</small>
-                                </div>
-                              </div>
-                              <div className="form-field">
-                                <label htmlFor="speachesFormatSelect">Audio formatas</label>
-                                <select id="speachesFormatSelect" defaultValue="mp3">
-                                  <option value="mp3">MP3 (numatytasis)</option>
-                                  <option value="wav">WAV</option>
-                                  <option value="ogg">OGG Vorbis</option>
-                                </select>
-                              </div>
-                            </div>
-
-                            <div className="config-panel hidden" id="remoteConfigPanel">
-                              <div className="panel-title">OpenAI generavimas</div>
-                              <div className="dual-grid">
-                                <div className="form-field">
-                                  <label htmlFor="apiKeyInput">OpenAI API raktas</label>
-                                  <input type="password" id="apiKeyInput" placeholder="sk-... arba suderinamo endpoint tokenas" />
-                                  <small>Raktas saugomas tik jūsų naršyklėje ir siunčiamas kaip Bearer tokenas.</small>
-                                </div>
-                                <div className="form-field">
-                                  <label htmlFor="openAIBaseUrlInput">Responses bazinis URL</label>
-                                  <input type="text" id="openAIBaseUrlInput" placeholder="https://api.openai.com/v1" />
-                                  <small>Galima nurodyti OpenAI suderinamą proxy ar savą endpointą.</small>
-                                </div>
-                              </div>
-                              <div className="dual-grid">
-                                <div className="form-field">
-                                  <label htmlFor="openAITranscriptModelInput">Stenogramos modelis</label>
-                                  <input type="text" id="openAITranscriptModelInput" placeholder="gpt-5-mini" />
-                                  <small>Modelis posėdžio JSON stenogramai generuoti.</small>
-                                </div>
-                                <div className="form-field">
-                                  <label htmlFor="openAIMaxOutputTokensInput">Max output tokens</label>
-                                  <input type="number" id="openAIMaxOutputTokensInput" min="1000" step="1000" placeholder="100000" />
-                                  <small>Didelė reikšmė reikalinga ilgoms stenogramoms.</small>
-                                </div>
-                              </div>
-                              <div className="dual-grid">
-                                <div className="form-field">
-                                  <label htmlFor="openAIReasoningEffortSelect">Reasoning effort</label>
-                                  <select id="openAIReasoningEffortSelect" defaultValue="medium">
-                                    <option value="minimal">Minimal</option>
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                  </select>
-                                  <small>Taikoma reasoning parametrus palaikantiems modeliams.</small>
-                                </div>
-                                <div className="form-field">
-                                  <label htmlFor="openAITTSBaseUrlInput">OpenAI TTS bazinis URL</label>
-                                  <input type="text" id="openAITTSBaseUrlInput" placeholder="https://api.openai.com/v1" />
-                                  <small>Naudojama <code>/audio/speech</code> užklausoms.</small>
-                                </div>
-                              </div>
-                              <div className="dual-grid">
-                                <div className="form-field">
-                                  <label htmlFor="openAITTSModelInput">TTS modelis</label>
-                                  <input type="text" id="openAITTSModelInput" placeholder="gpt-4o-mini-tts" />
-                                  <small>Modelis OpenAI balsams generuoti.</small>
-                                </div>
-                                <div className="form-field">
-                                  <label htmlFor="openAITTSFormatSelect">OpenAI audio formatas</label>
-                                  <select id="openAITTSFormatSelect" defaultValue="mp3">
-                                    <option value="mp3">MP3</option>
-                                    <option value="wav">WAV</option>
-                                    <option value="opus">Opus</option>
-                                    <option value="aac">AAC</option>
-                                    <option value="flac">FLAC</option>
-                                    <option value="pcm">PCM</option>
-                                  </select>
-                                  <small>Siunčiama kaip <code>response_format</code>.</small>
-                                </div>
-                              </div>
-                              <div className="form-field">
-                                <label htmlFor="openAIRequestOptionsInput">Papildomi Responses JSON</label>
-                                <textarea id="openAIRequestOptionsInput" className="compact-textarea" placeholder='{"temperature":0.2,"metadata":{"source":"seimas-ai"}}'></textarea>
-                                <small>Sujungiami į stenogramos generavimo užklausą.</small>
-                              </div>
-                              <div className="form-field">
-                                <label htmlFor="openAITTSOptionsInput">Papildomi OpenAI TTS JSON</label>
-                                <textarea id="openAITTSOptionsInput" className="compact-textarea" placeholder='{"speed":1}'></textarea>
-                                <small>Sujungiami į audio generavimo užklausą.</small>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="settings-section">
-                        <button type="button" className="section-head" data-accordion>
-                          <span>🔊 Įgarsinimas</span><span className="chevron">▾</span>
-                        </button>
-                        <div className="section-body">
-                          <div className="form-field form-field--full">
-                            <label className="checkbox-label" htmlFor="textToSpeechCheckbox">
-                              <input type="checkbox" id="textToSpeechCheckbox" />
-                              <span>Įjungti teksto į kalbą (Speaches arba OpenAI TTS pagal režimą).</span>
-                            </label>
-                            <div className="tts-status" id="textToSpeechStatus">
-                              🔇 Teksto į kalbą funkcija išjungta. Įjunkite ją, kad generuotumėte balsus.
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <button className="generate-transcript-btn" id="generateTranscriptBtn">
-                        🚀 Generuoti Seimo posėdį
-                      </button>
-                      <div className="loading-indicator" id="loadingIndicator">
-                        <div>🚀 Generuojama detali stenograma...</div>
-                        <div className="loading-sub">Tai gali užtrukti iki kelių minučių priklausomai nuo režimo.</div>
-                      </div>
+                {/* LIVE TAB */}
+                <div className="tab-panel active" data-tab-panel="live">
+                  <div className="panel-intro">
+                    <h3>Gyva būsena</h3>
+                    <p>Paskutiniai posėdžio atnaujinimai realiu laiku.</p>
+                  </div>
+                  <div className="updates-stream" id="updatesContainer">
+                    <div className="update-item">
+                      <div className="update-time">-</div>
+                      <div className="update-text">Laukiama naujo posėdžio generavimo</div>
                     </div>
                   </div>
                 </div>
@@ -363,21 +183,296 @@ function App() {
                     <div className="an-empty">Statistika atsiras, kai sugeneruosite arba importuosite posėdį.</div>
                   </div>
                 </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                {/* LIVE TAB */}
-                <div className="tab-panel" data-tab-panel="live">
-                  <div className="panel-intro">
-                    <h3>Gyva būsena</h3>
-                    <p>Paskutiniai posėdžio atnaujinimai realiu laiku.</p>
-                  </div>
-                  <div className="updates-stream" id="updatesContainer">
-                    <div className="update-item">
-                      <div className="update-time">-</div>
-                      <div className="update-text">Laukiama naujo posėdžio generavimo</div>
+      {/* SETTINGS MODAL — opened from the ⚙️ icon in the top panel */}
+      <div id="settingsModal" className="settings-modal">
+        <div className="settings-modal__dialog" role="dialog" aria-modal="true" aria-label="Nustatymai">
+          <div className="settings-modal__header">
+            <div>
+              <p className="settings-modal__eyebrow">Konfigūracija</p>
+              <h2>⚙️ Nustatymai ir posėdžio generavimas</h2>
+            </div>
+            <button className="settings-modal__close" id="settingsModalCloseBtn" title="Uždaryti">&times;</button>
+          </div>
+
+          <div className="settings-modal__body">
+            <div className="setup-panel active" id="setupPanel">
+              <div className="setup-form">
+
+                <div className="settings-section">
+                  <button type="button" className="section-head" data-accordion>
+                    <span>📝 Tema ir kalba</span><span className="chevron">▾</span>
+                  </button>
+                  <div className="section-body">
+                    <div className="form-field form-field--full">
+                      <label htmlFor="questionInput">Posėdžio tema / klausimas</label>
+                      <textarea
+                        id="questionInput"
+                        placeholder="Pvz.: Ar Lietuva turėtų įvesti 4 dienų darbo savaitę iki 2027 metų?"
+                        defaultValue="Ar Lietuva turėtų įvesti 4 dienų darbo savaitę iki 2027 metų?"
+                      ></textarea>
+                    </div>
+                    <div className="form-field">
+                      <label htmlFor="sessionLanguageSelect">Posėdžio kalba</label>
+                      <select id="sessionLanguageSelect" defaultValue="lt">
+                        <option value="lt">Lietuvių (numatytasis)</option>
+                        <option value="en">English</option>
+                      </select>
+                      <small>Valdo, kuria kalba generuojami pasisakymai, santraukos ir rezoliucijos.</small>
                     </div>
                   </div>
                 </div>
-              </section>
+
+                <div className="settings-section">
+                  <button type="button" className="section-head" data-accordion>
+                    <span>🧠 Generavimo tiekėjas</span><span className="chevron">▾</span>
+                  </button>
+                  <div className="section-body">
+                    <p className="section-hint">Pasirinkite, kuris tiekėjas generuos stenogramą ir balsus. Kiekvienas režimas turi savo nustatymus žemiau.</p>
+                    <div className="mode-toggle" id="generationModeToggle">
+                      <button className="mode-option active" data-mode="local">
+                        <div>🔒 Lokalus</div>
+                        <p>Ollama + Speaches jūsų kompiuteryje.</p>
+                      </button>
+                      <button className="mode-option" data-mode="remote">
+                        <div>☁️ OpenAI</div>
+                        <p>OpenAI Responses + TTS modeliai.</p>
+                      </button>
+                      <button className="mode-option" data-mode="xai">
+                        <div>🚀 xAI (Grok)</div>
+                        <p>Grok chat + Grok teksto į kalbą.</p>
+                      </button>
+                    </div>
+
+                    <div className="config-panels">
+                      <div className="config-panel" id="localConfigPanel">
+                        <div className="panel-title">Lokalus generavimas</div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="localOllamaBaseUrlInput">Ollama API URL</label>
+                            <input type="text" id="localOllamaBaseUrlInput" placeholder="http://localhost:11434" />
+                            <small>Įsitikinkite, kad Ollama veikia ir modelis atsisiųstas.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="localOllamaModelInput">Ollama modelio pavadinimas</label>
+                            <input type="text" id="localOllamaModelInput" placeholder="llama3.1:70b" />
+                            <small>Tas pats pavadinimas, kurį naudojate su <code>ollama run</code>.</small>
+                          </div>
+                        </div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="localOllamaTemperatureInput">Temperatūra</label>
+                            <input type="number" id="localOllamaTemperatureInput" min="0" max="2" step="0.05" placeholder="0.35" />
+                            <small>Mažesnė – stabilesnis JSON, didesnė – kūrybiškesnės kalbos.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="localOllamaNumPredictInput">num_predict</label>
+                            <input type="number" id="localOllamaNumPredictInput" min="-1" step="1" placeholder="-1" />
+                            <small>-1 arba tuščia – neriboti atsakymo.</small>
+                          </div>
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="localOllamaOptionsInput">Papildomi Ollama options JSON</label>
+                          <textarea id="localOllamaOptionsInput" className="compact-textarea" placeholder='{"top_p":0.9,"repeat_penalty":1.1}'></textarea>
+                          <small>Sujungiami į <code>/api/chat</code> lauką <code>options</code>.</small>
+                        </div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="speachesBaseUrlInput">Speaches TTS adresas</label>
+                            <input type="text" id="speachesBaseUrlInput" placeholder="http://localhost:8000/v1" />
+                            <small>Paleiskite Speaches docker compose ir nurodykite bazinį URL.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="speachesModelInput">Speaches modelio ID / alias</label>
+                            <input type="text" id="speachesModelInput" placeholder="speaches-ai/Kokoro-82M-v1.0-ONNX" />
+                            <small>Galima naudoti alias (pvz. <code>tts-1</code>).</small>
+                          </div>
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="speachesFormatSelect">Audio formatas</label>
+                          <select id="speachesFormatSelect" defaultValue="mp3">
+                            <option value="mp3">MP3 (numatytasis)</option>
+                            <option value="wav">WAV</option>
+                            <option value="ogg">OGG Vorbis</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="config-panel hidden" id="remoteConfigPanel">
+                        <div className="panel-title">OpenAI generavimas</div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="apiKeyInput">OpenAI API raktas</label>
+                            <input type="password" id="apiKeyInput" placeholder="sk-... arba suderinamo endpoint tokenas" />
+                            <small>Raktas saugomas tik jūsų naršyklėje ir siunčiamas kaip Bearer tokenas.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="openAIBaseUrlInput">Responses bazinis URL</label>
+                            <input type="text" id="openAIBaseUrlInput" placeholder="https://api.openai.com/v1" />
+                            <small>Galima nurodyti OpenAI suderinamą proxy ar savą endpointą.</small>
+                          </div>
+                        </div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="openAITranscriptModelInput">Stenogramos modelis</label>
+                            <input type="text" id="openAITranscriptModelInput" placeholder="gpt-5-mini" />
+                            <small>Modelis posėdžio JSON stenogramai generuoti.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="openAIMaxOutputTokensInput">Max output tokens</label>
+                            <input type="number" id="openAIMaxOutputTokensInput" min="1000" step="1000" placeholder="100000" />
+                            <small>Didelė reikšmė reikalinga ilgoms stenogramoms.</small>
+                          </div>
+                        </div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="openAIReasoningEffortSelect">Reasoning effort</label>
+                            <select id="openAIReasoningEffortSelect" defaultValue="medium">
+                              <option value="minimal">Minimal</option>
+                              <option value="low">Low</option>
+                              <option value="medium">Medium</option>
+                              <option value="high">High</option>
+                            </select>
+                            <small>Taikoma reasoning parametrus palaikantiems modeliams.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="openAITTSBaseUrlInput">OpenAI TTS bazinis URL</label>
+                            <input type="text" id="openAITTSBaseUrlInput" placeholder="https://api.openai.com/v1" />
+                            <small>Naudojama <code>/audio/speech</code> užklausoms.</small>
+                          </div>
+                        </div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="openAITTSModelInput">TTS modelis</label>
+                            <input type="text" id="openAITTSModelInput" placeholder="gpt-4o-mini-tts" />
+                            <small>Modelis OpenAI balsams generuoti.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="openAITTSFormatSelect">OpenAI audio formatas</label>
+                            <select id="openAITTSFormatSelect" defaultValue="mp3">
+                              <option value="mp3">MP3</option>
+                              <option value="wav">WAV</option>
+                              <option value="opus">Opus</option>
+                              <option value="aac">AAC</option>
+                              <option value="flac">FLAC</option>
+                              <option value="pcm">PCM</option>
+                            </select>
+                            <small>Siunčiama kaip <code>response_format</code>.</small>
+                          </div>
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="openAIRequestOptionsInput">Papildomi Responses JSON</label>
+                          <textarea id="openAIRequestOptionsInput" className="compact-textarea" placeholder='{"temperature":0.2,"metadata":{"source":"seimas-ai"}}'></textarea>
+                          <small>Sujungiami į stenogramos generavimo užklausą.</small>
+                        </div>
+                        <div className="form-field">
+                          <label htmlFor="openAITTSOptionsInput">Papildomi OpenAI TTS JSON</label>
+                          <textarea id="openAITTSOptionsInput" className="compact-textarea" placeholder='{"speed":1}'></textarea>
+                          <small>Sujungiami į audio generavimo užklausą.</small>
+                        </div>
+                      </div>
+
+                      <div className="config-panel hidden" id="xaiConfigPanel">
+                        <div className="panel-title">xAI (Grok) generavimas</div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="xaiApiKeyInput">xAI API raktas</label>
+                            <input type="password" id="xaiApiKeyInput" placeholder="xai-..." />
+                            <small>Gaukite raktą iš <code>console.x.ai</code>. Saugomas tik jūsų naršyklėje.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="xaiBaseUrlInput">xAI bazinis URL</label>
+                            <input type="text" id="xaiBaseUrlInput" placeholder="https://api.x.ai/v1" />
+                            <small>OpenAI suderinamas <code>/chat/completions</code> endpointas.</small>
+                          </div>
+                        </div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="xaiTranscriptModelInput">Grok modelis</label>
+                            <input type="text" id="xaiTranscriptModelInput" placeholder="grok-4" />
+                            <small>Pvz. <code>grok-4</code>, <code>grok-4-fast</code>, <code>grok-3-mini</code>.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="xaiMaxOutputTokensInput">Max tokens</label>
+                            <input type="number" id="xaiMaxOutputTokensInput" min="1000" step="1000" placeholder="100000" />
+                            <small>Siunčiama kaip <code>max_tokens</code>.</small>
+                          </div>
+                        </div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="xaiTemperatureInput">Temperatūra</label>
+                            <input type="number" id="xaiTemperatureInput" min="0" max="2" step="0.05" placeholder="0.4" />
+                            <small>Mažesnė – stabilesnis JSON, didesnė – kūrybiškesnės kalbos.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="xaiRequestOptionsInput">Papildomi Chat JSON</label>
+                            <textarea id="xaiRequestOptionsInput" className="compact-textarea" placeholder='{"top_p":0.9}'></textarea>
+                            <small>Sujungiami į <code>/chat/completions</code> užklausą.</small>
+                          </div>
+                        </div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="xaiTTSBaseUrlInput">xAI TTS bazinis URL</label>
+                            <input type="text" id="xaiTTSBaseUrlInput" placeholder="https://api.x.ai/v1" />
+                            <small>Naudojama <code>/tts</code> Grok balsų užklausoms.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="xaiTTSLanguageInput">TTS kalba</label>
+                            <input type="text" id="xaiTTSLanguageInput" placeholder="auto" />
+                            <small>BCP-47 kodas (pvz. <code>lt</code>, <code>en</code>) arba <code>auto</code>.</small>
+                          </div>
+                        </div>
+                        <div className="dual-grid">
+                          <div className="form-field">
+                            <label htmlFor="xaiTTSFormatSelect">xAI audio formatas</label>
+                            <select id="xaiTTSFormatSelect" defaultValue="mp3">
+                              <option value="mp3">MP3 (numatytasis)</option>
+                              <option value="wav">WAV</option>
+                              <option value="pcm">PCM</option>
+                            </select>
+                            <small>Siunčiama kaip <code>output_format.codec</code>. Balsai (Eve, Ara, Leo, Rex, Sal) priskiriami automatiškai.</small>
+                          </div>
+                          <div className="form-field">
+                            <label htmlFor="xaiTTSOptionsInput">Papildomi xAI TTS JSON</label>
+                            <textarea id="xaiTTSOptionsInput" className="compact-textarea" placeholder='{"output_format":{"sample_rate":24000}}'></textarea>
+                            <small>Sujungiami į <code>/tts</code> užklausą.</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="settings-section">
+                  <button type="button" className="section-head" data-accordion>
+                    <span>🔊 Įgarsinimas</span><span className="chevron">▾</span>
+                  </button>
+                  <div className="section-body">
+                    <div className="form-field form-field--full">
+                      <label className="checkbox-label" htmlFor="textToSpeechCheckbox">
+                        <input type="checkbox" id="textToSpeechCheckbox" />
+                        <span>Įjungti teksto į kalbą (Speaches, OpenAI arba xAI Grok TTS pagal tiekėją).</span>
+                      </label>
+                      <div className="tts-status" id="textToSpeechStatus">
+                        🔇 Teksto į kalbą funkcija išjungta. Įjunkite ją, kad generuotumėte balsus.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <button className="generate-transcript-btn" id="generateTranscriptBtn">
+                  🚀 Generuoti Seimo posėdį
+                </button>
+                <div className="loading-indicator" id="loadingIndicator">
+                  <div>🚀 Generuojama detali stenograma...</div>
+                  <div className="loading-sub">Tai gali užtrukti iki kelių minučių priklausomai nuo režimo.</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

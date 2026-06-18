@@ -83,6 +83,13 @@ class EnhancedSeimasLiveStream {
                 { voice: 'sage', key: 'sage', label: 'Sage', rateMultiplier: 0.9 },
                 { voice: 'marin', key: 'marin', label: 'Marin', rateMultiplier: 1.03 },
                 { voice: 'cedar', key: 'cedar', label: 'Cedar', rateMultiplier: 1.07 }
+            ],
+            xai: [
+                { voice: 'eve', key: 'eve', label: 'Eve (F)', rateMultiplier: 1 },
+                { voice: 'ara', key: 'ara', label: 'Ara (F)', rateMultiplier: 1.05 },
+                { voice: 'leo', key: 'leo', label: 'Leo (M)', rateMultiplier: 1 },
+                { voice: 'rex', key: 'rex', label: 'Rex (M)', rateMultiplier: 0.96 },
+                { voice: 'sal', key: 'sal', label: 'Sal (M)', rateMultiplier: 1.06 }
             ]
         };
         this.availableVoices = this.voiceLibraries.speaches.map(profile => ({ ...profile }));
@@ -112,6 +119,18 @@ class EnhancedSeimasLiveStream {
             ttsResponseFormat: 'mp3',
             ttsOptionsJson: ''
         };
+        this.xaiGenerationSettings = {
+            apiKey: '',
+            baseUrl: 'https://api.x.ai/v1',
+            transcriptModel: 'grok-4',
+            maxOutputTokens: 100000,
+            temperature: 0.4,
+            requestOptionsJson: '',
+            ttsBaseUrl: 'https://api.x.ai/v1',
+            ttsLanguage: 'auto',
+            ttsResponseFormat: 'mp3',
+            ttsOptionsJson: ''
+        };
         this.currentTTSOptions = null;
 
         this.initializeElements();
@@ -120,6 +139,7 @@ class EnhancedSeimasLiveStream {
         this.setupEventListeners();
         this.loadAPIKey();
         this.loadRemoteGenerationSettings();
+        this.loadXaiGenerationSettings();
         this.loadTextToSpeechPreference();
         this.loadSessionLanguagePreference();
         this.loadSpeachesSettings();
@@ -184,6 +204,22 @@ class EnhancedSeimasLiveStream {
         this.openAITTSFormatSelect = document.getElementById('openAITTSFormatSelect');
         this.openAIRequestOptionsInput = document.getElementById('openAIRequestOptionsInput');
         this.openAITTSOptionsInput = document.getElementById('openAITTSOptionsInput');
+        this.xaiConfigPanel = document.getElementById('xaiConfigPanel');
+        this.xaiApiKeyInput = document.getElementById('xaiApiKeyInput');
+        this.xaiBaseUrlInput = document.getElementById('xaiBaseUrlInput');
+        this.xaiTranscriptModelInput = document.getElementById('xaiTranscriptModelInput');
+        this.xaiMaxOutputTokensInput = document.getElementById('xaiMaxOutputTokensInput');
+        this.xaiTemperatureInput = document.getElementById('xaiTemperatureInput');
+        this.xaiRequestOptionsInput = document.getElementById('xaiRequestOptionsInput');
+        this.xaiTTSBaseUrlInput = document.getElementById('xaiTTSBaseUrlInput');
+        this.xaiTTSLanguageInput = document.getElementById('xaiTTSLanguageInput');
+        this.xaiTTSFormatSelect = document.getElementById('xaiTTSFormatSelect');
+        this.xaiTTSOptionsInput = document.getElementById('xaiTTSOptionsInput');
+
+        // Settings modal elements
+        this.settingsModal = document.getElementById('settingsModal');
+        this.settingsModalOpenBtn = document.getElementById('settingsModalOpenBtn');
+        this.settingsModalCloseBtn = document.getElementById('settingsModalCloseBtn');
 
         // Modal elements
         this.membersBtn = document.getElementById('membersBtn');
@@ -376,7 +412,7 @@ class EnhancedSeimasLiveStream {
                     return;
                 }
                 const mode = option.getAttribute('data-mode');
-                if (mode === 'local' || mode === 'remote') {
+                if (mode === 'local' || mode === 'remote' || mode === 'xai') {
                     this.handleGenerationModeChange(mode);
                 }
             });
@@ -422,6 +458,36 @@ class EnhancedSeimasLiveStream {
         }
         if (this.openAITTSOptionsInput) {
             this.openAITTSOptionsInput.addEventListener('input', (e) => this.handleRemoteGenerationSettingsChange('ttsOptionsJson', e.target.value));
+        }
+        if (this.xaiApiKeyInput) {
+            this.xaiApiKeyInput.addEventListener('input', (e) => this.handleXaiGenerationSettingsChange('apiKey', e.target.value));
+        }
+        if (this.xaiBaseUrlInput) {
+            this.xaiBaseUrlInput.addEventListener('input', (e) => this.handleXaiGenerationSettingsChange('baseUrl', e.target.value));
+        }
+        if (this.xaiTranscriptModelInput) {
+            this.xaiTranscriptModelInput.addEventListener('input', (e) => this.handleXaiGenerationSettingsChange('transcriptModel', e.target.value));
+        }
+        if (this.xaiMaxOutputTokensInput) {
+            this.xaiMaxOutputTokensInput.addEventListener('input', (e) => this.handleXaiGenerationSettingsChange('maxOutputTokens', e.target.value));
+        }
+        if (this.xaiTemperatureInput) {
+            this.xaiTemperatureInput.addEventListener('input', (e) => this.handleXaiGenerationSettingsChange('temperature', e.target.value));
+        }
+        if (this.xaiRequestOptionsInput) {
+            this.xaiRequestOptionsInput.addEventListener('input', (e) => this.handleXaiGenerationSettingsChange('requestOptionsJson', e.target.value));
+        }
+        if (this.xaiTTSBaseUrlInput) {
+            this.xaiTTSBaseUrlInput.addEventListener('input', (e) => this.handleXaiGenerationSettingsChange('ttsBaseUrl', e.target.value));
+        }
+        if (this.xaiTTSLanguageInput) {
+            this.xaiTTSLanguageInput.addEventListener('input', (e) => this.handleXaiGenerationSettingsChange('ttsLanguage', e.target.value));
+        }
+        if (this.xaiTTSFormatSelect) {
+            this.xaiTTSFormatSelect.addEventListener('change', (e) => this.handleXaiGenerationSettingsChange('ttsResponseFormat', e.target.value));
+        }
+        if (this.xaiTTSOptionsInput) {
+            this.xaiTTSOptionsInput.addEventListener('input', (e) => this.handleXaiGenerationSettingsChange('ttsOptionsJson', e.target.value));
         }
         if (this.speachesBaseUrlInput) {
             this.speachesBaseUrlInput.addEventListener('input', (e) => this.handleSpeachesSettingsChange('baseUrl', e.target.value));
@@ -514,6 +580,31 @@ class EnhancedSeimasLiveStream {
             if (e.target === this.membersModal) this.hideMembersModal();
         });
 
+        // Settings modal (gear icon → modern modal over the session content)
+        if (this.settingsModalOpenBtn) {
+            this.settingsModalOpenBtn.addEventListener('click', () => this.showSettingsModal());
+        }
+        if (this.settingsModalCloseBtn) {
+            this.settingsModalCloseBtn.addEventListener('click', () => this.hideSettingsModal());
+        }
+        if (this.settingsModal) {
+            this.settingsModal.addEventListener('click', (e) => {
+                if (e.target === this.settingsModal) this.hideSettingsModal();
+            });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.settingsModal?.classList.contains('active')) {
+                this.hideSettingsModal();
+            }
+        });
+
+        // Collapse the right sidebar for a wide, distraction-free video stream
+        const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+        if (toggleSidebarBtn) {
+            toggleSidebarBtn.addEventListener('click', () => this.toggleSidebar());
+        }
+        this.loadSidebarPreference();
+
         // Timeline interaction
         const timelineTrack = document.getElementById('timelineTrack');
         timelineTrack.addEventListener('click', (e) => {
@@ -526,15 +617,59 @@ class EnhancedSeimasLiveStream {
     }
 
     toggleSetupPanel() {
-        // In the tabbed layout the settings live in their own tab; jump to it.
-        const settingsBtn = document.querySelector('[data-tab-btn="settings"]');
-        if (settingsBtn) {
-            settingsBtn.click();
-            this.setupPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            return;
+        // Settings now live in a modal overlay; open it.
+        this.showSettingsModal();
+    }
+
+    showSettingsModal() {
+        if (this.settingsModal) {
+            this.settingsModal.classList.add('active');
+            document.body.classList.add('modal-open');
         }
-        // Fallback (no tabs): legacy toggle behaviour.
-        this.setupPanel.classList.toggle('active');
+    }
+
+    hideSettingsModal() {
+        if (this.settingsModal) {
+            this.settingsModal.classList.remove('active');
+            document.body.classList.remove('modal-open');
+        }
+    }
+
+    toggleSidebar(force) {
+        const inner = document.getElementById('mainGrid') || document.querySelector('.main-grid');
+        if (!inner) return;
+        const collapsed = typeof force === 'boolean'
+            ? force
+            : !inner.classList.contains('sidebar-collapsed');
+        inner.classList.toggle('sidebar-collapsed', collapsed);
+
+        const btn = document.getElementById('toggleSidebarBtn');
+        if (btn) {
+            btn.classList.toggle('active', collapsed);
+            btn.textContent = collapsed ? '◀ Rodyti skydelį' : '⛶ Platus vaizdas';
+            btn.title = collapsed
+                ? 'Rodyti šoninį skydelį (rezultatai, statistika, būsena)'
+                : 'Paslėpti šoninį skydelį ir žiūrėti platų vaizdo srautą';
+        }
+        try {
+            localStorage.setItem('seimas_sidebar_collapsed', collapsed ? 'true' : 'false');
+        } catch (error) {
+            console.warn('Nepavyko įrašyti šoninės juostos būsenos:', error);
+        }
+        // Let the talking-head canvas resize to the new width.
+        window.dispatchEvent(new Event('resize'));
+    }
+
+    loadSidebarPreference() {
+        let collapsed = false;
+        try {
+            collapsed = localStorage.getItem('seimas_sidebar_collapsed') === 'true';
+        } catch (error) {
+            console.warn('Nepavyko nuskaityti šoninės juostos būsenos:', error);
+        }
+        if (collapsed) {
+            this.toggleSidebar(true);
+        }
     }
 
     showMembersModal() {
@@ -639,6 +774,148 @@ class EnhancedSeimasLiveStream {
         if (this.textToSpeechEnabled && ['ttsBaseUrl', 'ttsModel', 'ttsResponseFormat', 'ttsOptionsJson'].includes(field)) {
             this.updateTextToSpeechStatus(`⚙️ OpenAI TTS nustatymai atnaujinti (${this.getActiveOpenAITTSModelLabel()}).`, 'info');
         }
+    }
+
+    loadXaiGenerationSettings() {
+        try {
+            const stored = localStorage.getItem('seimas_xai_generation_settings');
+            if (stored) {
+                this.xaiGenerationSettings = {
+                    ...this.xaiGenerationSettings,
+                    ...JSON.parse(stored)
+                };
+            }
+            // Back-compat: the xAI key may also live in its own slot.
+            const storedKey = localStorage.getItem('xai_api_key');
+            if (storedKey && !this.xaiGenerationSettings.apiKey) {
+                this.xaiGenerationSettings.apiKey = storedKey;
+            }
+        } catch (error) {
+            console.warn('Nepavyko nuskaityti xAI generavimo nustatymų:', error);
+        }
+        this.applyXaiGenerationSettingsToInputs();
+    }
+
+    applyXaiGenerationSettingsToInputs() {
+        const settings = this.xaiGenerationSettings || {};
+        if (this.xaiApiKeyInput) {
+            this.xaiApiKeyInput.value = settings.apiKey || '';
+        }
+        if (this.xaiBaseUrlInput) {
+            this.xaiBaseUrlInput.value = settings.baseUrl || 'https://api.x.ai/v1';
+        }
+        if (this.xaiTranscriptModelInput) {
+            this.xaiTranscriptModelInput.value = settings.transcriptModel || 'grok-4';
+        }
+        if (this.xaiMaxOutputTokensInput) {
+            this.xaiMaxOutputTokensInput.value = settings.maxOutputTokens || 100000;
+        }
+        if (this.xaiTemperatureInput) {
+            this.xaiTemperatureInput.value = settings.temperature ?? 0.4;
+        }
+        if (this.xaiRequestOptionsInput) {
+            this.xaiRequestOptionsInput.value = settings.requestOptionsJson || '';
+        }
+        if (this.xaiTTSBaseUrlInput) {
+            this.xaiTTSBaseUrlInput.value = settings.ttsBaseUrl || settings.baseUrl || 'https://api.x.ai/v1';
+        }
+        if (this.xaiTTSLanguageInput) {
+            this.xaiTTSLanguageInput.value = settings.ttsLanguage || 'auto';
+        }
+        if (this.xaiTTSFormatSelect) {
+            this.xaiTTSFormatSelect.value = settings.ttsResponseFormat || 'mp3';
+        }
+        if (this.xaiTTSOptionsInput) {
+            this.xaiTTSOptionsInput.value = settings.ttsOptionsJson || '';
+        }
+    }
+
+    saveXaiGenerationSettings() {
+        try {
+            localStorage.setItem('seimas_xai_generation_settings', JSON.stringify(this.xaiGenerationSettings));
+            if (this.xaiGenerationSettings?.apiKey) {
+                localStorage.setItem('xai_api_key', this.xaiGenerationSettings.apiKey);
+            }
+        } catch (error) {
+            console.warn('Nepavyko įrašyti xAI generavimo nustatymų:', error);
+        }
+    }
+
+    handleXaiGenerationSettingsChange(field, value) {
+        if (!this.xaiGenerationSettings) {
+            this.xaiGenerationSettings = {};
+        }
+        if (field === 'maxOutputTokens') {
+            const parsed = Number(value);
+            this.xaiGenerationSettings[field] = Number.isFinite(parsed) && parsed > 0 ? parsed : '';
+        } else if (field === 'temperature') {
+            this.xaiGenerationSettings[field] = this.parseOptionalNumber(value, this.xaiGenerationSettings[field], 0.4);
+        } else if (field === 'ttsResponseFormat') {
+            this.xaiGenerationSettings[field] = typeof value === 'string' && value.trim()
+                ? value.trim().toLowerCase()
+                : 'mp3';
+        } else {
+            this.xaiGenerationSettings[field] = typeof value === 'string' ? value.trim() : value;
+        }
+        this.saveXaiGenerationSettings();
+
+        if (this.textToSpeechEnabled && this.getTextToSpeechProvider() === 'xai'
+            && ['ttsBaseUrl', 'ttsLanguage', 'ttsResponseFormat', 'ttsOptionsJson'].includes(field)) {
+            this.updateTextToSpeechStatus(`⚙️ xAI Grok TTS nustatymai atnaujinti.`, 'info');
+        }
+    }
+
+    ensureXaiGenerationConfigured() {
+        const apiKey = (this.xaiApiKeyInput?.value || this.xaiGenerationSettings?.apiKey || '').trim();
+        const baseUrl = (this.xaiBaseUrlInput?.value || this.xaiGenerationSettings?.baseUrl || '').trim();
+        const transcriptModel = (this.xaiTranscriptModelInput?.value || this.xaiGenerationSettings?.transcriptModel || '').trim();
+        const ttsBaseUrl = (this.xaiTTSBaseUrlInput?.value || this.xaiGenerationSettings?.ttsBaseUrl || baseUrl).trim();
+        const requestOptionsJson = this.xaiRequestOptionsInput?.value?.trim() || this.xaiGenerationSettings?.requestOptionsJson || '';
+        const ttsOptionsJson = this.xaiTTSOptionsInput?.value?.trim() || this.xaiGenerationSettings?.ttsOptionsJson || '';
+
+        if (!apiKey) {
+            alert('Prašome įvesti xAI (Grok) API raktą.');
+            return false;
+        }
+        if (!baseUrl || !transcriptModel) {
+            alert('Prašome nurodyti xAI bazinį URL ir Grok modelį.');
+            return false;
+        }
+        if (!this.parseJsonOptions(requestOptionsJson, 'Papildomi xAI Chat JSON nustatymai')) {
+            return false;
+        }
+        if (this.textToSpeechEnabled && !ttsBaseUrl) {
+            alert('Prašome nurodyti xAI TTS bazinį URL.');
+            return false;
+        }
+        if (!this.parseJsonOptions(ttsOptionsJson, 'Papildomi xAI TTS JSON nustatymai')) {
+            return false;
+        }
+
+        this.xaiGenerationSettings.apiKey = apiKey;
+        this.xaiGenerationSettings.baseUrl = baseUrl;
+        this.xaiGenerationSettings.transcriptModel = transcriptModel;
+        this.xaiGenerationSettings.maxOutputTokens = this.parseOptionalNumber(
+            this.xaiMaxOutputTokensInput?.value,
+            this.xaiGenerationSettings.maxOutputTokens,
+            100000
+        );
+        this.xaiGenerationSettings.temperature = this.parseOptionalNumber(
+            this.xaiTemperatureInput?.value,
+            this.xaiGenerationSettings.temperature,
+            0.4
+        );
+        this.xaiGenerationSettings.requestOptionsJson = requestOptionsJson;
+        this.xaiGenerationSettings.ttsBaseUrl = ttsBaseUrl;
+        this.xaiGenerationSettings.ttsLanguage = (this.xaiTTSLanguageInput?.value || this.xaiGenerationSettings.ttsLanguage || 'auto').trim() || 'auto';
+        this.xaiGenerationSettings.ttsResponseFormat = this.xaiTTSFormatSelect?.value || this.xaiGenerationSettings.ttsResponseFormat || 'mp3';
+        this.xaiGenerationSettings.ttsOptionsJson = ttsOptionsJson;
+        this.saveXaiGenerationSettings();
+        return true;
+    }
+
+    getActiveXaiTranscriptModelLabel() {
+        return this.xaiGenerationSettings?.transcriptModel?.trim() || 'grok-4';
     }
 
     loadSessionLanguagePreference() {
@@ -880,7 +1157,7 @@ class EnhancedSeimasLiveStream {
     loadGenerationMode() {
         try {
             const stored = localStorage.getItem('seimas_generation_mode');
-            if (stored === 'remote' || stored === 'local') {
+            if (stored === 'remote' || stored === 'local' || stored === 'xai') {
                 this.generationMode = stored;
             }
         } catch (error) {
@@ -911,10 +1188,13 @@ class EnhancedSeimasLiveStream {
         if (this.remoteConfigPanel) {
             this.remoteConfigPanel.classList.toggle('hidden', this.generationMode !== 'remote');
         }
+        if (this.xaiConfigPanel) {
+            this.xaiConfigPanel.classList.toggle('hidden', this.generationMode !== 'xai');
+        }
     }
 
     handleGenerationModeChange(mode) {
-        if (mode !== 'local' && mode !== 'remote') {
+        if (mode !== 'local' && mode !== 'remote' && mode !== 'xai') {
             return;
         }
         if (this.generationMode === mode) {
@@ -925,12 +1205,14 @@ class EnhancedSeimasLiveStream {
         this.applyGenerationModeToUI();
         this.currentTTSOptions = null;
         this.resetVoiceAssignments(this.getTextToSpeechProvider());
-        const providerLabel = this.getTextToSpeechProvider() === 'openai' ? 'OpenAI TTS' : 'Speaches';
-        this.updateTextToSpeechStatus(`🔁 Pereita į ${mode === 'remote' ? 'OpenAI debesų' : 'lokalų'} režimą. Balsams bus naudojamas ${providerLabel}.`, 'info');
+        const modeLabels = { remote: 'OpenAI debesų', xai: 'xAI (Grok)', local: 'lokalų' };
+        this.updateTextToSpeechStatus(`🔁 Pereita į ${modeLabels[mode] || mode} režimą. Balsams bus naudojamas ${this.getTTSProviderLabel()}.`, 'info');
     }
 
     getTextToSpeechProvider() {
-        return this.generationMode === 'remote' ? 'openai' : 'speaches';
+        if (this.generationMode === 'remote') return 'openai';
+        if (this.generationMode === 'xai') return 'xai';
+        return 'speaches';
     }
 
     buildDefaultTTSOptions() {
@@ -945,6 +1227,16 @@ class EnhancedSeimasLiveStream {
                 optionsJson: this.remoteGenerationSettings?.ttsOptionsJson || ''
             };
         }
+        if (provider === 'xai') {
+            return {
+                provider: 'xai',
+                apiKey: (this.xaiApiKeyInput?.value?.trim() || this.xaiGenerationSettings?.apiKey),
+                baseUrl: this.xaiGenerationSettings?.ttsBaseUrl || this.xaiGenerationSettings?.baseUrl,
+                language: this.xaiGenerationSettings?.ttsLanguage || 'auto',
+                responseFormat: this.xaiGenerationSettings?.ttsResponseFormat || 'mp3',
+                optionsJson: this.xaiGenerationSettings?.ttsOptionsJson || ''
+            };
+        }
         return {
             provider: 'speaches',
             baseUrl: this.speachesSettings?.baseUrl,
@@ -953,9 +1245,14 @@ class EnhancedSeimasLiveStream {
     }
 
     getTTSProviderLabel() {
-        return this.getTextToSpeechProvider() === 'openai'
-            ? `OpenAI (${this.getActiveOpenAITTSModelLabel()})`
-            : `Speaches (${this.getActiveSpeachesModelLabel()})`;
+        const provider = this.getTextToSpeechProvider();
+        if (provider === 'openai') return `OpenAI (${this.getActiveOpenAITTSModelLabel()})`;
+        if (provider === 'xai') return 'xAI Grok TTS';
+        return `Speaches (${this.getActiveSpeachesModelLabel()})`;
+    }
+
+    providerDisplayName(provider = this.getTextToSpeechProvider()) {
+        return { openai: 'OpenAI', xai: 'xAI Grok', speaches: 'Speaches' }[provider] || provider;
     }
 
     getActiveSpeachesModelLabel() {
@@ -1114,6 +1411,54 @@ class EnhancedSeimasLiveStream {
         return new Blob([arrayBuffer], { type: response.headers.get('Content-Type') || `audio/${responseFormat || 'mpeg'}` });
     }
 
+    async requestSpeechFromXai(text, voiceProfile, providerOptions = {}) {
+        const extraOptions = this.parseJsonOptions(
+            providerOptions.optionsJson ?? this.xaiGenerationSettings?.ttsOptionsJson,
+            'Papildomi xAI TTS JSON nustatymai'
+        );
+        if (!extraOptions) {
+            throw new Error('xAI TTS nustatymai turi neteisingą JSON.');
+        }
+
+        const responseFormat = (providerOptions.responseFormat || this.xaiGenerationSettings?.ttsResponseFormat || 'mp3').toLowerCase();
+        // xAI /v1/tts uses an output_format object with a codec (mp3, wav, pcm, mulaw, alaw).
+        const codec = responseFormat === 'mpeg' ? 'mp3' : responseFormat;
+        const language = providerOptions.language || this.xaiGenerationSettings?.ttsLanguage || 'auto';
+
+        const payload = this.mergeOptions({
+            text,
+            voice_id: voiceProfile.voice || 'eve',
+            language,
+            output_format: { codec },
+            speed: voiceProfile.rateMultiplier && voiceProfile.rateMultiplier !== 1
+                ? Number(voiceProfile.rateMultiplier.toFixed(2))
+                : 1
+        }, extraOptions, ['text', 'voice_id']);
+
+        const baseUrl = this.normalizeBaseUrl(providerOptions.baseUrl || this.xaiGenerationSettings?.ttsBaseUrl || this.xaiGenerationSettings?.baseUrl || 'https://api.x.ai/v1');
+        const endpoint = `${baseUrl}/tts`;
+        const headers = { 'Content-Type': 'application/json' };
+        const apiKey = providerOptions.apiKey || this.xaiApiKeyInput?.value?.trim() || this.xaiGenerationSettings?.apiKey;
+        if (apiKey) {
+            headers.Authorization = `Bearer ${apiKey}`;
+        }
+
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+            throw new Error(error.error?.message || error.message || 'xAI TTS API klaida');
+        }
+
+        const arrayBuffer = await response.arrayBuffer();
+        const mimeByCodec = { mp3: 'audio/mpeg', wav: 'audio/wav', pcm: 'audio/L16', mulaw: 'audio/basic', alaw: 'audio/basic' };
+        return new Blob([arrayBuffer], { type: response.headers.get('Content-Type') || mimeByCodec[codec] || 'audio/mpeg' });
+    }
+
     loadTextToSpeechPreference() {
         if (!this.textToSpeechCheckbox) {
             return;
@@ -1163,6 +1508,15 @@ class EnhancedSeimasLiveStream {
                     localStorage.setItem('seimas_tts_enabled', 'false');
                     return;
                 }
+            } else if (provider === 'xai') {
+                const apiKey = this.xaiApiKeyInput?.value?.trim() || this.xaiGenerationSettings?.apiKey;
+                if (!apiKey) {
+                    alert('Įveskite xAI (Grok) API raktą, kad būtų galima generuoti balsus.');
+                    this.textToSpeechCheckbox.checked = false;
+                    this.textToSpeechEnabled = false;
+                    localStorage.setItem('seimas_tts_enabled', 'false');
+                    return;
+                }
             } else if (!this.ensureSpeachesConfigured()) {
                 this.textToSpeechEnabled = false;
                 this.textToSpeechCheckbox.checked = false;
@@ -1174,14 +1528,12 @@ class EnhancedSeimasLiveStream {
                 return;
             }
 
-            const providerLabel = provider === 'openai'
-                ? `OpenAI (${this.getActiveOpenAITTSModelLabel()})`
-                : `Speaches (${this.getActiveSpeachesModelLabel()})`;
+            const providerLabel = this.getTTSProviderLabel();
             this.updateTextToSpeechStatus(`🔊 Teksto į kalbą funkcija aktyvuota. Naudojamas ${providerLabel}.`, 'success');
 
             if (this.events.length > 0) {
                 if (this.streamLiveFromTTS) {
-                    this.updateTextToSpeechStatus(`🔄 ${provider === 'openai' ? 'OpenAI' : 'Speaches'} generuos balsus realiu laiku. Spauskite „Paleisti“, kad pradėtumėte.`, 'processing');
+                    this.updateTextToSpeechStatus(`🔄 ${providerLabel} generuos balsus realiu laiku. Spauskite „Paleisti“, kad pradėtumėte.`, 'processing');
                     return;
                 }
 
@@ -1263,15 +1615,19 @@ class EnhancedSeimasLiveStream {
         // Reuse a base voice that matches the requested gender so the timbre stays correct.
         const gendered = library.filter(v => this.voiceGender(v.voice) === desiredGender);
         const pool = gendered.length ? gendered : library;
-        const base = pool[variantIndex % pool.length] || pool[0] || {
-            voice: provider === 'openai'
-                ? (desiredGender === 'f' ? 'nova' : 'onyx')
-                : (desiredGender === 'f' ? 'af_heart' : 'am_adam')
+        const fallbackVoiceByProvider = {
+            openai: desiredGender === 'f' ? 'nova' : 'onyx',
+            xai: desiredGender === 'f' ? 'eve' : 'leo',
+            speaches: desiredGender === 'f' ? 'af_heart' : 'am_adam'
         };
+        const base = pool[variantIndex % pool.length] || pool[0] || {
+            voice: fallbackVoiceByProvider[provider] || fallbackVoiceByProvider.speaches
+        };
+        const providerLabel = { openai: 'OpenAI', xai: 'xAI', speaches: 'Speaches' }[provider] || provider;
         return {
             voice: base.voice,
             key: `${provider}-${desiredGender}-variant-${variantIndex}`,
-            label: `${provider === 'openai' ? 'OpenAI' : 'Speaches'} ${desiredGender === 'f' ? 'F' : 'M'} variant ${variantIndex}`,
+            label: `${providerLabel} ${desiredGender === 'f' ? 'F' : 'M'} variant ${variantIndex}`,
             rateMultiplier,
             gender: desiredGender
         };
@@ -1286,6 +1642,9 @@ class EnhancedSeimasLiveStream {
         // OpenAI voices (best-effort by timbre).
         if (['nova', 'shimmer', 'coral', 'sage', 'marin', 'ballad'].includes(v)) return 'f';
         if (['echo', 'onyx', 'ash', 'verse', 'cedar', 'fable'].includes(v)) return 'm';
+        // xAI Grok voices.
+        if (['eve', 'ara'].includes(v)) return 'f';
+        if (['leo', 'rex', 'sal'].includes(v)) return 'm';
         return 'n'; // alloy and unknowns: neutral
     }
 
@@ -1415,6 +1774,10 @@ class EnhancedSeimasLiveStream {
             this.updateTextToSpeechStatus('⚠️ Įveskite OpenAI arba suderinamo endpointo API raktą teksto į kalbą generavimui.', 'error');
             return null;
         }
+        if (provider === 'xai' && !options?.apiKey) {
+            this.updateTextToSpeechStatus('⚠️ Įveskite xAI (Grok) API raktą teksto į kalbą generavimui.', 'error');
+            return null;
+        }
 
         if (this.audioPreparationPromise) {
             return this.audioPreparationPromise;
@@ -1439,12 +1802,16 @@ class EnhancedSeimasLiveStream {
             const provider = ttsOptions?.provider || this.getTextToSpeechProvider();
             const modelLabel = provider === 'openai'
                 ? (ttsOptions?.model || this.getActiveOpenAITTSModelLabel())
-                : this.getActiveSpeachesModelLabel();
+                : provider === 'xai'
+                    ? 'grok-tts'
+                    : this.getActiveSpeachesModelLabel();
             const responseFormat = provider === 'speaches'
                 ? (this.speachesSettings?.responseFormat || 'mp3').toLowerCase()
-                : (ttsOptions?.responseFormat || this.remoteGenerationSettings?.ttsResponseFormat || 'mp3').toLowerCase();
+                : provider === 'xai'
+                    ? (ttsOptions?.responseFormat || this.xaiGenerationSettings?.ttsResponseFormat || 'mp3').toLowerCase()
+                    : (ttsOptions?.responseFormat || this.remoteGenerationSettings?.ttsResponseFormat || 'mp3').toLowerCase();
 
-            this.updateTextToSpeechStatus(`🔄 Generuojami balsai (${provider === 'openai' ? 'OpenAI TTS' : 'Speaches'})...`, 'processing');
+            this.updateTextToSpeechStatus(`🔄 Generuojami balsai (${this.getTTSProviderLabel()})...`, 'processing');
 
             this.clearAudioAssets();
             this.resetVoiceAssignments(provider);
@@ -1490,7 +1857,9 @@ class EnhancedSeimasLiveStream {
 
             const slug = this.slugifySessionName(transcriptData.topic || transcriptData.title || 'seimo-posedis');
             const iso = preparationTimestamp.toISOString().replace(/[:.]/g, '-');
-            const fileExtension = provider === 'speaches' ? this.getSpeachesFileExtension() : 'mp3';
+            const fileExtension = provider === 'speaches'
+                ? this.getSpeachesFileExtension()
+                : (responseFormat === 'wav' ? 'wav' : 'mp3');
 
             for (let index = 0; index < events.length; index++) {
                 const event = events[index];
@@ -1588,9 +1957,9 @@ class EnhancedSeimasLiveStream {
             if (mapping.length > 0) {
                 const savedInfo = mapping.filter(item => item.file).length;
                 if (savedInfo > 0) {
-                    this.updateTextToSpeechStatus(`🔊 Sugeneruota ${mapping.length} kalbų, ${savedInfo} įrašyta į katalogą (${provider === 'openai' ? 'OpenAI' : 'Speaches'}: ${modelLabel}).`, 'success');
+                    this.updateTextToSpeechStatus(`🔊 Sugeneruota ${mapping.length} kalbų, ${savedInfo} įrašyta į katalogą (${this.providerDisplayName(provider)}: ${modelLabel}).`, 'success');
                 } else {
-                    this.updateTextToSpeechStatus(`🔊 Sugeneruota ${mapping.length} kalbų (atkuriama naršyklėje, ${provider === 'openai' ? 'OpenAI' : 'Speaches'}: ${modelLabel}).`, 'success');
+                    this.updateTextToSpeechStatus(`🔊 Sugeneruota ${mapping.length} kalbų (atkuriama naršyklėje, ${this.providerDisplayName(provider)}: ${modelLabel}).`, 'success');
                 }
             } else if (errors.length > 0) {
                 this.updateTextToSpeechStatus('⚠️ Nepavyko sugeneruoti audio failų. Peržiūrėkite konsolę.', 'error');
@@ -1697,6 +2066,9 @@ class EnhancedSeimasLiveStream {
         if (provider === 'openai') {
             return this.requestSpeechFromOpenAI(text, voiceProfile, providerOptions);
         }
+        if (provider === 'xai') {
+            return this.requestSpeechFromXai(text, voiceProfile, providerOptions);
+        }
         return this.requestSpeechFromSpeaches(text, voiceProfile);
     }
 
@@ -1713,6 +2085,10 @@ class EnhancedSeimasLiveStream {
             if (!this.ensureRemoteGenerationConfigured()) {
                 return;
             }
+        } else if (mode === 'xai') {
+            if (!this.ensureXaiGenerationConfigured()) {
+                return;
+            }
         } else if (!this.ensureLocalGenerationConfigured()) {
             return;
         }
@@ -1720,22 +2096,23 @@ class EnhancedSeimasLiveStream {
         this.showLoading(true);
 
         let transcript;
-        let apiKeyForRun = this.apiKeyInput.value.trim();
 
         try {
             if (mode === 'remote') {
-                transcript = await this.callOpenAI(question, apiKeyForRun);
-                this.currentTTSOptions = this.buildDefaultTTSOptions();
+                transcript = await this.callOpenAI(question, this.apiKeyInput.value.trim());
+            } else if (mode === 'xai') {
+                transcript = await this.callXai(question, (this.xaiApiKeyInput?.value?.trim() || this.xaiGenerationSettings?.apiKey));
             } else {
                 transcript = await this.callLocalModel(question);
-                this.currentTTSOptions = this.buildDefaultTTSOptions();
             }
+            this.currentTTSOptions = this.buildDefaultTTSOptions();
 
             this.resetVoiceAssignments(this.currentTTSOptions?.provider || this.getTextToSpeechProvider());
 
             await this.processGeneratedTranscript(transcript, question);
             this.setupPanel.classList.remove('active');
-            this.toggleSetupBtn.textContent = '⚙️ Generuoti naują posėdį';
+            this.hideSettingsModal();
+            this.toggleSetupBtn.textContent = '✨ Generuoti naują posėdį';
         } catch (error) {
             console.error('Error generating transcript:', error);
             alert('Klaida generuojant stenogramą: ' + error.message);
@@ -1834,6 +2211,65 @@ class EnhancedSeimasLiveStream {
             console.warn('Unexpected API response structure, returning full object');
             return data;
         }
+    }
+
+    async callXai(question, apiKey) {
+        const prompt = this.buildPrompt(question);
+        const systemPrompt = this.buildSystemPrompt();
+        const model = this.getActiveXaiTranscriptModelLabel();
+        const extraOptions = this.parseJsonOptions(
+            this.xaiGenerationSettings?.requestOptionsJson,
+            'Papildomi xAI Chat JSON nustatymai'
+        );
+        if (!extraOptions) {
+            throw new Error('xAI stenogramos nustatymai turi neteisingą JSON.');
+        }
+
+        const maxOutputTokens = this.parseOptionalNumber(
+            this.xaiGenerationSettings?.maxOutputTokens,
+            this.xaiGenerationSettings?.maxOutputTokens,
+            100000
+        );
+        const temperature = this.parseOptionalNumber(this.xaiGenerationSettings?.temperature, 0.4, 0.4);
+
+        // xAI Grok is fully OpenAI chat-completions compatible.
+        const requestBody = this.mergeOptions({
+            model,
+            messages: [
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: prompt }
+            ],
+            max_tokens: maxOutputTokens,
+            temperature
+        }, extraOptions, ['model', 'messages']);
+
+        const baseUrl = this.normalizeBaseUrl(this.xaiGenerationSettings?.baseUrl || 'https://api.x.ai/v1');
+        const endpoint = `${baseUrl}/chat/completions`;
+        const headers = { 'Content-Type': 'application/json' };
+        if (apiKey) {
+            headers.Authorization = `Bearer ${apiKey}`;
+        }
+
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({ error: { message: response.statusText } }));
+            throw new Error(error.error?.message || error.message || 'xAI API klaida');
+        }
+
+        const data = await response.json();
+        console.log('Full xAI API response:', data);
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+            return data.choices[0].message.content;
+        }
+        if (data.content) return data.content;
+        if (data.text) return data.text;
+        console.warn('Unexpected xAI response structure, returning full object');
+        return data;
     }
 
     buildSystemPrompt() {
@@ -2217,7 +2653,9 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
                     if (audioMetadata?.mapping?.length) {
                         const providerLabel = audioMetadata.provider === 'openai'
                             ? `OpenAI (${audioMetadata.model || this.getActiveOpenAITTSModelLabel()})`
-                            : `Speaches (${audioMetadata.model || this.getActiveSpeachesModelLabel()})`;
+                            : audioMetadata.provider === 'xai'
+                                ? `xAI Grok (${audioMetadata.model || 'grok-tts'})`
+                                : `Speaches (${audioMetadata.model || this.getActiveSpeachesModelLabel()})`;
                         this.addLiveUpdate('10:02', `Sugeneruota ${audioMetadata.mapping.length} balsų (${providerLabel}).`);
                     }
                     if (audioMetadata?.errors?.length) {
@@ -3394,7 +3832,9 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
             const provider = this.currentTTSOptions?.provider || this.getTextToSpeechProvider();
             const hasCredentials = provider === 'openai'
                 ? Boolean((this.currentTTSOptions?.apiKey || this.apiKeyInput?.value?.trim()))
-                : this.ensureSpeachesConfigured();
+                : provider === 'xai'
+                    ? Boolean((this.currentTTSOptions?.apiKey || this.xaiApiKeyInput?.value?.trim() || this.xaiGenerationSettings?.apiKey))
+                    : this.ensureSpeachesConfigured();
             if (!this.audioPreparationPromise && hasCredentials) {
                 const timestamp = this.lastTranscriptTimestamp || new Date();
                 const ttsOptions = this.currentTTSOptions || this.buildDefaultTTSOptions();
@@ -3479,6 +3919,14 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
                 return;
             }
             providerOptions.apiKey = apiKey;
+        } else if (provider === 'xai') {
+            const apiKey = providerOptions?.apiKey || this.xaiApiKeyInput?.value?.trim() || this.xaiGenerationSettings?.apiKey;
+            if (!apiKey) {
+                this.updateTextToSpeechStatus('⚠️ Įveskite xAI (Grok) API raktą, kad balsai būtų atkuriami realiu laiku.', 'error');
+                this.completeLiveEventWithoutAudio(eventIndex);
+                return;
+            }
+            providerOptions.apiKey = apiKey;
         } else if (!this.ensureSpeachesConfigured()) {
             this.completeLiveEventWithoutAudio(eventIndex);
             return;
@@ -3489,7 +3937,7 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
 
         const runPlayback = async () => {
             try {
-                this.updateTextToSpeechStatus(`🔄 Generuojamas balsas (${provider === 'openai' ? 'OpenAI' : 'Speaches'}): ${speakerLabel}`, 'processing');
+                this.updateTextToSpeechStatus(`🔄 Generuojamas balsas (${this.providerDisplayName(provider)}): ${speakerLabel}`, 'processing');
                 const asset = await this.ensureLiveAudioAsset(eventIndex, event, providerOptions);
                 if (!this.isPlaying || this.liveStreamAbort || generation !== this.liveStreamGeneration) {
                     return;
