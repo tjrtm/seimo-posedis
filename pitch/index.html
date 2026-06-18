@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Posėdis — Project Workspace</title>
+<meta name="description" content="Posėdis — an AI simulator of the Lithuanian Seimas. Product requirements, architecture and development guide for a Python / FastAPI / Pydantic implementation." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div class="aurora"></div>
+<div class="grain"></div>
+<div class="scrollbar" id="scrollbar"></div>
+
+<div class="topbar">
+  <div class="brand">POSĖDIS<b>.</b></div>
+  <nav class="topnav">
+    <a href="index.html" class="active">Overview</a>
+    <a href="prd.html">PRD</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="development.html">Development</a>
+    <a href="presentation.html">Pitch</a>
+  </nav>
+</div>
+
+<section class="hub-hero">
+  <div class="live-badge reveal"><span>●</span> Concept v1 · Python · FastAPI · Pydantic</div>
+  <h1 class="reveal">The <span class="lt">Posėdis</span> workspace</h1>
+  <p class="sub reveal">An AI simulator of the Lithuanian <strong>Seimas</strong>: type a question, convene the full 141-member chamber, and watch a transparent, voiced plenary debate play back live. This workspace defines the product and the build — a Python application that serves a presentation-styled frontend over FastAPI.</p>
+  <div class="meta reveal" style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:26px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--muted)">
+    <span class="pill">141 members</span>
+    <span class="pill">Dual engine · local + cloud</span>
+    <span class="pill">Transparent recorded vote</span>
+    <span class="pill">Bilingual LT / EN</span>
+    <span class="pill">Local-first</span>
+  </div>
+</section>
+
+<div class="hub-cards">
+  <a class="hub-card reveal" href="presentation.html">
+    <div class="doc-no">The pitch</div>
+    <h3>Product Presentation</h3>
+    <p>The immersive vertical scroller that frames the product — every claim below is anchored to it. Start here for the vision.</p>
+    <div class="go">View presentation →</div>
+    <span class="big">★</span>
+  </a>
+  <a class="hub-card reveal" href="prd.html">
+    <div class="doc-no">Document 01</div>
+    <h3>Product Requirements</h3>
+    <p>Vision, target users, goals & non-goals, and the complete functional / non-functional requirements — including the vote transparency rules mandated by the Statute of the Seimas.</p>
+    <div class="go">Read the PRD →</div>
+    <span class="big">01</span>
+  </a>
+  <a class="hub-card reveal" href="architecture.html">
+    <div class="doc-no">Document 02</div>
+    <h3>Architecture</h3>
+    <p>The Python/FastAPI/Pydantic system: domain model, vote-reconciliation algorithm, API surface, generation pipeline, live streaming, TTS, persistence and deployment topology.</p>
+    <div class="go">Read the architecture →</div>
+    <span class="big">02</span>
+  </a>
+  <a class="hub-card reveal" href="development.html">
+    <div class="doc-no">Document 03</div>
+    <h3>Development Guide</h3>
+    <p>A phase-by-phase implementation roadmap with concrete files and code, provider integration guides, testing strategy, and an acceptance checklist that maps back to the PRD.</p>
+    <div class="go">Read the dev guide →</div>
+    <span class="big">03</span>
+  </a>
+</div>
+
+<section style="position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:10px 5vw 80px">
+  <div class="callout note reveal">
+    <div class="ic">🧭</div>
+    <div class="body"><b>How to use this workspace.</b> Read the <a href="presentation.html">presentation</a> for the product story, the <a href="prd.html">PRD</a> for <i>what</i> to build and why, the <a href="architecture.html">architecture</a> for <i>how</i> it fits together, and the <a href="development.html">development guide</a> for <i>the order to build it in</i>. Together they are intended to be sufficient to implement the full project from an empty repository.</div>
+  </div>
+  <div class="callout law reveal">
+    <div class="ic">🗳️</div>
+    <div class="body"><b>One rule above all.</b> Per the Statute of the Seimas, every session must reach a recorded vote, and that vote must be transparent to the viewer: procedure, quorum (≥71/141), exact Už / Prieš / Susilaikė counts, a per-faction breakdown that reconciles with the totals, and the result. The domain model enforces this — see <a href="architecture.html#vote">Architecture › Vote model</a>.</div>
+  </div>
+</section>
+
+<footer>
+  POSĖDIS — project workspace · AI-simulated Lithuanian Seimas, local-first.<br>
+  Concept &amp; design docs for a Python / FastAPI / Pydantic build. Member dataset preserved under <code>seimas/</code>.
+</footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

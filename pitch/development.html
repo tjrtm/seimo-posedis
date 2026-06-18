@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Posėdis — Development Guide</title>
+<meta name="description" content="Phase-by-phase implementation guide for Posėdis: building the Python / FastAPI / Pydantic Seimas simulator from an empty repository." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div class="aurora"></div>
+<div class="grain"></div>
+<div class="scrollbar" id="scrollbar"></div>
+
+<div class="topbar">
+  <div class="brand">POSĖDIS<b>.</b></div>
+  <nav class="topnav">
+    <a href="index.html">Overview</a>
+    <a href="prd.html">PRD</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="development.html" class="active">Development</a>
+    <a href="presentation.html">Pitch</a>
+  </nav>
+</div>
+
+<header class="doc-hero">
+  <div class="eyebrow">Document 03 · Development</div>
+  <h1>Build it, <span class="lt">in order.</span></h1>
+  <p class="sub">A phase-by-phase path from an empty repository to a running, voiced, vote-transparent Seimas simulator. Each phase lists the files to create, the code that matters, and the test that proves it. Domain correctness — especially the vote — comes before any I/O.</p>
+  <div class="meta"><span>Python 3.12+</span><span>uv</span><span>pytest</span><span>ruff + mypy</span><span>~9 phases</span></div>
+</header>
+
+<div class="doc-shell">
+  <aside class="toc">
+    <div class="toc-title">On this page</div>
+    <ul>
+      <li><a href="#prereq">1 · Prerequisites</a></li>
+      <li><a href="#setup">2 · Project setup</a></li>
+      <li><a href="#run">3 · Running it</a></li>
+      <li><a href="#roadmap">4 · Roadmap</a></li>
+      <li><a href="#p0" class="sub">P0 · Scaffold</a></li>
+      <li><a href="#p1" class="sub">P1 · Domain + vote</a></li>
+      <li><a href="#p2" class="sub">P2 · Members</a></li>
+      <li><a href="#p3" class="sub">P3 · Prompts + normalize</a></li>
+      <li><a href="#p4" class="sub">P4 · Generators</a></li>
+      <li><a href="#p5" class="sub">P5 · Sessions API</a></li>
+      <li><a href="#p6" class="sub">P6 · Streaming</a></li>
+      <li><a href="#p7" class="sub">P7 · TTS</a></li>
+      <li><a href="#p8" class="sub">P8 · Frontend</a></li>
+      <li><a href="#p9" class="sub">P9 · Ship</a></li>
+      <li><a href="#providers">5 · Provider guides</a></li>
+      <li><a href="#testing">6 · Testing</a></li>
+      <li><a href="#standards">7 · Standards</a></li>
+      <li><a href="#acceptance">8 · Acceptance</a></li>
+    </ul>
+  </aside>
+
+  <main class="doc-main">
+
+    <section id="prereq" class="reveal">
+      <h2><span class="num">01</span> Prerequisites</h2>
+      <div class="section-rule"></div>
+      <ul>
+        <li><strong>Python 3.12+</strong> and <a href="https://docs.astral.sh/uv/"><code>uv</code></a> (fast installs, lockfile, runner).</li>
+        <li><strong>For local mode:</strong> <a href="https://ollama.com">Ollama</a> running (<code>ollama serve</code>) with a model pulled (e.g. <code>ollama pull llama3.1:70b</code>), and a <a href="https://speaches.ai">Speaches</a> server with a Kokoro TTS model.</li>
+        <li><strong>For cloud mode:</strong> an OpenAI API key with access to the configured chat + TTS models.</li>
+        <li><strong>The member dataset</strong> — already preserved in this repo under <code>seimas/</code> and <code>seimas_members_data.js</code>; copy/convert into <code>data/members/</code> in Phase&nbsp;2.</li>
+        <li><strong>Docker</strong> (optional) for the containerised / compose stack.</li>
+      </ul>
+    </section>
+
+    <section id="setup" class="reveal">
+      <h2><span class="num">02</span> Project setup</h2>
+      <div class="section-rule"></div>
+      <span class="code-label">pyproject.toml</span>
+      <pre><code>[project]
+name = <span class="st">"posedis"</span>
+version = <span class="st">"1.0.0"</span>
+requires-python = <span class="st">"&gt;=3.12"</span>
+dependencies = [
+  <span class="st">"fastapi&gt;=0.115"</span>,
+  <span class="st">"uvicorn[standard]&gt;=0.30"</span>,
+  <span class="st">"pydantic&gt;=2.7"</span>,
+  <span class="st">"pydantic-settings&gt;=2.3"</span>,
+  <span class="st">"httpx&gt;=0.27"</span>,
+  <span class="st">"jinja2&gt;=3.1"</span>,
+  <span class="st">"sse-starlette&gt;=2.1"</span>,
+  <span class="st">"python-multipart&gt;=0.0.9"</span>,
+]
+[dependency-groups]
+dev = [<span class="st">"pytest&gt;=8"</span>, <span class="st">"pytest-asyncio&gt;=0.23"</span>, <span class="st">"ruff&gt;=0.5"</span>, <span class="st">"mypy&gt;=1.10"</span>, <span class="st">"asgi-lifespan&gt;=2"</span>]
+
+[tool.ruff]
+line-length = 100
+target-version = <span class="st">"py312"</span>
+
+[tool.pytest.ini_options]
+asyncio_mode = <span class="st">"auto"</span>
+
+[tool.mypy]
+strict = true</code></pre>
+      <pre><code><span class="cm"># bootstrap</span>
+uv sync                       <span class="cm"># create venv + install (incl. dev group)</span>
+cp .env.example .env          <span class="cm"># then edit provider URLs/keys</span></code></pre>
+      <span class="code-label">.env.example</span>
+      <pre><code>POSEDIS_HOST=127.0.0.1
+POSEDIS_PORT=8000
+POSEDIS_DEFAULT_LANGUAGE=lt
+POSEDIS_OLLAMA_BASE_URL=http://localhost:11434
+POSEDIS_OLLAMA_MODEL=llama3.1:70b
+POSEDIS_SPEACHES_BASE_URL=http://localhost:8000/v1
+POSEDIS_SPEACHES_MODEL=speaches-ai/Kokoro-82M-v1.0-ONNX
+<span class="cm"># POSEDIS_OPENAI_API_KEY=sk-...   # only for cloud mode</span></code></pre>
+    </section>
+
+    <section id="run" class="reveal">
+      <h2><span class="num">03</span> Running it</h2>
+      <div class="section-rule"></div>
+      <pre><code>uv run uvicorn posedis.main:app --reload      <span class="cm"># dev, hot reload → http://127.0.0.1:8000</span>
+uv run pytest                                 <span class="cm"># tests</span>
+uv run ruff check . &amp;&amp; uv run mypy src         <span class="cm"># lint + types</span></code></pre>
+      <p>Open <code>http://127.0.0.1:8000</code> for the app; <code>/docs</code> for the auto-generated OpenAPI explorer.</p>
+    </section>
+
+    <section id="roadmap" class="reveal">
+      <h2><span class="num">04</span> Implementation roadmap</h2>
+      <div class="section-rule"></div>
+      <p class="lead-in">Build inside-out: models and the vote first (pure, fully tested), then I/O around them. You can demo after every phase.</p>
+
+      <h3 id="p0">Phase 0 — Scaffold &amp; health</h3>
+      <p>Create the package, the app factory, and a health endpoint. Dependencies are wired through a single <code>AppServices</code> container resolved by a FastAPI dependency.</p>
+      <span class="code-label">src/posedis/main.py</span>
+      <pre><code><span class="kw">from</span> contextlib <span class="kw">import</span> asynccontextmanager
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> fastapi.staticfiles <span class="kw">import</span> StaticFiles
+<span class="kw">from</span> .config <span class="kw">import</span> Settings
+<span class="kw">from</span> .services.container <span class="kw">import</span> AppServices
+
+<span class="kw">def</span> <span class="fn">create_app</span>(settings: Settings | None = None) -&gt; FastAPI:
+    settings = settings <span class="kw">or</span> Settings()
+
+    <span class="fn">@asynccontextmanager</span>
+    <span class="kw">async def</span> <span class="fn">lifespan</span>(app: FastAPI):
+        app.state.services = <span class="kw">await</span> AppServices.create(settings)
+        <span class="kw">yield</span>
+        <span class="kw">await</span> app.state.services.aclose()
+
+    app = FastAPI(title=<span class="st">"Posėdis"</span>, lifespan=lifespan)
+    <span class="kw">from</span> .api <span class="kw">import</span> members, sessions, stream, tts
+    <span class="kw">for</span> r <span class="kw">in</span> (members.router, sessions.router, stream.router, tts.router):
+        app.include_router(r)
+
+    <span class="fn">@app.get</span>(<span class="st">"/healthz"</span>)
+    <span class="kw">def</span> <span class="fn">health</span>():
+        <span class="kw">return</span> {<span class="st">"ok"</span>: True, <span class="st">"providers"</span>: app.state.services.configured_providers()}
+
+    app.mount(<span class="st">"/"</span>, StaticFiles(directory=<span class="st">"src/posedis/web/static"</span>, html=True), name=<span class="st">"web"</span>)
+    <span class="kw">return</span> app
+
+app = create_app()</code></pre>
+      <div class="callout note"><div class="ic">✅</div><div class="body"><b>Done when:</b> <code>uv run uvicorn posedis.main:app</code> serves <code>/healthz</code> → <code>{"ok": true, ...}</code>.</div></div>
+
+      <h3 id="p1">Phase 1 — Domain model &amp; the vote (test-first)</h3>
+      <p>Create <code>models/events.py</code>, <code>models/vote.py</code>, <code>models/session.py</code> exactly as in <a href="architecture.html#domain">Architecture §4</a>. This is the heart of the product; write the tests first.</p>
+      <span class="code-label">tests/test_vote.py</span>
+      <pre><code><span class="kw">import</span> pytest
+<span class="kw">from</span> pydantic <span class="kw">import</span> ValidationError
+<span class="kw">from</span> posedis.models.vote <span class="kw">import</span> Vote
+
+<span class="kw">def</span> <span class="fn">test_result_is_derived_by_majority</span>():
+    v = Vote(question=<span class="st">"x"</span>, registered=<span class="nm">138</span>, **{<span class="st">"for"</span>: <span class="nm">89</span>}, against=<span class="nm">31</span>, abstain=<span class="nm">18</span>)
+    <span class="kw">assert</span> v.cast == <span class="nm">138</span> <span class="kw">and</span> v.quorum_met <span class="kw">and</span> v.result.value == <span class="st">"passed"</span>
+
+<span class="kw">def</span> <span class="fn">test_rejected_and_no_quorum</span>():
+    v = Vote(question=<span class="st">"x"</span>, registered=<span class="nm">70</span>, **{<span class="st">"for"</span>: <span class="nm">30</span>}, against=<span class="nm">38</span>, abstain=<span class="nm">2</span>)
+    <span class="kw">assert</span> v.result.value == <span class="st">"rejected"</span> <span class="kw">and</span> <span class="kw">not</span> v.quorum_met
+
+<span class="kw">def</span> <span class="fn">test_cast_cannot_exceed_141</span>():
+    <span class="kw">with</span> pytest.raises(ValidationError):
+        Vote(question=<span class="st">"x"</span>, registered=<span class="nm">141</span>, **{<span class="st">"for"</span>: <span class="nm">100</span>}, against=<span class="nm">50</span>, abstain=<span class="nm">10</span>)
+
+<span class="kw">def</span> <span class="fn">test_faction_breakdown_must_reconcile</span>():
+    <span class="kw">with</span> pytest.raises(ValidationError):
+        Vote(question=<span class="st">"x"</span>, registered=<span class="nm">10</span>, **{<span class="st">"for"</span>: <span class="nm">5</span>}, against=<span class="nm">5</span>, abstain=<span class="nm">0</span>,
+             byFaction=[{<span class="st">"party"</span>: <span class="st">"LSDP"</span>, <span class="st">"for"</span>: <span class="nm">4</span>, <span class="st">"against"</span>: <span class="nm">5</span>, <span class="st">"abstain"</span>: <span class="nm">0</span>}])</code></pre>
+      <div class="callout note"><div class="ic">✅</div><div class="body"><b>Done when:</b> these tests pass and a <code>Session</code> without a vote raises (FR-16). The vote is now correct independent of any model or network.</div></div>
+
+      <h3 id="p2">Phase 2 — Member repository</h3>
+      <p>Load the preserved 141-member dataset once at startup. The richest source is <code>seimas_members_data.js</code> (name, party, personality, goals, abilities, constraints/limitations); the Markdown profiles under <code>seimas/</code> add long-form biography. Convert to JSON in <code>data/members/members.json</code> and load with Pydantic.</p>
+      <span class="code-label">src/posedis/services/members.py</span>
+      <pre><code><span class="kw">import</span> json
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> posedis.models.member <span class="kw">import</span> Member
+
+<span class="kw">class</span> <span class="fn">MemberRepository</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, members: list[Member]):
+        self._by_id = {m.id: m <span class="kw">for</span> m <span class="kw">in</span> members}
+
+    <span class="fn">@classmethod</span>
+    <span class="kw">def</span> <span class="fn">from_file</span>(cls, path: Path) -&gt; <span class="st">"MemberRepository"</span>:
+        rows = json.loads(path.read_text(encoding=<span class="st">"utf-8"</span>))
+        <span class="kw">return</span> cls([Member.model_validate(r) <span class="kw">for</span> r <span class="kw">in</span> rows])
+
+    <span class="kw">def</span> <span class="fn">all</span>(self) -&gt; list[Member]: <span class="kw">return</span> list(self._by_id.values())
+    <span class="kw">def</span> <span class="fn">get</span>(self, mid: str) -&gt; Member | None: <span class="kw">return</span> self._by_id.get(mid)
+    <span class="kw">def</span> <span class="fn">by_party</span>(self, party: str) -&gt; list[Member]:
+        <span class="kw">return</span> [m <span class="kw">for</span> m <span class="kw">in</span> self.all() <span class="kw">if</span> m.party == party]</code></pre>
+      <p>A one-off conversion script (<code>scripts/convert_members.py</code>) reads the legacy <code>SEIMAS_MEMBERS_DATA</code> array and writes <code>members.json</code>, assigning each member a stable <code>voice</code>.</p>
+
+      <h3 id="p3">Phase 3 — Prompts &amp; normalization</h3>
+      <p>Port the bilingual prompt scaffolding (structural arc + ideological guardrails + JSON schema + the mandatory-vote instruction) into <code>services/prompts.py</code>, and implement <code>services/normalize.py</code> per <a href="architecture.html#normalize">Architecture §5</a>. Normalization is pure and fully unit-testable with hand-written messy dicts.</p>
+      <div class="callout law"><div class="ic">🗳️</div><div class="body"><b>Prompt must demand the vote.</b> Both the system and user prompts instruct the model to emit at least one <code>vote</code> event with procedure, registered count (quorum ≥71/141), exact Už/Prieš/Susilaikė, a per-faction breakdown that sums to the totals, the result, and any dissenters — in the session language.</div></div>
+
+      <h3 id="p4">Phase 4 — Generators (+ a fake for tests)</h3>
+      <p>Implement <code>OllamaGenerator</code> and <code>OpenAIGenerator</code> against the <code>TranscriptGenerator</code> protocol (<a href="architecture.html#providers">Architecture §9</a>). Add a <code>FakeGenerator</code> that returns a canned valid dict so the API and pipeline can be tested with no network.</p>
+      <span class="code-label">tests/conftest.py (excerpt)</span>
+      <pre><code><span class="kw">class</span> <span class="fn">FakeGenerator</span>:
+    <span class="kw">async def</span> <span class="fn">generate</span>(self, req, members) -&gt; dict:
+        <span class="kw">return</span> {
+          <span class="st">"title"</span>: <span class="st">"Test session"</span>, <span class="st">"topic"</span>: req.topic, <span class="st">"language"</span>: req.language,
+          <span class="st">"durationMinutes"</span>: <span class="nm">185</span>,
+          <span class="st">"events"</span>: [
+            {<span class="st">"time"</span>: <span class="nm">0</span>, <span class="st">"timestamp"</span>: <span class="st">"10:00"</span>, <span class="st">"type"</span>: <span class="st">"opening"</span>,
+             <span class="st">"speaker"</span>: <span class="st">"Chair"</span>, <span class="st">"text"</span>: <span class="st">"Session open."</span>},
+            {<span class="st">"time"</span>: <span class="nm">165</span>, <span class="st">"timestamp"</span>: <span class="st">"12:45"</span>, <span class="st">"type"</span>: <span class="st">"vote"</span>,
+             <span class="st">"speaker"</span>: <span class="st">"Chair"</span>, <span class="st">"text"</span>: <span class="st">"Results:"</span>,
+             <span class="st">"vote"</span>: {<span class="st">"question"</span>: <span class="st">"On the resolution"</span>,
+                      <span class="st">"for"</span>: <span class="nm">89</span>, <span class="st">"against"</span>: <span class="nm">31</span>, <span class="st">"abstain"</span>: <span class="nm">18</span>, <span class="st">"registered"</span>: <span class="nm">138</span>}},
+          ],
+        }</code></pre>
+
+      <h3 id="p5">Phase 5 — Sessions API &amp; store</h3>
+      <p>Wire <code>POST /api/sessions</code> (generate → normalize → validate → save), plus list/fetch, and implement <code>SessionStore</code> (JSON on disk). The handler shape is in <a href="architecture.html#api">Architecture §6</a>.</p>
+      <span class="code-label">tests/test_api.py</span>
+      <pre><code><span class="kw">import</span> pytest
+<span class="kw">from</span> httpx <span class="kw">import</span> ASGITransport, AsyncClient
+<span class="kw">from</span> posedis.main <span class="kw">import</span> create_app
+
+<span class="fn">@pytest.mark.asyncio</span>
+<span class="kw">async def</span> <span class="fn">test_generate_session_contains_a_valid_vote</span>(app_with_fake):
+    transport = ASGITransport(app=app_with_fake)
+    <span class="kw">async with</span> AsyncClient(transport=transport, base_url=<span class="st">"http://t"</span>) <span class="kw">as</span> c:
+        r = <span class="kw">await</span> c.post(<span class="st">"/api/sessions"</span>, json={<span class="st">"topic"</span>: <span class="st">"4-day week"</span>, <span class="st">"mode"</span>: <span class="st">"local"</span>})
+    <span class="kw">assert</span> r.status_code == <span class="nm">200</span>
+    body = r.json()
+    votes = [e <span class="kw">for</span> e <span class="kw">in</span> body[<span class="st">"events"</span>] <span class="kw">if</span> e[<span class="st">"type"</span>] == <span class="st">"vote"</span>]
+    <span class="kw">assert</span> votes <span class="kw">and</span> votes[<span class="nm">0</span>][<span class="st">"vote"</span>][<span class="st">"result"</span>] == <span class="st">"passed"</span></code></pre>
+
+      <h3 id="p6">Phase 6 — Live streaming (SSE)</h3>
+      <p>Add <code>GET /api/sessions/{id}/events</code> per <a href="architecture.html#streaming">Architecture §8</a>: pace by <code>time</code> deltas / <code>speed</code>, attach <code>audioUrl</code> when TTS is on, end with an <code>end</code> event.</p>
+
+      <h3 id="p7">Phase 7 — TTS &amp; voice mapping</h3>
+      <p>Implement <code>SpeachesTTS</code> and <code>OpenAITTS</code> against <code>SpeechSynthesizer</code>; map each member to a stable voice (<a href="architecture.html#tts">Architecture §10</a>). Cache audio under <code>sessions/{id}/audio/{i}.{fmt}</code>. Wire <code>POST /api/tts</code> and the per-event audio endpoint.</p>
+
+      <h3 id="p8">Phase 8 — Frontend</h3>
+      <p>Build <code>web/templates/index.html</code> + <code>web/static/js/app.js</code> using the shared design system (these very docs' <code>site.css</code>). Implement: setup panel → <code>POST /api/sessions</code>; broadcast stage consuming the SSE stream; the vote-report renderer; members modal; audio + optional WebGL face.</p>
+      <span class="code-label">web/static/js/app.js — vote frame (essence)</span>
+      <pre><code><span class="kw">const</span> es = <span class="kw">new</span> EventSource(`/api/sessions/${id}/events?speed=${speed}&amp;tts=${tts}`);
+es.addEventListener(<span class="st">"frame"</span>, (e) =&gt; {
+  <span class="kw">const</span> ev = JSON.parse(e.data);
+  <span class="kw">if</span> (ev.type === <span class="st">"vote"</span>) renderVoteReport(ev.vote);   <span class="cm">// balsavimo protokolas</span>
+  <span class="kw">else</span> renderSpeech(ev);
+  <span class="kw">if</span> (ev.audioUrl) playAudio(ev.audioUrl);
+});
+es.addEventListener(<span class="st">"end"</span>, () =&gt; es.close());</code></pre>
+      <div class="callout note"><div class="ic">🎨</div><div class="body"><b>Reuse, don't reinvent.</b> Copy the vote-report markup and the <code>.vote-*</code> styles straight from the presentation's transparent-vote section so the running app matches the pitch pixel-for-pixel.</div></div>
+
+      <h3 id="p9">Phase 9 — Ship</h3>
+      <p>Add the <code>Dockerfile</code> (<a href="architecture.html#deploy">Architecture §14</a>) and a <code>compose.yaml</code> that optionally runs Ollama + Speaches alongside the app for a fully local stack. Verify <code>/healthz</code> reports the configured providers.</p>
+    </section>
+
+    <section id="providers" class="reveal">
+      <h2><span class="num">05</span> Provider integration guides</h2>
+      <div class="section-rule"></div>
+      <h3>Ollama — chat with JSON output</h3>
+      <pre><code>POST {OLLAMA_BASE_URL}/api/chat
+{ <span class="st">"model"</span>: <span class="st">"llama3.1:70b"</span>, <span class="st">"format"</span>: <span class="st">"json"</span>, <span class="st">"stream"</span>: false,
+  <span class="st">"messages"</span>: [ {<span class="st">"role"</span>:<span class="st">"system"</span>,<span class="st">"content"</span>:<span class="st">"..."</span>}, {<span class="st">"role"</span>:<span class="st">"user"</span>,<span class="st">"content"</span>:<span class="st">"..."</span>} ] }
+<span class="cm"># → { "message": { "content": "&lt;JSON string&gt;" }, ... }  →  json.loads(content)</span></code></pre>
+      <h3>OpenAI — Responses API with a schema</h3>
+      <pre><code>POST https://api.openai.com/v1/responses          <span class="cm"># Authorization: Bearer $KEY</span>
+{ <span class="st">"model"</span>: <span class="st">"gpt-5-mini"</span>, <span class="st">"input"</span>: [ ...system+user... ],
+  <span class="st">"text"</span>: { <span class="st">"format"</span>: { <span class="st">"type"</span>: <span class="st">"json_schema"</span>, <span class="st">"name"</span>: <span class="st">"session"</span>, <span class="st">"schema"</span>: { ... } } } }
+<span class="cm"># Build the schema from Session.model_json_schema(); parse the JSON output.</span></code></pre>
+      <h3>Speaches / OpenAI — text to speech</h3>
+      <pre><code>POST {SPEACHES_BASE_URL}/audio/speech              <span class="cm"># OpenAI-compatible</span>
+{ <span class="st">"model"</span>: <span class="st">"speaches-ai/Kokoro-82M-v1.0-ONNX"</span>, <span class="st">"voice"</span>: <span class="st">"af_heart"</span>,
+  <span class="st">"input"</span>: <span class="st">"&lt;speech text&gt;"</span>, <span class="st">"response_format"</span>: <span class="st">"mp3"</span> }
+<span class="cm"># → audio bytes. Cloud: same shape at api.openai.com with model gpt-4o-mini-tts.</span></code></pre>
+      <div class="callout warn"><div class="ic">⚠️</div><div class="body"><b>CORS &amp; timeouts.</b> Generation can take minutes — use a generous httpx timeout (≈600&nbsp;s). When Speaches is hit from a browser dev server, set its <code>ALLOW_ORIGINS</code> explicitly; in this app TTS is proxied server-side, avoiding browser CORS entirely.</div></div>
+    </section>
+
+    <section id="testing" class="reveal">
+      <h2><span class="num">06</span> Testing strategy</h2>
+      <div class="section-rule"></div>
+      <ul>
+        <li><strong>Domain (most coverage):</strong> vote invariants, quorum edges, result derivation, faction reconciliation, “session must contain a vote”.</li>
+        <li><strong>Normalization:</strong> messy/flat/LT-keyed/EN-keyed dicts all normalize into valid votes; breakdown-vs-total conflicts resolve to the breakdown.</li>
+        <li><strong>API:</strong> generate/list/fetch with the <code>FakeGenerator</code> (no network); SSE emits frames in order and ends.</li>
+        <li><strong>Providers:</strong> mock <code>httpx</code> responses; assert request shape and that bad payloads trigger the single repair retry then a clean error.</li>
+        <li><strong>Frontend smoke:</strong> a generated session renders a vote report whose displayed totals equal the model's.</li>
+      </ul>
+    </section>
+
+    <section id="standards" class="reveal">
+      <h2><span class="num">07</span> Coding standards</h2>
+      <div class="section-rule"></div>
+      <ul>
+        <li>Full type hints; <code>mypy --strict</code> clean. Pydantic v2 models for every boundary (request, response, provider payloads).</li>
+        <li><code>ruff</code> for lint + format (line length 100). Small, focused functions; comment only non-obvious logic.</li>
+        <li>Async I/O throughout (httpx, FastAPI); never block the event loop.</li>
+        <li>Providers behind <code>Protocol</code>s; no provider name leaks into API or domain code.</li>
+        <li>Secrets only via Settings/request; never logged, never written to session files.</li>
+        <li>Bilingual: every user-facing string has LT + EN; preserve Lithuanian diacritics (UTF-8 everywhere).</li>
+      </ul>
+    </section>
+
+    <section id="acceptance" class="reveal">
+      <h2><span class="num">08</span> Acceptance checklist</h2>
+      <div class="section-rule"></div>
+      <table class="tbl">
+        <thead><tr><th>Check</th><th>Maps to</th></tr></thead>
+        <tbody>
+          <tr><td>All 141 members load and are browsable with faction filter.</td><td>FR-1, FR-3</td></tr>
+          <tr><td>A topic generates a 50–60 event session in both LT and EN.</td><td>FR-4, FR-6, FR-13</td></tr>
+          <tr><td>Local (Ollama) and cloud (OpenAI) modes both produce a valid session.</td><td>FR-5, FR-7</td></tr>
+          <tr><td>Every session contains a recorded vote; the model rejects ones that don't.</td><td>FR-16</td></tr>
+          <tr><td>Vote report shows procedure, quorum status, exact tallies, faction table, dissent.</td><td>FR-17…20</td></tr>
+          <tr><td>Inconsistent model output is reconciled so the displayed vote always adds up.</td><td>FR-21, NFR-3</td></tr>
+          <tr><td>Broadcast stage plays back with transport + 0.25×–10× speed; SSE streams events.</td><td>FR-8, FR-9, FR-10</td></tr>
+          <tr><td>Per-speaker voices synthesise; optional face lip-syncs; output mp3/wav/ogg.</td><td>FR-11, FR-12</td></tr>
+          <tr><td>Sessions persist as JSON and reload/replay; old files re-validate on read.</td><td>FR-14</td></tr>
+          <tr><td>Local mode makes zero external calls; keys never logged or persisted.</td><td>FR-15, NFR-1</td></tr>
+          <tr><td>Runs via <code>uvicorn</code> and as a container; <code>/healthz</code> lists providers.</td><td>NFR-4</td></tr>
+        </tbody>
+      </table>
+      <div class="callout law"><div class="ic">🗳️</div><div class="body"><b>The bar.</b> The build is done when a fresh operator can type a question and watch a voiced Seimas session conclude in a vote whose every number, on screen, reconciles — locally, with no cloud account.</div></div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  POSĖDIS — Development Guide · Concept v1.<br>
+  Requirements in the <a href="prd.html">PRD</a>; system design in <a href="architecture.html">Architecture</a>.
+</footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Posėdis — Architecture</title>
+<meta name="description" content="System architecture for Posėdis: a Python / FastAPI / Pydantic application that simulates the Lithuanian Seimas and serves a presentation-styled frontend." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div class="aurora"></div>
+<div class="grain"></div>
+<div class="scrollbar" id="scrollbar"></div>
+
+<div class="topbar">
+  <div class="brand">POSĖDIS<b>.</b></div>
+  <nav class="topnav">
+    <a href="index.html">Overview</a>
+    <a href="prd.html">PRD</a>
+    <a href="architecture.html" class="active">Architecture</a>
+    <a href="development.html">Development</a>
+    <a href="presentation.html">Pitch</a>
+  </nav>
+</div>
+
+<header class="doc-hero">
+  <div class="eyebrow">Document 02 · Architecture</div>
+  <h1>One Python service. <span class="lt">No lock-in.</span></h1>
+  <p class="sub">A single FastAPI application serves the presentation-styled frontend and a typed JSON API. Pydantic v2 models are the contract: they validate every LLM response and make the recorded vote self-consistent by construction. Providers (Ollama, OpenAI, Speaches) sit behind protocols, so local and cloud are interchangeable.</p>
+  <div class="meta">
+    <span>Python 3.12+</span><span>FastAPI</span><span>Pydantic v2</span><span>httpx (async)</span><span>SSE</span><span>uv</span>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <aside class="toc">
+    <div class="toc-title">On this page</div>
+    <ul>
+      <li><a href="#overview">1 · System overview</a></li>
+      <li><a href="#stack">2 · Stack &amp; rationale</a></li>
+      <li><a href="#layout">3 · Project layout</a></li>
+      <li><a href="#domain">4 · Domain model</a></li>
+      <li><a href="#vote" class="sub">4.x · Vote model</a></li>
+      <li><a href="#normalize">5 · Normalization</a></li>
+      <li><a href="#api">6 · API surface</a></li>
+      <li><a href="#pipeline">7 · Generation pipeline</a></li>
+      <li><a href="#streaming">8 · Live streaming</a></li>
+      <li><a href="#providers">9 · Providers</a></li>
+      <li><a href="#tts">10 · TTS &amp; voices</a></li>
+      <li><a href="#persistence">11 · Persistence</a></li>
+      <li><a href="#config">12 · Config &amp; secrets</a></li>
+      <li><a href="#frontend">13 · Frontend</a></li>
+      <li><a href="#deploy">14 · Deployment</a></li>
+    </ul>
+  </aside>
+
+  <main class="doc-main">
+
+    <section id="overview" class="reveal">
+      <h2><span class="num">01</span> System overview</h2>
+      <div class="section-rule"></div>
+      <p>The browser loads a static, presentation-styled single-page UI from the same FastAPI process that exposes the API. Generation and synthesis are server-side and provider-agnostic. The recorded vote is normalized then strictly validated before anything is stored or streamed.</p>
+      <div class="diagram"><pre><code>┌──────────────────────────────────────────────────────────────┐
+│  Browser — presentation-styled SPA (vanilla ES modules + CSS)  │
+│  setup · broadcast stage · timeline · vote report · members    │
+└───────────────┬───────────────────────────┬──────────────────┘
+                │ HTTP (JSON)                │ SSE (live events + audio urls)
+                ▼                            ▼
+┌──────────────────────────────────────────────────────────────┐
+│                       FastAPI application                      │
+│  GET /                → index.html + /static (same style)      │
+│  /api/members         → MemberRepository                       │
+│  /api/sessions        → generate · list · fetch                │
+│  /api/sessions/{id}/events  → SSE playback stream              │
+│  /api/tts             → synthesize one line                    │
+├──────────────────────────────────────────────────────────────┤
+│  Services                                                      │
+│   MemberRepository ── seimas/ , seimas_members_data.js         │
+│   PromptBuilder (LT / EN, schema-aware)                        │
+│   TranscriptGenerator  ┌ OllamaGenerator → :11434  (local)     │
+│                        └ OpenAIGenerator → OpenAI   (cloud)     │
+│   SessionNormalizer  → Pydantic validation (vote reconciled)   │
+│   SpeechSynthesizer    ┌ SpeachesTTS    → :8000/v1 (local)      │
+│                        └ OpenAITTS      → OpenAI    (cloud)     │
+│   SessionStore ── sessions/*.json (+ audio/, voice mapping)    │
+└──────────────────────────────────────────────────────────────┘</code></pre></div>
+    </section>
+
+    <section id="stack" class="reveal">
+      <h2><span class="num">02</span> Stack &amp; rationale</h2>
+      <div class="section-rule"></div>
+      <table class="tbl">
+        <thead><tr><th>Concern</th><th>Choice</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Web framework</td><td><code>FastAPI</code></td><td>Async, type-driven, OpenAPI for free, serves static + API + SSE from one process.</td></tr>
+          <tr><td>Modelling / validation</td><td><code>Pydantic v2</code></td><td>The schema <em>is</em> the contract. Discriminated unions for events; validators enforce the vote invariants (FR-16…21).</td></tr>
+          <tr><td>Settings</td><td><code>pydantic-settings</code></td><td>Typed config from env/.env; keeps secrets out of code.</td></tr>
+          <tr><td>HTTP client</td><td><code>httpx</code> (async)</td><td>One async client for Ollama, OpenAI and Speaches; timeouts &amp; retries.</td></tr>
+          <tr><td>Streaming</td><td><code>sse-starlette</code></td><td>Server-Sent Events for live playback; simpler than WebSockets for one-way push.</td></tr>
+          <tr><td>Templates / static</td><td><code>Jinja2</code> + <code>StaticFiles</code></td><td>Serve the presentation-styled frontend with no build step.</td></tr>
+          <tr><td>Tooling</td><td><code>uv</code>, <code>ruff</code>, <code>mypy</code>, <code>pytest</code></td><td>Fast installs, lint+format, static types, tests on the domain logic.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout note"><div class="ic">⚖️</div><div class="body"><b>Frontend stance.</b> The UI is vanilla ES modules + the shared design system (no bundler), served directly by FastAPI. This honours “no build step” (NFR-4) and keeps the frontend visually identical to the presentation. A framework can be added later without changing the API.</div></div>
+    </section>
+
+    <section id="layout" class="reveal">
+      <h2><span class="num">03</span> Project layout</h2>
+      <div class="section-rule"></div>
+      <div class="diagram"><pre><code>posedis/
+├─ pyproject.toml              # deps, tool config (uv, ruff, mypy, pytest)
+├─ .env.example                # documented settings
+├─ Dockerfile · compose.yaml   # app (+ optional ollama, speaches)
+├─ data/
+│   └─ members/                # 141 profiles (from preserved seimas/ dataset)
+├─ src/posedis/
+│   ├─ __init__.py
+│   ├─ main.py                 # create_app(): FastAPI factory, mounts routers + static
+│   ├─ config.py               # Settings (pydantic-settings)
+│   ├─ models/
+│   │   ├─ member.py           # Member
+│   │   ├─ events.py           # EventType, SpeechEvent, VoteEvent, Event union
+│   │   ├─ vote.py             # FactionTally, Vote, VoteResult  (the core)
+│   │   ├─ session.py          # Session, AudioMeta
+│   │   └─ api.py              # GenerateRequest, SessionSummary, TTSRequest
+│   ├─ services/
+│   │   ├─ members.py          # MemberRepository
+│   │   ├─ prompts.py          # PromptBuilder (LT/EN, schema-aware)
+│   │   ├─ normalize.py        # SessionNormalizer + normalize_vote()
+│   │   ├─ generation/
+│   │   │   ├─ base.py         # TranscriptGenerator protocol + registry
+│   │   │   ├─ ollama.py       # OllamaGenerator
+│   │   │   └─ openai.py       # OpenAIGenerator
+│   │   ├─ tts/
+│   │   │   ├─ base.py         # SpeechSynthesizer protocol + voice mapping
+│   │   │   ├─ speaches.py     # SpeachesTTS
+│   │   │   └─ openai_tts.py   # OpenAITTS
+│   │   └─ storage.py          # SessionStore (JSON + audio)
+│   ├─ api/
+│   │   ├─ members.py · sessions.py · stream.py · tts.py   # routers
+│   └─ web/
+│       ├─ templates/index.html        # presentation-styled SPA shell
+│       └─ static/{css,js,fonts}/      # shared design system + app.js
+└─ tests/
+    ├─ test_vote.py            # reconciliation & quorum invariants
+    ├─ test_session.py         # schema + “must contain a vote”
+    └─ test_api.py             # endpoints with a fake provider</code></pre></div>
+    </section>
+
+    <section id="domain" class="reveal">
+      <h2><span class="num">04</span> Domain model</h2>
+      <div class="section-rule"></div>
+      <p>Events are a <strong>discriminated union</strong> on <code>type</code>. A <code>SpeechEvent</code> covers opening / speech / closing; a <code>VoteEvent</code> carries a validated <code>Vote</code>. A <code>Session</code> must contain at least one vote (FR-16).</p>
+      <span class="code-label">src/posedis/models/events.py</span>
+      <pre><code><span class="kw">from</span> __future__ <span class="kw">import</span> annotations
+<span class="kw">from</span> enum <span class="kw">import</span> Enum
+<span class="kw">from</span> typing <span class="kw">import</span> Annotated, Literal, Union
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field
+
+<span class="kw">class</span> <span class="fn">EventType</span>(str, Enum):
+    OPENING = <span class="st">"opening"</span>
+    SPEECH  = <span class="st">"speech"</span>
+    VOTE    = <span class="st">"vote"</span>
+    CLOSING = <span class="st">"closing"</span>
+
+<span class="kw">class</span> <span class="fn">BaseEvent</span>(BaseModel):
+    time: float = Field(ge=<span class="nm">0</span>)        <span class="cm"># minutes from session start</span>
+    timestamp: str                   <span class="cm"># wall clock "HH:MM"</span>
+    update: str | None = None        <span class="cm"># ticker line</span>
+
+<span class="kw">class</span> <span class="fn">SpeechEvent</span>(BaseEvent):
+    type: Literal[EventType.OPENING, EventType.SPEECH, EventType.CLOSING] = EventType.SPEECH
+    speaker: str
+    party: str | None = None
+    title: str | None = None
+    text: str
+
+<span class="kw">class</span> <span class="fn">VoteEvent</span>(BaseEvent):
+    type: Literal[EventType.VOTE] = EventType.VOTE
+    speaker: str | None = None       <span class="cm"># chair announcing the result</span>
+    party: str | None = None
+    title: str | None = None
+    text: str | None = None          <span class="cm"># spoken announcement (TTS source)</span>
+    vote: <span class="fn">Vote</span>                       <span class="cm"># validated, reconciled — see §4.x</span>
+
+Event = Annotated[Union[SpeechEvent, VoteEvent], Field(discriminator=<span class="st">"type"</span>)]</code></pre>
+
+      <span class="code-label">src/posedis/models/member.py</span>
+      <pre><code><span class="kw">class</span> <span class="fn">Member</span>(BaseModel):
+    id: str
+    name: str
+    party: str
+    title: str | None = None
+    personality: str
+    goals: list[str] = []
+    abilities: list[str] = []
+    constraints: list[str] = []
+    voice: str | None = None         <span class="cm"># stable assigned TTS voice key</span></code></pre>
+
+      <h2 id="vote" style="margin-top:30px"><span class="num">4.x</span> The vote model — transparent by construction</h2>
+      <div class="section-rule"></div>
+      <div class="callout law"><div class="ic">🗳️</div><div class="body"><b>Invariants (PRD FR-16…21).</b> Total seats = 141; quorum ≥ 71. Votes cast = Už+Prieš+Susilaikė ≤ 141 and ≤ registered. Result = majority of those voting (abstentions excluded). The per-faction breakdown must reconcile with the totals. These hold by validation, not by trust.</div></div>
+      <span class="code-label">src/posedis/models/vote.py</span>
+      <pre><code><span class="kw">from</span> enum <span class="kw">import</span> Enum
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field, computed_field, model_validator
+
+TOTAL_SEATS = <span class="nm">141</span>
+QUORUM = <span class="nm">71</span>                           <span class="cm"># at least half of all members</span>
+
+<span class="kw">class</span> <span class="fn">VoteResult</span>(str, Enum):
+    PASSED = <span class="st">"passed"</span>
+    REJECTED = <span class="st">"rejected"</span>
+
+<span class="kw">class</span> <span class="fn">FactionTally</span>(BaseModel):
+    model_config = {<span class="st">"populate_by_name"</span>: True}
+    party: str
+    for_: int = Field(<span class="nm">0</span>, ge=<span class="nm">0</span>, alias=<span class="st">"for"</span>)   <span class="cm"># "for" is reserved → alias</span>
+    against: int = Field(<span class="nm">0</span>, ge=<span class="nm">0</span>)
+    abstain: int = Field(<span class="nm">0</span>, ge=<span class="nm">0</span>)
+
+<span class="kw">class</span> <span class="fn">Vote</span>(BaseModel):
+    model_config = {<span class="st">"populate_by_name"</span>: True}
+    question: str
+    procedure: str = <span class="st">"Atviras vardinis balsavimas elektronine sistema"</span>
+    threshold: str = <span class="st">"Paprasta balsavusiųjų dauguma"</span>
+    registered: int = Field(ge=<span class="nm">0</span>, le=TOTAL_SEATS)
+    for_: int = Field(ge=<span class="nm">0</span>, alias=<span class="st">"for"</span>)
+    against: int = Field(ge=<span class="nm">0</span>)
+    abstain: int = Field(ge=<span class="nm">0</span>)
+    result: VoteResult | None = None
+    by_faction: list[FactionTally] = Field(default_factory=list, alias=<span class="st">"byFaction"</span>)
+    notable: list[str] = Field(default_factory=list)
+
+    <span class="fn">@computed_field</span>
+    <span class="fn">@property</span>
+    <span class="kw">def</span> <span class="fn">cast</span>(self) -&gt; int:
+        <span class="kw">return</span> self.for_ + self.against + self.abstain
+
+    <span class="fn">@computed_field</span>
+    <span class="fn">@property</span>
+    <span class="kw">def</span> <span class="fn">quorum_met</span>(self) -&gt; bool:
+        <span class="kw">return</span> self.registered &gt;= QUORUM
+
+    <span class="fn">@model_validator</span>(mode=<span class="st">"after"</span>)
+    <span class="kw">def</span> <span class="fn">_enforce_invariants</span>(self) -&gt; <span class="st">"Vote"</span>:
+        <span class="kw">if</span> self.cast &gt; TOTAL_SEATS:
+            <span class="kw">raise</span> ValueError(f<span class="st">"votes cast ({self.cast}) exceed {TOTAL_SEATS} seats"</span>)
+        <span class="kw">if</span> self.registered &lt; self.cast:
+            <span class="kw">raise</span> ValueError(<span class="st">"registered members cannot be fewer than votes cast"</span>)
+        derived = VoteResult.PASSED <span class="kw">if</span> self.for_ &gt; self.against <span class="kw">else</span> VoteResult.REJECTED
+        <span class="kw">if</span> self.result <span class="kw">is</span> None:
+            self.result = derived
+        <span class="kw">if</span> self.by_faction:
+            cols = (
+                sum(f.for_ <span class="kw">for</span> f <span class="kw">in</span> self.by_faction),
+                sum(f.against <span class="kw">for</span> f <span class="kw">in</span> self.by_faction),
+                sum(f.abstain <span class="kw">for</span> f <span class="kw">in</span> self.by_faction),
+            )
+            <span class="kw">if</span> cols != (self.for_, self.against, self.abstain):
+                <span class="kw">raise</span> ValueError(f<span class="st">"faction breakdown {cols} != totals"</span>)
+        <span class="kw">return</span> self</code></pre>
+      <p>The model is <strong>strict</strong>: it raises on anything that cannot be true in the chamber. Real LLM output is often <em>almost</em> right, so a lenient <a href="#normalize">normalization step</a> runs first and repairs it into a shape this model accepts — that is the FR-21 guarantee.</p>
+
+      <span class="code-label">src/posedis/models/session.py</span>
+      <pre><code><span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel, Field, computed_field, model_validator
+<span class="kw">from</span> .events <span class="kw">import</span> Event, VoteEvent
+<span class="kw">from</span> .member <span class="kw">import</span> Language  <span class="cm"># "lt" | "en"</span>
+
+<span class="kw">class</span> <span class="fn">Session</span>(BaseModel):
+    id: str
+    title: str
+    topic: str
+    language: Language = Language.LT
+    created_at: datetime
+    duration_minutes: int = Field(ge=<span class="nm">1</span>)
+    events: list[Event]
+    audio: <span class="st">"AudioMeta | None"</span> = None
+
+    <span class="fn">@computed_field</span>
+    <span class="fn">@property</span>
+    <span class="kw">def</span> <span class="fn">total_events</span>(self) -&gt; int:
+        <span class="kw">return</span> len(self.events)
+
+    <span class="fn">@model_validator</span>(mode=<span class="st">"after"</span>)
+    <span class="kw">def</span> <span class="fn">_must_contain_vote</span>(self) -&gt; <span class="st">"Session"</span>:   <span class="cm"># FR-16</span>
+        <span class="kw">if</span> <span class="kw">not</span> any(isinstance(e, VoteEvent) <span class="kw">for</span> e <span class="kw">in</span> self.events):
+            <span class="kw">raise</span> ValueError(<span class="st">"a session must contain at least one recorded vote"</span>)
+        <span class="kw">return</span> self</code></pre>
+    </section>
+
+    <section id="normalize" class="reveal">
+      <h2><span class="num">05</span> Normalization — making “almost right” add up</h2>
+      <div class="section-rule"></div>
+      <p>Before strict validation, <code>SessionNormalizer</code> repairs the raw provider dict: it accepts nested or flat vote fields, LT or EN keys, coerces counts, defaults procedure/threshold by language, derives the result, lifts <code>registered</code> to at least the votes cast, and — when a faction breakdown disagrees with the totals — rescales the totals to the breakdown (the per-member detail is treated as ground truth). The output is then handed to <code>Vote(**data)</code>, which must accept it.</p>
+      <span class="code-label">src/posedis/services/normalize.py</span>
+      <pre><code><span class="kw">def</span> <span class="fn">normalize_vote</span>(raw: dict, *, language: str) -&gt; dict:
+    v = raw.get(<span class="st">"vote"</span>) <span class="kw">if</span> isinstance(raw.get(<span class="st">"vote"</span>), dict) <span class="kw">else</span> raw
+
+    <span class="kw">def</span> <span class="fn">pick</span>(*keys, default=<span class="nm">0</span>):
+        <span class="kw">for</span> k <span class="kw">in</span> keys:
+            <span class="kw">if</span> v.get(k) <span class="kw">is</span> <span class="kw">not</span> None:
+                <span class="kw">return</span> v[k]
+        <span class="kw">return</span> default
+
+    fa = max(int(pick(<span class="st">"for"</span>, <span class="st">"forVotes"</span>, <span class="st">"uz"</span>, <span class="st">"už"</span>)), <span class="nm">0</span>)
+    ag = max(int(pick(<span class="st">"against"</span>, <span class="st">"againstVotes"</span>, <span class="st">"pries"</span>, <span class="st">"prieš"</span>)), <span class="nm">0</span>)
+    ab = max(int(pick(<span class="st">"abstain"</span>, <span class="st">"abstainVotes"</span>, <span class="st">"susilaike"</span>, <span class="st">"susilaikė"</span>)), <span class="nm">0</span>)
+
+    factions = [
+        {<span class="st">"party"</span>: f.get(<span class="st">"party"</span>) <span class="kw">or</span> f.get(<span class="st">"faction"</span>) <span class="kw">or</span> <span class="st">"—"</span>,
+         <span class="st">"for"</span>: int(f.get(<span class="st">"for"</span>, <span class="nm">0</span>)), <span class="st">"against"</span>: int(f.get(<span class="st">"against"</span>, <span class="nm">0</span>)),
+         <span class="st">"abstain"</span>: int(f.get(<span class="st">"abstain"</span>, <span class="nm">0</span>))}
+        <span class="kw">for</span> f <span class="kw">in</span> v.get(<span class="st">"byFaction"</span>, []) <span class="kw">if</span> isinstance(f, dict)
+    ]
+    <span class="cm"># If a breakdown exists, trust it: rescale headline totals to its sums.</span>
+    <span class="kw">if</span> factions:
+        fa = sum(f[<span class="st">"for"</span>] <span class="kw">for</span> f <span class="kw">in</span> factions)
+        ag = sum(f[<span class="st">"against"</span>] <span class="kw">for</span> f <span class="kw">in</span> factions)
+        ab = sum(f[<span class="st">"abstain"</span>] <span class="kw">for</span> f <span class="kw">in</span> factions)
+
+    cast = fa + ag + ab
+    registered = min(max(int(pick(<span class="st">"registered"</span>, <span class="st">"present"</span>, default=cast)), cast), <span class="nm">141</span>)
+    lt = language != <span class="st">"en"</span>
+    <span class="kw">return</span> {
+        <span class="st">"question"</span>: v.get(<span class="st">"question"</span>) <span class="kw">or</span> raw.get(<span class="st">"title"</span>) <span class="kw">or</span> (<span class="st">"Dėl rezoliucijos"</span> <span class="kw">if</span> lt <span class="kw">else</span> <span class="st">"On the resolution"</span>),
+        <span class="st">"procedure"</span>: v.get(<span class="st">"procedure"</span>) <span class="kw">or</span> (<span class="st">"Atviras vardinis balsavimas elektronine sistema"</span> <span class="kw">if</span> lt
+                       <span class="kw">else</span> <span class="st">"Open roll-call vote via the electronic system"</span>),
+        <span class="st">"registered"</span>: registered, <span class="st">"for"</span>: fa, <span class="st">"against"</span>: ag, <span class="st">"abstain"</span>: ab,
+        <span class="st">"byFaction"</span>: factions,
+        <span class="st">"notable"</span>: [str(x) <span class="kw">for</span> x <span class="kw">in</span> v.get(<span class="st">"notable"</span>, []) <span class="kw">if</span> x],
+    }  <span class="cm"># result is derived by the Vote validator</span></code></pre>
+      <div class="callout note"><div class="ic">🔁</div><div class="body"><b>Two layers, one guarantee.</b> Normalization is forgiving; the model is strict. If the normalizer cannot produce a valid vote, the session generation retries once with a corrective prompt, then fails loudly — invalid data is never shown (NFR-3).</div></div>
+    </section>
+
+    <section id="api" class="reveal">
+      <h2><span class="num">06</span> API surface</h2>
+      <div class="section-rule"></div>
+      <table class="tbl">
+        <thead><tr><th>Method &amp; path</th><th>Body / params</th><th>Returns</th></tr></thead>
+        <tbody>
+          <tr><td><code>GET /</code></td><td>—</td><td>The SPA shell (index.html).</td></tr>
+          <tr><td><code>GET /api/members</code></td><td><code>?party=</code> (optional)</td><td><code>list[Member]</code></td></tr>
+          <tr><td><code>GET /api/members/{id}</code></td><td>—</td><td><code>Member</code></td></tr>
+          <tr><td><code>POST /api/sessions</code></td><td><code>GenerateRequest</code></td><td><code>Session</code> (validated, persisted)</td></tr>
+          <tr><td><code>GET /api/sessions</code></td><td><code>?limit=&amp;offset=</code></td><td><code>list[SessionSummary]</code></td></tr>
+          <tr><td><code>GET /api/sessions/{id}</code></td><td>—</td><td><code>Session</code></td></tr>
+          <tr><td><code>GET /api/sessions/{id}/events</code></td><td><code>?speed=&amp;tts=</code> (SSE)</td><td>event stream for playback</td></tr>
+          <tr><td><code>POST /api/tts</code></td><td><code>TTSRequest</code></td><td><code>audio/*</code> bytes</td></tr>
+          <tr><td><code>GET /api/sessions/{id}/audio/{i}</code></td><td>—</td><td>cached audio for event <code>i</code></td></tr>
+          <tr><td><code>GET /healthz</code></td><td>—</td><td>liveness + configured providers</td></tr>
+        </tbody>
+      </table>
+      <span class="code-label">src/posedis/models/api.py</span>
+      <pre><code><span class="kw">class</span> <span class="fn">TTSOptions</span>(BaseModel):
+    enabled: bool = False
+    fmt: Literal[<span class="st">"mp3"</span>, <span class="st">"wav"</span>, <span class="st">"ogg"</span>] = <span class="st">"mp3"</span>
+
+<span class="kw">class</span> <span class="fn">GenerateRequest</span>(BaseModel):
+    topic: str = Field(min_length=<span class="nm">4</span>, max_length=<span class="nm">2000</span>)
+    language: Language = Language.LT
+    mode: GenerationMode = GenerationMode.LOCAL      <span class="cm"># local | remote</span>
+    tts: TTSOptions = TTSOptions()
+    <span class="cm"># optional per-request provider overrides (else fall back to Settings)</span>
+    ollama_model: str | None = None
+    openai_api_key: str | None = None                <span class="cm"># never persisted/logged</span></code></pre>
+      <span class="code-label">src/posedis/api/sessions.py (handler shape)</span>
+      <pre><code><span class="fn">@router.post</span>(<span class="st">"/api/sessions"</span>, response_model=Session)
+<span class="kw">async def</span> <span class="fn">generate</span>(req: GenerateRequest, app: AppServices = Depends(get_services)) -&gt; Session:
+    members = app.members.all()
+    raw     = <span class="kw">await</span> app.generators[req.mode].generate(req, members)
+    data    = app.normalizer.normalize(raw, language=req.language)   <span class="cm"># §5</span>
+    session = Session.model_validate(data)                            <span class="cm"># §4 strict</span>
+    app.store.save(session)
+    <span class="kw">if</span> req.tts.enabled:
+        app.tts_scheduler.schedule(session, req)                     <span class="cm"># background</span>
+    <span class="kw">return</span> session</code></pre>
+    </section>
+
+    <section id="pipeline" class="reveal">
+      <h2><span class="num">07</span> Generation pipeline</h2>
+      <div class="section-rule"></div>
+      <div class="diagram"><pre><code>request ─▶ MemberRepository.all()
+        ─▶ PromptBuilder.build(topic, language, members)      # system + user, schema-aware
+        ─▶ generators[mode].generate(...)  ──▶ raw dict (JSON from the model)
+        ─▶ SessionNormalizer.normalize(raw, language)         # repair, reconcile vote
+        ─▶ Session.model_validate(data)                       # STRICT; must contain a vote
+            │  on ValidationError ─▶ retry once w/ corrective prompt ─▶ else 422
+        ─▶ SessionStore.save(session)                         # sessions/{id}.json
+        ─▶ [tts] schedule per-event synthesis (background / streamed)
+        ─▶ return Session</code></pre></div>
+      <p>The <code>PromptBuilder</code> embeds the JSON schema, the structural arc (opening → briefing → speeches → recess → debate → resolution → recorded vote), bilingual ideological guardrails, and the mandatory-vote instruction. It mirrors the proven prompt scaffolding of the prototype, restated for the strict schema.</p>
+    </section>
+
+    <section id="streaming" class="reveal">
+      <h2><span class="num">08</span> Live streaming (SSE)</h2>
+      <div class="section-rule"></div>
+      <p>For live playback the client opens an SSE stream. The server paces events by their <code>time</code> deltas scaled by <code>speed</code>; when TTS is on, it synthesises lazily and emits an audio URL with each event so playback can begin immediately (FR-10).</p>
+      <span class="code-label">src/posedis/api/stream.py</span>
+      <pre><code><span class="fn">@router.get</span>(<span class="st">"/api/sessions/{sid}/events"</span>)
+<span class="kw">async def</span> <span class="fn">events</span>(sid: str, speed: float = <span class="nm">1.0</span>, tts: bool = False,
+                 app: AppServices = Depends(get_services)):
+    session = app.store.load(sid)
+
+    <span class="kw">async def</span> <span class="fn">gen</span>():
+        prev = <span class="nm">0.0</span>
+        <span class="kw">for</span> i, ev <span class="kw">in</span> enumerate(session.events):
+            <span class="kw">await</span> asyncio.sleep(max(<span class="nm">0.0</span>, (ev.time - prev) * <span class="nm">60</span> / max(speed, <span class="nm">0.01</span>)))
+            prev = ev.time
+            payload = ev.model_dump(by_alias=True, mode=<span class="st">"json"</span>)
+            <span class="kw">if</span> tts <span class="kw">and</span> getattr(ev, <span class="st">"text"</span>, None):
+                payload[<span class="st">"audioUrl"</span>] = f<span class="st">"/api/sessions/{sid}/audio/{i}"</span>
+            <span class="kw">yield</span> {<span class="st">"event"</span>: <span class="st">"frame"</span>, <span class="st">"data"</span>: json.dumps(payload)}
+        <span class="kw">yield</span> {<span class="st">"event"</span>: <span class="st">"end"</span>, <span class="st">"data"</span>: <span class="st">"{}"</span>}
+
+    <span class="kw">return</span> EventSourceResponse(gen())</code></pre>
+    </section>
+
+    <section id="providers" class="reveal">
+      <h2><span class="num">09</span> Providers behind protocols</h2>
+      <div class="section-rule"></div>
+      <p>Generators and synthesizers implement small <code>Protocol</code>s, registered by mode. Adding a provider is a new class — no caller changes.</p>
+      <span class="code-label">src/posedis/services/generation/base.py</span>
+      <pre><code><span class="kw">from</span> typing <span class="kw">import</span> Protocol
+
+<span class="kw">class</span> <span class="fn">TranscriptGenerator</span>(Protocol):
+    <span class="kw">async def</span> <span class="fn">generate</span>(self, req: GenerateRequest, members: list[Member]) -&gt; dict: ...
+
+<span class="cm"># registry: {GenerationMode.LOCAL: OllamaGenerator(...), REMOTE: OpenAIGenerator(...)}</span></code></pre>
+      <span class="code-label">src/posedis/services/generation/ollama.py (essence)</span>
+      <pre><code><span class="kw">class</span> <span class="fn">OllamaGenerator</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, client: httpx.AsyncClient, base_url: str, model: str): ...
+
+    <span class="kw">async def</span> <span class="fn">generate</span>(self, req, members) -&gt; dict:
+        prompt = PromptBuilder(req.language).build(req.topic, members)
+        r = <span class="kw">await</span> self.client.post(f<span class="st">"{self.base_url}/api/chat"</span>, json={
+            <span class="st">"model"</span>: req.ollama_model <span class="kw">or</span> self.model,
+            <span class="st">"format"</span>: <span class="st">"json"</span>, <span class="st">"stream"</span>: False,
+            <span class="st">"messages"</span>: [{<span class="st">"role"</span>: <span class="st">"system"</span>, <span class="st">"content"</span>: prompt.system},
+                         {<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: prompt.user}],
+        }, timeout=<span class="nm">600</span>)
+        <span class="kw">return</span> json.loads(r.json()[<span class="st">"message"</span>][<span class="st">"content"</span>])</code></pre>
+      <p>The cloud generator calls the OpenAI Responses API with a JSON schema response format and the same prompt; both return a raw dict for the normalizer.</p>
+    </section>
+
+    <section id="tts" class="reveal">
+      <h2><span class="num">10</span> TTS &amp; voice mapping</h2>
+      <div class="section-rule"></div>
+      <p>Each member is assigned a stable voice (from their profile, or deterministically from their id) so a speaker always sounds the same across a session. Synthesis is provider-agnostic.</p>
+      <span class="code-label">src/posedis/services/tts/base.py</span>
+      <pre><code><span class="kw">class</span> <span class="fn">SpeechSynthesizer</span>(Protocol):
+    <span class="kw">async def</span> <span class="fn">synthesize</span>(self, text: str, voice: str, fmt: str = <span class="st">"mp3"</span>) -&gt; bytes: ...
+
+KOKORO_VOICES = [<span class="st">"af_heart"</span>, <span class="st">"am_echo"</span>, <span class="st">"bf_emma"</span>, <span class="st">"af_sky"</span>, <span class="st">"am_adam"</span>]
+
+<span class="kw">def</span> <span class="fn">voice_for</span>(member: Member) -&gt; str:
+    <span class="kw">return</span> member.voice <span class="kw">or</span> KOKORO_VOICES[hash(member.id) % len(KOKORO_VOICES)]</code></pre>
+      <p>Speaches exposes an OpenAI-compatible endpoint (<code>POST {base}/audio/speech</code>), so the local and cloud synthesizers differ only in base URL, auth, and default model. Generated audio is cached under <code>sessions/{id}/audio/{index}.{fmt}</code> with a voice-mapping JSON for replay.</p>
+    </section>
+
+    <section id="persistence" class="reveal">
+      <h2><span class="num">11</span> Persistence</h2>
+      <div class="section-rule"></div>
+      <p><code>SessionStore</code> writes each session as <code>sessions/{id}.json</code> — the serialized <code>Session</code> (events, computed totals, vote, audio metadata). This is the archive-and-replay format (FR-14) and is identical whether the session was generated locally or in the cloud. Listing reads lightweight <code>SessionSummary</code> headers; loading rehydrates via <code>Session.model_validate</code>, so old files are re-validated on read.</p>
+      <div class="callout note"><div class="ic">🗃️</div><div class="body">JSON-on-disk is the v1 store — zero dependencies, human-readable, trivially portable. A future SQLite/SQLModel backend can implement the same <code>SessionStore</code> interface without touching callers.</div></div>
+    </section>
+
+    <section id="config" class="reveal">
+      <h2><span class="num">12</span> Configuration &amp; secrets</h2>
+      <div class="section-rule"></div>
+      <span class="code-label">src/posedis/config.py</span>
+      <pre><code><span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> pydantic_settings <span class="kw">import</span> BaseSettings, SettingsConfigDict
+
+<span class="kw">class</span> <span class="fn">Settings</span>(BaseSettings):
+    model_config = SettingsConfigDict(env_prefix=<span class="st">"POSEDIS_"</span>, env_file=<span class="st">".env"</span>)
+    host: str = <span class="st">"127.0.0.1"</span>
+    port: int = <span class="nm">8000</span>
+    sessions_dir: Path = Path(<span class="st">"sessions"</span>)
+    default_language: str = <span class="st">"lt"</span>
+    <span class="cm"># local providers</span>
+    ollama_base_url: str = <span class="st">"http://localhost:11434"</span>
+    ollama_model: str = <span class="st">"llama3.1:70b"</span>
+    speaches_base_url: str = <span class="st">"http://localhost:8000/v1"</span>
+    speaches_model: str = <span class="st">"speaches-ai/Kokoro-82M-v1.0-ONNX"</span>
+    <span class="cm"># cloud providers (optional)</span>
+    openai_api_key: str | None = None
+    openai_model: str = <span class="st">"gpt-5-mini"</span>
+    openai_tts_model: str = <span class="st">"gpt-4o-mini-tts"</span></code></pre>
+      <p>Secrets bind localhost by default and are read from env/.env or supplied per request. They are never written to session files or logs (FR-15, NFR-1). <code>GET /healthz</code> reports which providers are configured without revealing keys.</p>
+    </section>
+
+    <section id="frontend" class="reveal">
+      <h2><span class="num">13</span> Frontend</h2>
+      <div class="section-rule"></div>
+      <p>The frontend reuses this very design system (the <code>assets/site.css</code> tokens and the presentation's components) so the running app looks like the pitch. It is plain ES modules served from <code>web/static</code>, with a Jinja2 <code>index.html</code> shell.</p>
+      <ul>
+        <li><strong>Setup panel</strong> — topic, language, mode (local/remote), provider fields, TTS toggle → <code>POST /api/sessions</code>.</li>
+        <li><strong>Broadcast stage</strong> — consumes the SSE stream; renders speaker card, ticker, agenda, scrubber timeline, transport + speed.</li>
+        <li><strong>Vote report</strong> — when a <code>vote</code> frame arrives, render the <i>balsavimo protokolas</i>: result badge, procedure/threshold/quorum chips, Už/Prieš/Susilaikė bars, faction table, dissent list.</li>
+        <li><strong>Members modal</strong> — <code>GET /api/members</code>; searchable, faction-grouped profiles.</li>
+        <li><strong>Audio + face</strong> — play each frame's <code>audioUrl</code>; drive the optional WebGL face's mouth from audio amplitude.</li>
+      </ul>
+    </section>
+
+    <section id="deploy" class="reveal">
+      <h2><span class="num">14</span> Deployment</h2>
+      <div class="section-rule"></div>
+      <p>Run locally with <code>uvicorn</code>; ship as a container. Compose can co-locate optional Ollama and Speaches services for a fully local stack.</p>
+      <span class="code-label">Dockerfile</span>
+      <pre><code><span class="kw">FROM</span> python:3.12-slim
+<span class="kw">WORKDIR</span> /app
+<span class="kw">COPY</span> pyproject.toml .
+<span class="kw">RUN</span> pip install uv &amp;&amp; uv pip install --system .
+<span class="kw">COPY</span> . .
+<span class="kw">EXPOSE</span> 8000
+<span class="kw">CMD</span> [<span class="st">"uvicorn"</span>, <span class="st">"posedis.main:app"</span>, <span class="st">"--host"</span>, <span class="st">"0.0.0.0"</span>, <span class="st">"--port"</span>, <span class="st">"8000"</span>]</code></pre>
+      <div class="callout note"><div class="ic">➡️</div><div class="body">The exact build order, commands, provider request/response shapes and tests are in the <a href="development.html">Development Guide</a>.</div></div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  POSĖDIS — Architecture · Concept v1.<br>
+  Requirements in the <a href="prd.html">PRD</a>; build order in the <a href="development.html">Development Guide</a>.
+</footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

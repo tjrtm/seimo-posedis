@@ -1,4 +1,23 @@
-node_modules
-/dist
-.DS_Store
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Runtime data
+sessions/
 *.log
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

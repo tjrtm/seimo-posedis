@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Posėdis — Product Requirements Document</title>
+<meta name="description" content="Product Requirements Document for Posėdis, an AI simulator of the Lithuanian Seimas built in Python/FastAPI/Pydantic." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/site.css" />
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<div class="aurora"></div>
+<div class="grain"></div>
+<div class="scrollbar" id="scrollbar"></div>
+
+<div class="topbar">
+  <div class="brand">POSĖDIS<b>.</b></div>
+  <nav class="topnav">
+    <a href="index.html">Overview</a>
+    <a href="prd.html" class="active">PRD</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="development.html">Development</a>
+    <a href="presentation.html">Pitch</a>
+  </nav>
+</div>
+
+<header class="doc-hero">
+  <div class="eyebrow">Document 01 · Product Requirements</div>
+  <h1>What we are <span class="lt">building</span>, and why.</h1>
+  <p class="sub">Posėdis turns a single question into a full, realistic, and transparent plenary session of the Lithuanian Seimas — 141 members, real factions, voiced speeches, and a recorded vote — playable as a live broadcast and runnable entirely on local hardware. This document defines the product scope for a Python implementation.</p>
+  <div class="meta">
+    <span>Status: Concept v1 — approved for build</span>
+    <span>Owner: Product</span>
+    <span>Source of truth: the Presentation</span>
+  </div>
+</header>
+
+<div class="doc-shell">
+  <aside class="toc">
+    <div class="toc-title">On this page</div>
+    <ul>
+      <li><a href="#vision">1 · Vision &amp; problem</a></li>
+      <li><a href="#users">2 · Users &amp; use cases</a></li>
+      <li><a href="#goals">3 · Goals &amp; non-goals</a></li>
+      <li><a href="#principles">4 · Principles</a></li>
+      <li><a href="#functional">5 · Functional requirements</a></li>
+      <li><a href="#vote" class="sub">5.6 · The vote (by law)</a></li>
+      <li><a href="#nonfunctional">6 · Non-functional</a></li>
+      <li><a href="#metrics">7 · Success metrics</a></li>
+      <li><a href="#constraints">8 · Constraints</a></li>
+      <li><a href="#scope">9 · Out of scope</a></li>
+    </ul>
+  </aside>
+
+  <main class="doc-main">
+
+    <section id="vision" class="reveal">
+      <h2><span class="num">01</span> Vision &amp; problem</h2>
+      <div class="section-rule"></div>
+      <p class="lead-in">Public deliberation is expensive to rehearse. You cannot easily dry-run a parliamentary debate before it happens — yet communications teams, policy units, researchers and educators all need to.</p>
+      <p>Posėdis collapses that into a few minutes of compute. The user provides a topic and a language; the system convenes the full chamber and produces a structured, time-stamped session that plays back like a live broadcast — opening, ministry briefing, party-group speeches, cross-examination, debate, and a transparent recorded vote. Each of the 141 members argues in character, from their real faction and stated incentives.</p>
+      <p>The product is, at once, a <strong>deliberation sandbox</strong>, a <strong>communications rehearsal tool</strong>, a <strong>civic-education instrument</strong>, and a polished reference implementation of structured LLM output with local text-to-speech. It must run <strong>local-first</strong>: in its default configuration, no data leaves the operator's machine.</p>
+    </section>
+
+    <section id="users" class="reveal">
+      <h2><span class="num">02</span> Target users &amp; use cases</h2>
+      <div class="section-rule"></div>
+      <div class="grid c2">
+        <div class="card"><span class="ic">📣</span><h3>Communications &amp; public affairs</h3><p>Pressure-test a message before a real session — see how each faction frames the issue and where the vote lands.</p></div>
+        <div class="card"><span class="ic">📊</span><h3>Policy &amp; research</h3><p>Stress a proposal against 141 viewpoints; generate transcript-grade material for analysis or training data.</p></div>
+        <div class="card"><span class="ic">🎓</span><h3>Civic education &amp; journalism</h3><p>Show how parliament actually works — agenda, procedure, party speeches, cross-examination, and the path to a vote.</p></div>
+        <div class="card"><span class="ic">🧪</span><h3>AI &amp; product demos</h3><p>A self-contained showcase of structured generation, local TTS and real-time playback — runs with no cloud account.</p></div>
+      </div>
+      <h3>Primary persona</h3>
+      <p><strong>The analyst/operator.</strong> Technically comfortable, privacy-conscious, runs the app on a workstation. Wants high-fidelity output, control over the model and voices, and the ability to archive and revisit sessions. May have an Ollama instance and a local Speaches server already; may alternatively hold an OpenAI key.</p>
+    </section>
+
+    <section id="goals" class="reveal">
+      <h2><span class="num">03</span> Goals &amp; non-goals</h2>
+      <div class="section-rule"></div>
+      <h3>Goals</h3>
+      <ul>
+        <li>Generate a believable, internally-consistent Seimas session from one topic, in Lithuanian or English.</li>
+        <li>Model all 141 members with distinct, faction-grounded behaviour.</li>
+        <li>Always reach a <strong>transparent recorded vote</strong> whose numbers reconcile and whose result follows the rules.</li>
+        <li>Play the session back as a live broadcast with per-speaker voices and an optional speaking face.</li>
+        <li>Run fully locally (Ollama + Speaches) <em>or</em> via the cloud (OpenAI), switchable at request time.</li>
+        <li>Persist every session as structured, re-playable data.</li>
+        <li>Ship as a single Python service that also serves the frontend.</li>
+      </ul>
+      <h3>Non-goals</h3>
+      <ul>
+        <li>Not a prediction engine — outputs are plausible simulations, never forecasts of real votes.</li>
+        <li>Not a real-time multi-user collaboration platform (single-operator tool in v1).</li>
+        <li>Not a general chatbot; the domain is fixed to Seimas plenary sessions.</li>
+        <li>Not a member-data authoring tool — the 141-member dataset is treated as fixed reference input.</li>
+      </ul>
+    </section>
+
+    <section id="principles" class="reveal">
+      <h2><span class="num">04</span> Product principles</h2>
+      <div class="section-rule"></div>
+      <div class="grid c2">
+        <div class="card"><h3>Transparency over spectacle</h3><p>Every vote is auditable on screen. The viewer can always see procedure, quorum, tallies and faction breakdown.</p></div>
+        <div class="card"><h3>Local-first, no lock-in</h3><p>Defaults assume your own hardware. Cloud is opt-in. Secrets never leave the machine they are entered on.</p></div>
+        <div class="card"><h3>Structured, not free-text</h3><p>The model's output is validated against a schema. Invalid sessions are repaired or rejected — never shown raw.</p></div>
+        <div class="card"><h3>Bilingual by construction</h3><p>Lithuanian is the default; English is a first-class equal. Every surface exists in both.</p></div>
+      </div>
+    </section>
+
+    <section id="functional" class="reveal">
+      <h2><span class="num">05</span> Functional requirements</h2>
+      <div class="section-rule"></div>
+      <p>Requirements use <span class="pill must">MUST</span> <span class="pill should">SHOULD</span> <span class="pill could">COULD</span> (MoSCoW). Each is anchored to the presentation.</p>
+
+      <h3>5.1 — Member roster</h3>
+      <div class="req"><div class="rid">FR-1</div><div><div class="rtitle">All 141 members <span class="pill must">MUST</span></div><div class="rbody">The system models every member of the 2024–2028 Seimas, each with name, party/faction, a personality brief, explicit goals, abilities, constraints, and a stable assigned voice. Loaded from the preserved dataset (<code>seimas/</code>, <code>seimas_members_data.js</code>, <code>members.json</code>).</div></div></div>
+      <div class="req"><div class="rid">FR-2</div><div><div class="rtitle">Faction grounding <span class="pill must">MUST</span></div><div class="rbody">Real factions are represented (LSDP, TS-LKD, Nemuno aušra, DSVL, Liberalai/Liberalų sąjūdis, LVŽS, LLRA-KŠS, and independents). A member's speech and vote must be consistent with their faction's stance and their own profile.</div></div></div>
+      <div class="req"><div class="rid">FR-3</div><div><div class="rtitle">Member directory <span class="pill should">SHOULD</span></div><div class="rbody">Users can browse members and open a detailed profile, with search/filter by faction.</div></div></div>
+
+      <h3>5.2 — Session generation</h3>
+      <div class="req"><div class="rid">FR-4</div><div><div class="rtitle">Topic → session <span class="pill must">MUST</span></div><div class="rbody">Given a free-text topic and a language, the system generates a complete session: opening &amp; procedure, agenda, ministry briefing, party-group speeches, recess, debate &amp; cross-examination, resolution/amendments, and a recorded vote (50–60 events total).</div></div></div>
+      <div class="req"><div class="rid">FR-5</div><div><div class="rtitle">Dual generation engine <span class="pill must">MUST</span></div><div class="rbody">Two interchangeable modes selectable per request: <b>local</b> (transcripts via Ollama) and <b>cloud</b> (transcripts via OpenAI). The same request shape, schema, and validation apply to both.</div></div></div>
+      <div class="req"><div class="rid">FR-6</div><div><div class="rtitle">In-character speeches <span class="pill must">MUST</span></div><div class="rbody">Each speech is 150–400 words, with concrete data, comparisons, rebuttals, and proposals, written from the speaking member's ideology.</div></div></div>
+      <div class="req"><div class="rid">FR-7</div><div><div class="rtitle">Validated structured output <span class="pill must">MUST</span></div><div class="rbody">Generation returns data conforming to the session schema (see Architecture). The server validates it; on failure it repairs (one bounded retry) or surfaces a clear error — raw/invalid output is never persisted or played.</div></div></div>
+
+      <h3>5.3 — Live broadcast playback</h3>
+      <div class="req"><div class="rid">FR-8</div><div><div class="rtitle">Broadcast stage <span class="pill must">MUST</span></div><div class="rbody">An LRT-style stage shows the current speaker (name, role, party), the speech text, a live updates ticker, an agenda tracker, and a progress/scrubber timeline.</div></div></div>
+      <div class="req"><div class="rid">FR-9</div><div><div class="rtitle">Transport controls <span class="pill must">MUST</span></div><div class="rbody">Play/pause, restart, skip-to-next, click-to-seek, and variable speed (0.25×, 0.5×, 1×, 2×, 5×, 10×).</div></div></div>
+      <div class="req"><div class="rid">FR-10</div><div><div class="rtitle">Live streaming <span class="pill should">SHOULD</span></div><div class="rbody">Events (and, when enabled, their audio) stream to the client as they become ready, so playback can begin before the whole session is synthesised.</div></div></div>
+
+      <h3>5.4 — Voices &amp; speaking face</h3>
+      <div class="req"><div class="rid">FR-11</div><div><div class="rtitle">Per-speaker TTS <span class="pill should">SHOULD</span></div><div class="rbody">When enabled, each speaker is synthesised with a stable, distinct voice and per-speaker rate. Local via Speaches (Kokoro voices, e.g. <code>af_heart</code>), cloud via OpenAI TTS. Output format selectable (mp3/wav/ogg).</div></div></div>
+      <div class="req"><div class="rid">FR-12</div><div><div class="rtitle">Animated face <span class="pill could">COULD</span></div><div class="rbody">An optional WebGL face lip-syncs to the current audio (eye-blink, head motion), with a graceful 2D fallback when WebGL is unavailable.</div></div></div>
+
+      <h3>5.5 — Bilingual, archive, privacy</h3>
+      <div class="req"><div class="rid">FR-13</div><div><div class="rtitle">Bilingual generation &amp; UI <span class="pill must">MUST</span></div><div class="rbody">Lithuanian (default) and English. The choice drives prompts, generated content, UI strings, and the vote report, and is remembered between visits.</div></div></div>
+      <div class="req"><div class="rid">FR-14</div><div><div class="rtitle">Archive &amp; replay <span class="pill must">MUST</span></div><div class="rbody">Sessions persist as structured JSON (with any audio + a voice mapping). Saved sessions can be listed, reloaded, and replayed.</div></div></div>
+      <div class="req"><div class="rid">FR-15</div><div><div class="rtitle">Local-first privacy <span class="pill must">MUST</span></div><div class="rbody">In local mode no data leaves the machine. Provider keys are supplied per request or via local environment/secret store and are never logged or persisted to session files.</div></div></div>
+
+      <h2 id="vote" style="margin-top:34px"><span class="num">5.6</span> The vote — transparency by law</h2>
+      <div class="section-rule"></div>
+      <div class="callout law"><div class="ic">🗳️</div><div class="body">Per the <b>Statute of the Seimas</b>, deliberation concludes with a vote, and the result of a recorded vote is public. Posėdis treats this as a hard product requirement: the vote is a first-class, validated object — never prose.</div></div>
+      <div class="req"><div class="rid">FR-16</div><div><div class="rtitle">A vote is mandatory <span class="pill must">MUST</span></div><div class="rbody">Every generated session contains at least one <code>vote</code> event — the final recorded vote on the resolution. Procedural votes may also appear where intermediate decisions are taken.</div></div></div>
+      <div class="req"><div class="rid">FR-17</div><div><div class="rtitle">Procedure &amp; quorum <span class="pill must">MUST</span></div><div class="rbody">Each vote states its procedure (open roll-call via the electronic system, or secret ballot) and the number of registered members. Quorum is at least <b>71 of 141</b>; the report shows whether quorum was met and flags when it was not.</div></div></div>
+      <div class="req"><div class="rid">FR-18</div><div><div class="rtitle">Exact, reconciled tallies <span class="pill must">MUST</span></div><div class="rbody">For / Against / Abstained (<b>Už / Prieš / Susilaikė</b>) counts are exact; their sum (votes cast) must not exceed 141 and must match the registered count. A per-faction breakdown is provided whose columns sum to the overall totals.</div></div></div>
+      <div class="req"><div class="rid">FR-19</div><div><div class="rtitle">Result by rule <span class="pill must">MUST</span></div><div class="rbody">The result (<b>priimta / atmesta</b> — passed / rejected) is decided by the majority of those voting (abstentions excluded), unless a stricter threshold is declared. The system derives or verifies the result; it is never merely asserted.</div></div></div>
+      <div class="req"><div class="rid">FR-20</div><div><div class="rtitle">Public vote report <span class="pill must">MUST</span></div><div class="rbody">The viewer sees a vote report (<i>balsavimo protokolas</i>): the question, procedure, threshold, quorum status, a colour-coded Už/Prieš/Susilaikė tally, the faction table, and any members who broke from their faction line — all on screen, in the session language.</div></div></div>
+      <div class="req"><div class="rid">FR-21</div><div><div class="rtitle">Self-consistency guarantee <span class="pill must">MUST</span></div><div class="rbody">If model output is inconsistent (sums mismatch, quorum impossible, faction columns disagree), the system reconciles it deterministically before display so the published report always adds up. See <a href="architecture.html#vote">Architecture › Vote model</a>.</div></div></div>
+    </section>
+
+    <section id="nonfunctional" class="reveal">
+      <h2><span class="num">06</span> Non-functional requirements</h2>
+      <div class="section-rule"></div>
+      <table class="tbl">
+        <thead><tr><th>ID</th><th>Category</th><th>Requirement</th></tr></thead>
+        <tbody>
+          <tr><td>NFR-1</td><td>Privacy</td><td>Local mode performs zero outbound calls except to the operator-configured local services. No telemetry. Keys are never written to disk or logs.</td></tr>
+          <tr><td>NFR-2</td><td>Performance</td><td>A full session generates within a few minutes on a capable workstation; first event is playable as soon as it streams (FR-10). UI interactions stay under ~100&nbsp;ms.</td></tr>
+          <tr><td>NFR-3</td><td>Reliability</td><td>All model output passes schema validation; the vote always reconciles. A provider error yields a clear, actionable message, not a crash.</td></tr>
+          <tr><td>NFR-4</td><td>Portability</td><td>Single Python service; runs via <code>uvicorn</code> locally and as a container. No build step required to serve the frontend.</td></tr>
+          <tr><td>NFR-5</td><td>Accessibility</td><td>Keyboard-operable controls, sufficient contrast on the dark theme, captions/text always present even when audio is off.</td></tr>
+          <tr><td>NFR-6</td><td>Internationalisation</td><td>All user-facing strings exist in LT and EN; numbers/timestamps localised; Lithuanian diacritics preserved end-to-end (UTF-8).</td></tr>
+          <tr><td>NFR-7</td><td>Cost control</td><td>Cloud usage is opt-in and surfaced; local mode incurs no per-token cost.</td></tr>
+          <tr><td>NFR-8</td><td>Maintainability</td><td>Typed Python (Pydantic v2), provider interfaces behind protocols, &gt;80% test coverage on domain/validation logic.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="metrics" class="reveal">
+      <h2><span class="num">07</span> Success metrics</h2>
+      <div class="section-rule"></div>
+      <ul>
+        <li><strong>Validity rate:</strong> ≥99% of generated sessions pass schema validation (after at most one repair retry).</li>
+        <li><strong>Vote integrity:</strong> 100% of displayed votes are internally consistent (sums, quorum, faction reconciliation, result rule).</li>
+        <li><strong>Coverage:</strong> sessions reference a realistic spread of factions and include the full structural arc.</li>
+        <li><strong>Local viability:</strong> a complete session (transcript + voices) is producible with zero cloud calls.</li>
+        <li><strong>Time-to-first-event:</strong> playback can start before full synthesis completes when streaming is enabled.</li>
+      </ul>
+    </section>
+
+    <section id="constraints" class="reveal">
+      <h2><span class="num">08</span> Constraints &amp; assumptions</h2>
+      <div class="section-rule"></div>
+      <ul>
+        <li><strong>Member dataset is fixed input.</strong> The 141 profiles are reference data, preserved in the repository and loaded at startup.</li>
+        <li><strong>Educational use of real names.</strong> Real member names and factions are used for civic-education purposes; the product is explicitly a simulation, labelled as such.</li>
+        <li><strong>External services are operator-provided.</strong> Ollama, Speaches and OpenAI access are configured by the operator; the app does not bundle models.</li>
+        <li><strong>Single operator per instance</strong> in v1; no authentication layer assumed beyond binding to localhost.</li>
+      </ul>
+    </section>
+
+    <section id="scope" class="reveal">
+      <h2><span class="num">09</span> Out of scope (v1) &amp; future</h2>
+      <div class="section-rule"></div>
+      <ul>
+        <li>Multi-user/collaborative sessions and accounts.</li>
+        <li>Native Lithuanian TTS voices (pending an integrated model) — tracked as a future enhancement.</li>
+        <li>Executive analytics dashboards summarising many sessions.</li>
+        <li>Fine-tuned or custom models beyond the configured providers.</li>
+        <li>Mobile-native apps (the web frontend is responsive but desktop-first).</li>
+      </ul>
+      <div class="callout note"><div class="ic">➡️</div><div class="body">Continue to <a href="architecture.html">Architecture</a> for the system design that satisfies these requirements, then <a href="development.html">Development</a> for the build order.</div></div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  POSĖDIS — Product Requirements Document · Concept v1.<br>
+  Anchored to the <a href="presentation.html">product presentation</a>. Implementation in <a href="architecture.html">Architecture</a> &amp; <a href="development.html">Development</a>.
+</footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

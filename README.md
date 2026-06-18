@@ -6,15 +6,15 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 - **Status (2025-11-15):** Feature-complete beta. Core simulator, bilingual prompt scaffolding, and local text-to-speech now run inside a React + Vite SPA (`src/App.jsx`) backed by the legacy simulation controller.
 - **Value Proposition:** Enables communications, policy, and research teams to dry-run plenary debates with controllable topics, factions, and scripted realism before public sessions. Delivers JSON transcripts, live-playback UI, and optional audio for debriefs or press prep.
 - **Required Inputs:** 
-  - Valid OpenAI API key with GPT-5-mini access (used only for transcript generation).
+  - OpenAI or OpenAI-compatible API key/token plus the transcript and TTS models you want to use.
   - Running Speaches server on the stakeholder device (`http://localhost:8000/v1`) with at least one Kokoro-derived TTS model downloaded.
   - (For local simulations) An Ollama instance with the chosen LLM pulled locally (e.g., `ollama pull llama3.1:70b`).
 - **UI Highlights:** refreshed dark-corporate React interface with mode cards (local vs. OpenAI), bilingual prompts, and contextual status badges improves stakeholder demos without extra configuration.
-- **Data Residency & Privacy:** No external calls beyond OpenAI’s Responses endpoint. All outputs, cached keys, and session files stay in the stakeholder’s browser storage or the local `sessions/` folder selected via the File System Access API.
+- **Data Residency & Privacy:** Local mode stays on Ollama + Speaches. Remote mode calls the configured OpenAI-compatible Responses and TTS endpoints. All outputs, cached keys, and session files stay in the stakeholder’s browser storage or the local `sessions/` folder selected via the File System Access API.
 - **Evaluation Checklist:** 
   1. Run `npm install && npm run dev`, then open `http://localhost:5173`.
   2. Fill topic + choose Lithuanian/English.
-  3. Provide API key and local Speaches details, enable “Naudoti lokalią Speaches teksto į kalbą tarnybą.”
+  3. Configure Ollama/Speaches or OpenAI-compatible endpoint details, then enable TTS if audio is needed.
   4. Generate a full session and confirm JSON download + optional audio playback.
 - **Next Milestones:** (a) plug-in Lithuanian-native TTS voices once a model is integrated into Speaches, (b) add regression tests for bilingual prompts, (c) expose summarized analytics per session for executive dashboards.
 
@@ -26,7 +26,7 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 - Autentiški asmenybės profiliai su tikslais, gebėjimais ir apribojimais
 
 ### 🤖 AI Stenogramų generavimas
-- **OpenAI GPT-5-mini** integracija per Responses API
+- **OpenAI-compatible Responses API** integracija su pasirenkamu baziniu URL, stenogramos modeliu ir request options JSON
 - Ypač detalūs pasisakymai su argumentais ir statistikomis
 - 50-60 įvykių su išsamiais 150-400 žodžių tekstais
 - Personalizuotos kalbos pagal kiekvieno nario ideologiją
@@ -44,9 +44,9 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 - Kalbos pasirinkimas įsimenamas naršyklėje, tad nereikia keisti kiekvieną kartą
 
 ### ⚙️ Dvigubas generavimo režimas
-- **Lokalus režimas:** stenogramos kuriamos per jūsų Ollama serverį, balsai – per Speaches TTS. Jokių debesijos kaštų, visi duomenys lieka kompiuteryje.
-- **Debesų režimas:** pasitelkia OpenAI GPT-5-mini ir gpt-4o-mini-tts, suteikdamas maksimalų detalumą be lokalaus paruošimo.
-- Abiem atvejais galima pasirinkti kalbą, audio formatą, nurodyti konkretų modelį ar bazinį URL.
+- **Lokalus režimas:** stenogramos kuriamos per jūsų Ollama serverį, balsai – per Speaches TTS. Galima nurodyti Ollama modelį, temperatūrą, `num_predict` ir papildomą `options` JSON.
+- **Debesų režimas:** naudoja pasirinktą OpenAI arba OpenAI-compatible Responses endpointą stenogramoms ir atskirą TTS endpointą balsams.
+- Abiem atvejais galima pasirinkti kalbą, audio formatą, konkretų modelį, bazinį URL ir papildomus tiekėjo nustatymus.
 
 ### 🌓 Moderni tamsi sąsaja
 - Visi komponentai perkurti į profesionalų, korporatyvinį dark theme dizainą.
@@ -79,8 +79,8 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 3. **Inicializacija:** paspauskite "⚙️ Generuoti naują posėdį" viršutinėje juostoje.
 4. **Tema:** įveskite klausimą (pvz. „Ar turėtų būti įvesta 4 dienų darbo savaitė?“) ir pasirinkite kalbą (lt/en).
 5. **Režimai:**
-   - *Lokalus:* nurodykite Ollama API (`http://localhost:11434`), modelį (`llama3.1:70b`), Speaches URL ir modelį bei pasirinktą audio formatą.
-   - *Debesų (OpenAI):* pateikite OpenAI API raktą su GPT-5-mini ir gpt-4o-mini-tts prieiga.
+   - *Lokalus:* nurodykite Ollama API (`http://localhost:11434`), modelį (`llama3.1:70b`), temperatūrą/`num_predict` jei reikia, Speaches URL ir modelį bei pasirinktą audio formatą.
+   - *Debesų (OpenAI):* pateikite API raktą/tokeną, Responses bazinį URL, stenogramos modelį, TTS bazinį URL, TTS modelį ir papildomą JSON, jei endpointui reikia nestandartinių parametrų.
 6. **Generavimas:** spauskite "🚀 Generuoti Seimo posėdį" ir, jei norite automatinio įrašymo, pasirinkite `sessions` aplanką per File System Access.
 7. **Transliacija:** stebėkite gyvą simuliaciją, naudokite TTS, sesijos archyvų įrašymą ar atsisiuntimus JSON formatu.
 
@@ -109,17 +109,19 @@ Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI integracija. Gene
 ## API Requirements
 
 - **Lokalus režimas (Ollama + Speaches)**
-  - *Ollama:* įdiekite Ollama, paleiskite `ollama serve`, atsisiųskite pasirinktą modelį (`ollama run llama3.1:70b --system ...`). Programoje nurodykite API adresą (dažniausiai `http://localhost:11434`) ir modelio pavadinimą.
+  - *Ollama:* įdiekite Ollama, paleiskite `ollama serve`, atsisiųskite pasirinktą modelį (`ollama run llama3.1:70b --system ...`). Programoje nurodykite API adresą (dažniausiai `http://localhost:11434`), modelio pavadinimą, temperatūrą, `num_predict` ir papildomą `options` JSON pagal poreikį.
   - *Speaches:* `cd speaches && docker compose -f compose.cpu.yaml up speaches`, užtikrinkite `ALLOW_ORIGINS` reikšmę (pvz., `["http://127.0.0.1:5500","http://localhost:8000"]`). Atsisiųskite Kokoro modelį ar aliasą (`uvx speaches-cli model download speaches-ai/Kokoro-82M-v1.0-ONNX`) ir UI laukuose nurodykite URL/modelį bei audio formatą.
 - **Debesų režimas (OpenAI)**
-  - Reikalingas **OpenAI API raktas** su GPT-5-mini ir `gpt-4o-mini-tts` prieiga
-  - Raktas saugomas lokaliai naršyklėje; užklausa kainuoja **$0.05/1M in / $0.40/1M out** (2025-11-15 kainynas)
+  - Reikalingas OpenAI arba suderinamo endpointo API raktas/tokenas.
+  - Numatytieji endpointai yra `https://api.openai.com/v1/responses` ir `https://api.openai.com/v1/audio/speech`, bet UI leidžia keisti bazinius URL ir modelius atskirai stenogramoms bei TTS.
+  - Papildomas Responses JSON sujungiamas į stenogramos užklausą; reikšmė `null` pašalina pasirinktinį numatytąjį lauką, pvz. `{"reasoning": null}`.
+  - Raktas saugomas lokaliai naršyklėje; kainodara priklauso nuo pasirinkto tiekėjo ir modelio.
   - Grąžinami JSON atsakymai su visa stenogramos struktūra
 
 ## Technologijos
 
 - **Vanilla JavaScript** - jokių priklausomybių
-- **OpenAI Responses API** - naujausias API su GPT-5-nano
+- **OpenAI-compatible Responses API** - pasirenkami endpointai, modeliai ir request options
 - **CSS Grid/Flexbox** - responsive dizainas
 - **Local Storage** - API rakto saugojimas
 - **Embedded Data** - 141 narių profiliai kode (jokių HTTP užklausų)
@@ -147,7 +149,7 @@ Sistemoje yra pavyzdinis posėdis temu "Dirbtinio intelekto poveikis darbo rinka
 
 - API raktas niekada neišsiunčiamas iš jūsų naršyklės
 - Visi duomenys saugomi lokaliai
-- Stenogramos generuojamos real-time su OpenAI
+- Stenogramos generuojamos real-time su pasirinktu Ollama arba OpenAI-compatible endpointu
 
 ## Licencija
 
