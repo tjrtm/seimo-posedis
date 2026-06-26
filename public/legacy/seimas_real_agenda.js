@@ -172,6 +172,10 @@
         const questionInput = document.getElementById('questionInput');
 
         let loadedOnce = false;
+        // Monotonic token: each load bumps it; a load whose token is no longer
+        // current was superseded by a newer selection and must not touch the DOM.
+        // Guards against out-of-order responses when the user switches quickly.
+        let loadSeq = 0;
 
         function setStatus(msg, kind) {
             if (!status) return;
@@ -185,54 +189,60 @@
             return o;
         }
 
+        const STALE_MSG = 'Rodomi išsaugoti duomenys (nepavyko atnaujinti).';
+
         async function loadSessions(opts) {
+            const my = ++loadSeq;
             setStatus('Kraunamos sesijos…');
-            sessionSelect.innerHTML = '';
-            sittingSelect.innerHTML = '';
-            list.innerHTML = '';
             try {
-                const term = (await getTerms(opts)).terms.find(t => t.current) || (await getTerms(opts)).terms[0];
-                const { sessions, stale } = await getSessions(term.id, opts);
+                const { terms, stale: termsStale } = await getTerms(opts);
+                const term = terms.find(t => t.current) || terms[0];
+                if (!term) { if (my === loadSeq) setStatus('Kadencijų nerasta.', 'warn'); return; }
+                const { sessions, stale: sessStale } = await getSessions(term.id, opts);
+                if (my !== loadSeq) return; // superseded by a newer load
                 if (!sessions.length) { setStatus('Sesijų nerasta.', 'warn'); return; }
+                sessionSelect.innerHTML = '';
                 sessions.forEach(s => sessionSelect.appendChild(
                     option(s.id, `${s.name} sesija (${s.from || '?'}${s.to ? ' – ' + s.to : ' – …'})`)));
                 sessionSelect.value = (sessions.find(s => s.current) || sessions[0]).id;
-                setStatus(stale ? 'Rodomi išsaugoti duomenys (nepavyko atnaujinti).' : '', stale ? 'warn' : '');
-                await loadSittings(opts);
+                await loadSittings(opts, termsStale || sessStale);
             } catch (err) {
-                setStatus('Nepavyko pasiekti Seimo atvirų duomenų. Bandykite vėliau.', 'error');
+                if (my === loadSeq) setStatus('Nepavyko pasiekti Seimo atvirų duomenų. Bandykite vėliau.', 'error');
             }
         }
 
-        async function loadSittings(opts) {
+        // staleSoFar carries any upstream stale-cache fallback forward so the
+        // final status reflects a partial outage instead of silently overwriting it.
+        async function loadSittings(opts, staleSoFar = false) {
+            const my = ++loadSeq;
             setStatus('Kraunami posėdžiai…');
-            sittingSelect.innerHTML = '';
-            list.innerHTML = '';
             try {
                 const { sittings, stale } = await getSittings(sessionSelect.value, opts);
-                if (!sittings.length) { setStatus('Posėdžių nerasta.', 'warn'); return; }
+                if (my !== loadSeq) return; // superseded
+                if (!sittings.length) { sittingSelect.innerHTML = ''; list.innerHTML = ''; setStatus('Posėdžių nerasta.', 'warn'); return; }
+                sittingSelect.innerHTML = '';
                 sittings.forEach(p => sittingSelect.appendChild(
                     option(p.id, `Nr. ${p.number} · ${p.type} · ${p.start || ''}`)));
                 sittingSelect.value = sittings[0].id;
-                if (stale) setStatus('Rodomi išsaugoti duomenys (nepavyko atnaujinti).', 'warn');
-                await loadAgenda(opts);
+                await loadAgenda(opts, staleSoFar || stale);
             } catch (err) {
-                setStatus('Nepavyko įkelti posėdžių.', 'error');
+                if (my === loadSeq) setStatus('Nepavyko įkelti posėdžių.', 'error');
             }
         }
 
-        async function loadAgenda(opts) {
+        async function loadAgenda(opts, staleSoFar = false) {
+            const my = ++loadSeq;
             setStatus('Kraunama darbotvarkė…');
-            list.innerHTML = '';
             try {
                 const { items, stale } = await getAgenda(sittingSelect.value, opts);
-                if (!items.length) { setStatus('Šio posėdžio darbotvarkė tuščia.', 'warn'); return; }
+                if (my !== loadSeq) return; // superseded — keep the current selection's list intact
+                const isStale = staleSoFar || stale;
+                list.innerHTML = '';
+                if (!items.length) { setStatus((isStale ? STALE_MSG + ' ' : '') + 'Šio posėdžio darbotvarkė tuščia.', 'warn'); return; }
                 items.forEach(item => list.appendChild(renderItem(item)));
-                setStatus(stale
-                    ? 'Rodomi išsaugoti duomenys (nepavyko atnaujinti). ' + ATTRIBUTION
-                    : ATTRIBUTION, stale ? 'warn' : 'muted');
+                setStatus(isStale ? STALE_MSG + ' ' + ATTRIBUTION : ATTRIBUTION, isStale ? 'warn' : 'muted');
             } catch (err) {
-                setStatus('Nepavyko įkelti darbotvarkės.', 'error');
+                if (my === loadSeq) setStatus('Nepavyko įkelti darbotvarkės.', 'error');
             }
         }
 
