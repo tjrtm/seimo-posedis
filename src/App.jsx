@@ -19,6 +19,10 @@ function App() {
     } else {
       console.warn('Seimas controller nerastas. Įsitikinkite, kad legacy skriptai įtraukti per index.html.');
     }
+    // Wire the optional real-agenda importer now that its panel is mounted.
+    if (window.initializeSeimasRealAgenda) {
+      window.initializeSeimasRealAgenda();
+    }
   }, []);
 
   return (
@@ -225,6 +229,32 @@ function App() {
                       </select>
                       <small>Valdo, kuria kalba generuojami pasisakymai, santraukos ir rezoliucijos.</small>
                     </div>
+                  </div>
+                </div>
+
+                <div className="settings-section collapsed" id="realAgendaPanel">
+                  <button type="button" className="section-head" data-accordion>
+                    <span>🏛️ Reali Seimo darbotvarkė</span><span className="chevron">▾</span>
+                  </button>
+                  <div className="section-body">
+                    <p className="section-hint">
+                      Pasirinkite realų Seimo plenarinio posėdžio darbotvarkės klausimą kaip temą.
+                      Tai neprivaloma — temą galite redaguoti arba įvesti savo. Duomenys imami tiesiogiai
+                      iš Seimo atvirų duomenų; programa nieko negeneruoja iš šio šaltinio automatiškai.
+                    </p>
+                    <div className="form-field">
+                      <label htmlFor="realAgendaSessionSelect">Sesija</label>
+                      <select id="realAgendaSessionSelect"></select>
+                    </div>
+                    <div className="form-field">
+                      <label htmlFor="realAgendaSittingSelect">Posėdis</label>
+                      <select id="realAgendaSittingSelect"></select>
+                    </div>
+                    <div className="real-agenda-toolbar">
+                      <button type="button" className="ghost-btn" id="realAgendaRefreshBtn" title="Atnaujinti iš Seimo">↻ Atnaujinti</button>
+                    </div>
+                    <div className="real-agenda-list" id="realAgendaList"></div>
+                    <small className="real-agenda-status" id="realAgendaStatus"></small>
                   </div>
                 </div>
 
