@@ -21,3 +21,6 @@ sessions/
 .DS_Store
 .idea/
 .vscode/
+
+# Local ChatGPT OAuth credentials (never commit)
+.chatgpt/

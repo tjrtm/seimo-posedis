@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import './App.css';
+import ChatGPTSignIn from './chatgpt_signin.jsx';
 
 const agenda = [
   { time: '10:00', label: 'Posėdžio atidarymas' },
@@ -319,6 +320,9 @@ function App() {
                         <div>☁️ OpenAI</div>
                         <p>OpenAI Responses + TTS modeliai.</p>
                       </button>
+                      <button className="mode-option" data-mode="chatgpt">
+                        <div>ChatGPT</div><p>ChatGPT planas / Plan usage</p>
+                      </button>
                       <button className="mode-option" data-mode="xai">
                         <div>🚀 xAI (Grok)</div>
                         <p>Grok chat + Grok teksto į kalbą.</p>
@@ -326,6 +330,7 @@ function App() {
                     </div>
 
                     <div className="config-panels">
+                      <ChatGPTSignIn />
                       <div className="config-panel" id="localConfigPanel">
                         <div className="panel-title">Lokalus generavimas</div>
                         <div className="provider-guidance">
