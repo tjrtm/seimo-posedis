@@ -12,6 +12,27 @@ const agenda = [
   { time: '13:00', label: 'Uždarymas' }
 ];
 
+function Icon({ name }) {
+  const paths = {
+    settings: <><circle cx="12" cy="12" r="3" /><path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 1 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 1 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 1 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9Z" /></>,
+    sparkles: <><path d="m12 3 1.7 5.3L19 10l-5.3 1.7L12 17l-1.7-5.3L5 10l5.3-1.7L12 3Z" /><path d="m19 14 .9 2.1L22 17l-2.1.9L19 20l-.9-2.1L16 17l2.1-.9L19 14Z" /><path d="m5 2 .7 1.8L7.5 4.5l-1.8.7L5 7l-.7-1.8-1.8-.7 1.8-.7L5 2Z" /></>,
+    upload: <><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5" /><path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" /></>,
+    download: <><path d="M12 4v12m0 0 4.5-4.5M12 16l-4.5-4.5" /><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2" /></>,
+    file: <><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10Z" /><path d="M13 3v7h7M8 15l2 2-2 2m8-4-2 2 2 2" /></>,
+    folder: <><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" /><path d="M3 10h18" /></>,
+    users: <><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="10" cy="7" r="4" /><path d="M20 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></>,
+    activity: <><path d="M3 12h4l3-8 4 16 3-8h4" /></>,
+    ballot: <><path d="M7 3h10a2 2 0 0 1 2 2v16H5V5a2 2 0 0 1 2-2Z" /><path d="M8 8h8m-8 4h2m4 0h2m-8 4h8" /></>,
+    chart: <><path d="M4 19V5m0 14h17" /><path d="m7 15 4-4 3 2 6-7" /><path d="M16 6h4v4" /></>
+  };
+
+  return (
+    <svg className="ui-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      {paths[name]}
+    </svg>
+  );
+}
+
 function App() {
   useEffect(() => {
     if (window.initializeSeimasLiveStream) {
@@ -23,6 +44,19 @@ function App() {
     if (window.initializeSeimasRealAgenda) {
       window.initializeSeimasRealAgenda();
     }
+
+    const header = document.querySelector('.header');
+    const updateHeaderDensity = () => {
+      header?.classList.toggle('is-condensed', window.scrollY > 32 && window.innerWidth > 720);
+    };
+    window.addEventListener('scroll', updateHeaderDensity, { passive: true });
+    window.addEventListener('resize', updateHeaderDensity);
+    updateHeaderDensity();
+
+    return () => {
+      window.removeEventListener('scroll', updateHeaderDensity);
+      window.removeEventListener('resize', updateHeaderDensity);
+    };
   }, []);
 
   return (
@@ -30,25 +64,42 @@ function App() {
       <header className="header">
         <div className="header-inner">
           <div className="header-brand">
-            <p className="brand-eyebrow">LR Seimo posėdis gyvai</p>
-            <h1>Seimas AI Generator</h1>
+            <div className="brand-lockup">
+              <div className="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div>
+                <p className="brand-eyebrow">Plenarinio posėdžio simuliacija</p>
+                <h1>Seimas AI <span>Generator</span></h1>
+              </div>
+            </div>
             <p className="header-description">
-              Simuliuokite parlamentarų diskusijas, valdykite balsus ir generavimo režimus vienoje konsolėje.
+              Valdykite diskusijas, balsavimus ir generavimo režimus vienoje darbo erdvėje.
             </p>
           </div>
           <div className="header-actions">
             <div className="live-indicator">
               <div className="live-dot"></div>
-              <span>GYVAI</span>
+              <span>STUDIJA</span>
             </div>
             <div className="header-buttons">
-              <button className="icon-btn" id="settingsModalOpenBtn" title="Nustatymai (modelis, balsai, raktai)">⚙️</button>
-              <button className="generate-btn" id="toggleSetupBtn">✨ Generuoti posėdį</button>
-              <button className="ghost-btn" id="importBundleBtn" title="Įkelti sesijos JSON + audio (kelis failus arba .zip)">📥 Importuoti</button>
-              <button className="ghost-btn" id="exportSessionBtn" title="Eksportuoti visą posėdį su audio" disabled>📦 Eksportuoti</button>
-              <button className="ghost-btn" id="loadSessionBtn">📂 JSON</button>
-              <button className="ghost-btn" id="loadSessionFolderBtn">📁 Aplankas</button>
-              <button className="members-btn" id="membersBtn">👥 Nariai (141)</button>
+              <div className="header-action-group header-action-group--primary">
+                <button className="icon-btn" id="settingsModalOpenBtn" title="Nustatymai (modelis, balsai, raktai)" aria-label="Nustatymai">
+                  <Icon name="settings" />
+                </button>
+                <button className="generate-btn" id="toggleSetupBtn"><Icon name="sparkles" />Generuoti posėdį</button>
+              </div>
+              <div className="header-action-group">
+                <button className="ghost-btn" id="importBundleBtn" title="Įkelti sesijos JSON ir garso failus">
+                  <Icon name="upload" />Importuoti
+                </button>
+                <button className="ghost-btn" id="exportSessionBtn" title="Eksportuoti visą posėdį su audio" disabled>
+                  <Icon name="download" />Eksportuoti
+                </button>
+              </div>
+              <div className="header-action-group header-action-group--compact">
+                <button className="ghost-btn" id="loadSessionBtn" title="Atidaryti JSON sesiją"><Icon name="file" />JSON</button>
+                <button className="ghost-btn" id="loadSessionFolderBtn" title="Atidaryti sesijos aplanką"><Icon name="folder" />Aplankas</button>
+              </div>
+              <button className="members-btn" id="membersBtn"><Icon name="users" />Nariai <span className="members-count">141</span></button>
             </div>
           </div>
         </div>
@@ -63,25 +114,20 @@ function App() {
             <div className="left-stack">
               <section className="card live-stage">
                 <div className="parliament-chamber">
-                  <div className="stage-aurora" aria-hidden="true"></div>
-                  <div className="stage-scanlines" aria-hidden="true"></div>
                   <div className="broadcast-topline" aria-hidden="true">
-                    <span>POSĖDIS · PLENARINIS SRAUTAS</span>
-                    <span className="broadcast-topline__live"><i></i> GYVAI</span>
+                    <span>SEIMO POSĖDŽIO SIMULIACIJA</span>
+                    <span className="broadcast-topline__simulation"><i></i> SIMULIACIJA</span>
                   </div>
                   <div className="chambers-view" id="chambersView"></div>
-                  <div className="face-telemetry" aria-hidden="true">
-                    <span></span><span></span><span></span><span></span><span></span>
-                  </div>
                   <div className="chamber-overlay">
-                    <div className="stage-pill">Dabartinis kalbėtojas</div>
+                    <div className="stage-pill" id="stageRepresentationLabel" title="Stilizuotas dirbtinis personažas; neatvaizduoja tikro žmogaus. / Stylized synthetic avatar; does not depict a real person." hidden>Sintetinis avataras</div>
                     <div className="speaker-info" id="speakerInfo">
                       <div className="speaker-name" id="speakerName">Seimo posėdis prasidės netrukus</div>
                       <div className="speaker-title" id="speakerTitle"></div>
                       <div className="speaker-party" id="speakerParty"></div>
                     </div>
                     <div className="current-speech" id="currentSpeech">
-                      Sukurkite naują posėdį spustelėję „✨ Generuoti posėdį", arba „📥 Importuoti", kad įkeltumėte jau sugeneruotą sesiją su audio.
+                      Sukurkite posėdį pasirinkę „Generuoti posėdį“ arba įkelkite jau paruoštą sesiją.
                     </div>
                   </div>
                 </div>
@@ -147,9 +193,9 @@ function App() {
             <div className="right-stack">
               <section className="card panel-card">
                 <div className="panel-tabs" id="panelTabs">
-                  <button className="tab-btn active" data-tab-btn="live">📡 Būsena</button>
-                  <button className="tab-btn" data-tab-btn="results">📊 Rezultatai <span className="tab-count"></span></button>
-                  <button className="tab-btn" data-tab-btn="stats">📈 Statistika</button>
+                  <button className="tab-btn active" data-tab-btn="live"><Icon name="activity" />Būsena</button>
+                  <button className="tab-btn" data-tab-btn="results"><Icon name="ballot" />Rezultatai <span className="tab-count"></span></button>
+                  <button className="tab-btn" data-tab-btn="stats"><Icon name="chart" />Statistika</button>
                 </div>
 
                 {/* LIVE TAB */}
@@ -199,7 +245,7 @@ function App() {
           <div className="settings-modal__header">
             <div>
               <p className="settings-modal__eyebrow">Konfigūracija</p>
-              <h2>⚙️ Nustatymai ir posėdžio generavimas</h2>
+              <h2>Nustatymai ir posėdžio generavimas</h2>
             </div>
             <button className="settings-modal__close" id="settingsModalCloseBtn" title="Uždaryti">&times;</button>
           </div>
@@ -210,7 +256,7 @@ function App() {
 
                 <div className="settings-section">
                   <button type="button" className="section-head" data-accordion>
-                    <span>📝 Tema ir kalba</span><span className="chevron">▾</span>
+                    <span>Tema ir kalba</span><span className="chevron">▾</span>
                   </button>
                   <div className="section-body">
                     <div className="form-field form-field--full">
@@ -234,7 +280,7 @@ function App() {
 
                 <div className="settings-section collapsed" id="realAgendaPanel">
                   <button type="button" className="section-head" data-accordion>
-                    <span>🏛️ Reali Seimo darbotvarkė</span><span className="chevron">▾</span>
+                    <span>Reali Seimo darbotvarkė</span><span className="chevron">▾</span>
                   </button>
                   <div className="section-body">
                     <p className="section-hint">
@@ -260,7 +306,7 @@ function App() {
 
                 <div className="settings-section">
                   <button type="button" className="section-head" data-accordion>
-                    <span>🧠 Generavimo tiekėjas</span><span className="chevron">▾</span>
+                    <span>Generavimo tiekėjas</span><span className="chevron">▾</span>
                   </button>
                   <div className="section-body">
                     <p className="section-hint">Pasirinkite, kuris tiekėjas generuos stenogramą ir balsus. Kiekvienas režimas turi savo nustatymus žemiau.</p>
@@ -282,6 +328,11 @@ function App() {
                     <div className="config-panels">
                       <div className="config-panel" id="localConfigPanel">
                         <div className="panel-title">Lokalus generavimas</div>
+                        <div className="provider-guidance">
+                          <strong>Rekomenduojama / Recommended</strong>
+                          <span>Ilgoms stenogramoms: <code>qwen3:30b</code> (modelio failas apie 19 GB); mažesniam kompiuteriui rinkitės <code>qwen3:8b</code>.</span>
+                          <span lang="en">For long transcripts: <code>qwen3:30b</code> (about 19 GB model download); use <code>qwen3:8b</code> on smaller machines. Pull the model with <code>ollama pull</code> first.</span>
+                        </div>
                         <div className="dual-grid">
                           <div className="form-field">
                             <label htmlFor="localOllamaBaseUrlInput">Ollama API URL</label>
@@ -290,8 +341,8 @@ function App() {
                           </div>
                           <div className="form-field">
                             <label htmlFor="localOllamaModelInput">Ollama modelio pavadinimas</label>
-                            <input type="text" id="localOllamaModelInput" placeholder="llama3.1:70b" />
-                            <small>Tas pats pavadinimas, kurį naudojate su <code>ollama run</code>.</small>
+                            <input type="text" id="localOllamaModelInput" placeholder="qwen3:30b" />
+                            <small>Rekomenduojamas modelis ilgoms stenogramoms. Jis turi būti įdiegtas su <code>ollama pull qwen3:30b</code>.</small>
                           </div>
                         </div>
                         <div className="dual-grid">
@@ -315,12 +366,12 @@ function App() {
                           <div className="form-field">
                             <label htmlFor="speachesBaseUrlInput">Speaches TTS adresas</label>
                             <input type="text" id="speachesBaseUrlInput" placeholder="http://localhost:8000/v1" />
-                            <small>Paleiskite Speaches docker compose ir nurodykite bazinį URL.</small>
+                            <small>Programa prideda <code>/audio/speech</code>. Paleiskite Speaches: <code>cd speaches &amp;&amp; docker compose -f compose.cpu.yaml up speaches</code>.</small>
                           </div>
                           <div className="form-field">
                             <label htmlFor="speachesModelInput">Speaches modelio ID / alias</label>
                             <input type="text" id="speachesModelInput" placeholder="speaches-ai/Kokoro-82M-v1.0-ONNX" />
-                            <small>Galima naudoti alias (pvz. <code>tts-1</code>).</small>
+                            <small>Numatytasis Kokoro modelis; Speaches turi veikti, kitaip stenograma bus be garso.</small>
                           </div>
                         </div>
                         <div className="form-field">
@@ -335,6 +386,12 @@ function App() {
 
                       <div className="config-panel hidden" id="remoteConfigPanel">
                         <div className="panel-title">OpenAI generavimas</div>
+                        <div className="provider-guidance">
+                          <strong>Rekomenduojama / Recommended</strong>
+                          <span>Stenogramai: <code>gpt-5.6-luna</code>. Balsams: <code>gpt-4o-mini-tts</code>.</span>
+                          <span lang="en">Transcript: <code>gpt-5.6-luna</code>. Speech: <code>gpt-4o-mini-tts</code>.</span>
+                          <span>Abiejų API bazinis adresas: <code>https://api.openai.com/v1</code>; programa prideda <code>/responses</code> arba <code>/audio/speech</code>.</span>
+                        </div>
                         <div className="dual-grid">
                           <div className="form-field">
                             <label htmlFor="apiKeyInput">OpenAI API raktas</label>
@@ -344,14 +401,14 @@ function App() {
                           <div className="form-field">
                             <label htmlFor="openAIBaseUrlInput">Responses bazinis URL</label>
                             <input type="text" id="openAIBaseUrlInput" placeholder="https://api.openai.com/v1" />
-                            <small>Galima nurodyti OpenAI suderinamą proxy ar savą endpointą.</small>
+                            <small>Palikite bazinį adresą be <code>/responses</code>; programa šį kelią prideda automatiškai.</small>
                           </div>
                         </div>
                         <div className="dual-grid">
                           <div className="form-field">
                             <label htmlFor="openAITranscriptModelInput">Stenogramos modelis</label>
-                            <input type="text" id="openAITranscriptModelInput" placeholder="gpt-5-mini" />
-                            <small>Modelis posėdžio JSON stenogramai generuoti.</small>
+                            <input type="text" id="openAITranscriptModelInput" placeholder="gpt-5.6-luna" />
+                            <small><code>gpt-5.6-luna</code> rekomenduojamas ilgoms ir dažnai generuojamoms stenogramoms.</small>
                           </div>
                           <div className="form-field">
                             <label htmlFor="openAIMaxOutputTokensInput">Max output tokens</label>
@@ -373,14 +430,14 @@ function App() {
                           <div className="form-field">
                             <label htmlFor="openAITTSBaseUrlInput">OpenAI TTS bazinis URL</label>
                             <input type="text" id="openAITTSBaseUrlInput" placeholder="https://api.openai.com/v1" />
-                            <small>Naudojama <code>/audio/speech</code> užklausoms.</small>
+                            <small>Bazinis URL <code>https://api.openai.com/v1</code>; programa prideda <code>/audio/speech</code>.</small>
                           </div>
                         </div>
                         <div className="dual-grid">
                           <div className="form-field">
                             <label htmlFor="openAITTSModelInput">TTS modelis</label>
                             <input type="text" id="openAITTSModelInput" placeholder="gpt-4o-mini-tts" />
-                            <small>Modelis OpenAI balsams generuoti.</small>
+                            <small>Rekomenduojamas modelis: <code>gpt-4o-mini-tts</code>. Endpointas: <code>/v1/audio/speech</code>.</small>
                           </div>
                           <div className="form-field">
                             <label htmlFor="openAITTSFormatSelect">OpenAI audio formatas</label>
@@ -409,6 +466,11 @@ function App() {
 
                       <div className="config-panel hidden" id="xaiConfigPanel">
                         <div className="panel-title">xAI (Grok) generavimas</div>
+                        <div className="provider-guidance">
+                          <strong>Rekomenduojama / Recommended</strong>
+                          <span>Stenogramai: <code>grok-4.7</code>. TTS bazinis adresas: <code>https://api.x.ai/v1</code>.</span>
+                          <span lang="en">Transcript: <code>grok-4.7</code>. TTS base URL: <code>https://api.x.ai/v1</code>; the app appends <code>/tts</code>.</span>
+                        </div>
                         <div className="dual-grid">
                           <div className="form-field">
                             <label htmlFor="xaiApiKeyInput">xAI API raktas</label>
@@ -424,8 +486,8 @@ function App() {
                         <div className="dual-grid">
                           <div className="form-field">
                             <label htmlFor="xaiTranscriptModelInput">Grok modelis</label>
-                            <input type="text" id="xaiTranscriptModelInput" placeholder="grok-4" />
-                            <small>Pvz. <code>grok-4</code>, <code>grok-4-fast</code>, <code>grok-3-mini</code>.</small>
+                            <input type="text" id="xaiTranscriptModelInput" placeholder="grok-4.7" />
+                            <small>Rekomenduojamas dabartinis modelis: <code>grok-4.7</code>.</small>
                           </div>
                           <div className="form-field">
                             <label htmlFor="xaiMaxOutputTokensInput">Max tokens</label>
@@ -480,7 +542,7 @@ function App() {
 
                 <div className="settings-section">
                   <button type="button" className="section-head" data-accordion>
-                    <span>🔊 Įgarsinimas</span><span className="chevron">▾</span>
+                    <span>Įgarsinimas</span><span className="chevron">▾</span>
                   </button>
                   <div className="section-body">
                     <div className="form-field form-field--full">
@@ -495,6 +557,12 @@ function App() {
                   </div>
                 </div>
 
+                <div className="settings-save-row">
+                  <button type="button" className="settings-save-button" id="saveSettingsBtn">
+                    <span aria-hidden="true">✓</span> Išsaugoti nustatymus / Save settings
+                  </button>
+                  <span className="settings-save-status" id="settingsSaveStatus" role="status" aria-live="polite"></span>
+                </div>
                 <button className="generate-transcript-btn" id="generateTranscriptBtn">
                   🚀 Generuoti Seimo posėdį
                 </button>
@@ -509,11 +577,11 @@ function App() {
       </div>
 
       <div id="membersModal" className="members-modal">
-        <div className="modal-content">
+        <div className="modal-content" role="dialog" aria-modal="true" aria-label="Seimo nariai">
           <div className="modal-left">
             <div className="modal-header">
               <h2>Lietuvos Respublikos Seimo nariai (2024-2028)</h2>
-              <span className="close" id="closeModal">&times;</span>
+              <button className="close" id="closeModal" type="button" aria-label="Uždaryti">&times;</button>
             </div>
             <div className="members-grid" id="membersGrid"></div>
           </div>
