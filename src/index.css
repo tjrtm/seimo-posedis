@@ -1,7 +1,10 @@
 :root {
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background-color: #070a12;
-  color: #f4f1e8;
+  color-scheme: light;
+  background-color: #f2f5f3;
+  color: #173432;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
 * {
@@ -13,6 +16,7 @@ body {
   min-height: 100vh;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {

@@ -103,14 +103,14 @@ class EnhancedSeimasLiveStream {
         this.generationMode = 'local';
         this.localGenerationSettings = {
             baseUrl: 'http://localhost:11434',
-            model: 'llama3.1:70b',
+            model: 'qwen3:30b',
             temperature: 0.35,
             numPredict: -1,
             optionsJson: ''
         };
         this.remoteGenerationSettings = {
             baseUrl: 'https://api.openai.com/v1',
-            transcriptModel: 'gpt-5-mini',
+            transcriptModel: 'gpt-5.6-luna',
             maxOutputTokens: 100000,
             reasoningEffort: 'medium',
             requestOptionsJson: '',
@@ -122,7 +122,7 @@ class EnhancedSeimasLiveStream {
         this.xaiGenerationSettings = {
             apiKey: '',
             baseUrl: 'https://api.x.ai/v1',
-            transcriptModel: 'grok-4',
+            transcriptModel: 'grok-4.7',
             maxOutputTokens: 100000,
             temperature: 0.4,
             requestOptionsJson: '',
@@ -132,6 +132,7 @@ class EnhancedSeimasLiveStream {
             ttsOptionsJson: ''
         };
         this.currentTTSOptions = null;
+        this.unavailableLiveTTSProvider = null;
 
         this.initializeElements();
         this.initializeAnimatedFace();
@@ -220,6 +221,16 @@ class EnhancedSeimasLiveStream {
         this.settingsModal = document.getElementById('settingsModal');
         this.settingsModalOpenBtn = document.getElementById('settingsModalOpenBtn');
         this.settingsModalCloseBtn = document.getElementById('settingsModalCloseBtn');
+        this.saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        this.settingsSaveStatus = document.getElementById('settingsSaveStatus');
+        try {
+            const savedQuestion = localStorage.getItem('seimas_session_question');
+            if (savedQuestion !== null && this.questionInput) {
+                this.questionInput.value = savedQuestion;
+            }
+        } catch (error) {
+            console.warn('Nepavyko nuskaityti posėdžio temos:', error);
+        }
 
         // Modal elements
         this.membersBtn = document.getElementById('membersBtn');
@@ -587,6 +598,9 @@ class EnhancedSeimasLiveStream {
         if (this.settingsModalCloseBtn) {
             this.settingsModalCloseBtn.addEventListener('click', () => this.hideSettingsModal());
         }
+        if (this.saveSettingsBtn) {
+            this.saveSettingsBtn.addEventListener('click', () => this.saveAllSettings());
+        }
         if (this.settingsModal) {
             this.settingsModal.addEventListener('click', (e) => {
                 if (e.target === this.settingsModal) this.hideSettingsModal();
@@ -595,6 +609,8 @@ class EnhancedSeimasLiveStream {
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && this.settingsModal?.classList.contains('active')) {
                 this.hideSettingsModal();
+            } else if (e.key === 'Escape' && this.membersModal?.classList.contains('active')) {
+                this.hideMembersModal();
             }
         });
 
@@ -624,15 +640,24 @@ class EnhancedSeimasLiveStream {
     showSettingsModal() {
         if (this.settingsModal) {
             this.settingsModal.classList.add('active');
-            document.body.classList.add('modal-open');
+            this.updateModalScrollLock();
         }
     }
 
     hideSettingsModal() {
         if (this.settingsModal) {
             this.settingsModal.classList.remove('active');
-            document.body.classList.remove('modal-open');
+            this.updateModalScrollLock();
         }
+    }
+
+    updateModalScrollLock() {
+        const hasOpenModal = Boolean(
+            this.settingsModal?.classList.contains('active') ||
+            this.membersModal?.classList.contains('active')
+        );
+        document.documentElement.classList.toggle('modal-open', hasOpenModal);
+        document.body.classList.toggle('modal-open', hasOpenModal);
     }
 
     toggleSidebar(force) {
@@ -675,12 +700,14 @@ class EnhancedSeimasLiveStream {
     showMembersModal() {
         if (this.membersModal) {
             this.membersModal.classList.add('active');
+            this.updateModalScrollLock();
         }
     }
 
     hideMembersModal() {
         if (this.membersModal) {
             this.membersModal.classList.remove('active');
+            this.updateModalScrollLock();
         }
     }
 
@@ -695,14 +722,93 @@ class EnhancedSeimasLiveStream {
         const apiKey = this.apiKeyInput.value.trim();
         if (apiKey) {
             localStorage.setItem('openai_api_key', apiKey);
+        } else {
+            localStorage.removeItem('openai_api_key');
+        }
+    }
+
+    saveAllSettings() {
+        try {
+            this.handleLocalGenerationSettingsChange('baseUrl', this.localOllamaBaseUrlInput?.value || '');
+            this.handleLocalGenerationSettingsChange('model', this.localOllamaModelInput?.value || '');
+            this.handleLocalGenerationSettingsChange('temperature', this.localOllamaTemperatureInput?.value || '');
+            this.handleLocalGenerationSettingsChange('numPredict', this.localOllamaNumPredictInput?.value || '');
+            this.handleLocalGenerationSettingsChange('optionsJson', this.localOllamaOptionsInput?.value || '');
+
+            this.handleSpeachesSettingsChange('baseUrl', this.speachesBaseUrlInput?.value || '');
+            this.handleSpeachesSettingsChange('modelId', this.speachesModelInput?.value || '');
+            this.handleSpeachesSettingsChange('responseFormat', this.speachesFormatSelect?.value || 'mp3');
+
+            this.saveAPIKey();
+            this.handleRemoteGenerationSettingsChange('baseUrl', this.openAIBaseUrlInput?.value || '');
+            this.handleRemoteGenerationSettingsChange('transcriptModel', this.openAITranscriptModelInput?.value || '');
+            this.handleRemoteGenerationSettingsChange('maxOutputTokens', this.openAIMaxOutputTokensInput?.value || '');
+            this.handleRemoteGenerationSettingsChange('reasoningEffort', this.openAIReasoningEffortSelect?.value || 'medium');
+            this.handleRemoteGenerationSettingsChange('requestOptionsJson', this.openAIRequestOptionsInput?.value || '');
+            this.handleRemoteGenerationSettingsChange('ttsBaseUrl', this.openAITTSBaseUrlInput?.value || '');
+            this.handleRemoteGenerationSettingsChange('ttsModel', this.openAITTSModelInput?.value || '');
+            this.handleRemoteGenerationSettingsChange('ttsResponseFormat', this.openAITTSFormatSelect?.value || 'mp3');
+            this.handleRemoteGenerationSettingsChange('ttsOptionsJson', this.openAITTSOptionsInput?.value || '');
+
+            this.handleXaiGenerationSettingsChange('apiKey', this.xaiApiKeyInput?.value || '');
+            this.handleXaiGenerationSettingsChange('baseUrl', this.xaiBaseUrlInput?.value || '');
+            this.handleXaiGenerationSettingsChange('transcriptModel', this.xaiTranscriptModelInput?.value || '');
+            this.handleXaiGenerationSettingsChange('maxOutputTokens', this.xaiMaxOutputTokensInput?.value || '');
+            this.handleXaiGenerationSettingsChange('temperature', this.xaiTemperatureInput?.value || '');
+            this.handleXaiGenerationSettingsChange('requestOptionsJson', this.xaiRequestOptionsInput?.value || '');
+            this.handleXaiGenerationSettingsChange('ttsBaseUrl', this.xaiTTSBaseUrlInput?.value || '');
+            this.handleXaiGenerationSettingsChange('ttsLanguage', this.xaiTTSLanguageInput?.value || 'auto');
+            this.handleXaiGenerationSettingsChange('ttsResponseFormat', this.xaiTTSFormatSelect?.value || 'mp3');
+            this.handleXaiGenerationSettingsChange('ttsOptionsJson', this.xaiTTSOptionsInput?.value || '');
+
+            this.saveGenerationMode();
+            this.sessionLanguage = this.sessionLanguageSelect?.value === 'en' ? 'en' : 'lt';
+            this.saveSessionLanguagePreference();
+            localStorage.setItem('seimas_local_generation_settings', JSON.stringify(this.localGenerationSettings));
+            localStorage.setItem('seimas_speaches_settings', JSON.stringify(this.speachesSettings));
+            localStorage.setItem('seimas_remote_generation_settings', JSON.stringify(this.remoteGenerationSettings));
+            localStorage.setItem('seimas_xai_generation_settings', JSON.stringify(this.xaiGenerationSettings));
+            const openAiKey = this.apiKeyInput?.value?.trim();
+            if (openAiKey) {
+                localStorage.setItem('openai_api_key', openAiKey);
+            } else {
+                localStorage.removeItem('openai_api_key');
+            }
+            const xaiKey = this.xaiApiKeyInput?.value?.trim();
+            if (xaiKey) {
+                localStorage.setItem('xai_api_key', xaiKey);
+            } else {
+                localStorage.removeItem('xai_api_key');
+            }
+            localStorage.setItem('seimas_tts_enabled', this.textToSpeechCheckbox?.checked ? 'true' : 'false');
+            if (this.questionInput) {
+                localStorage.setItem('seimas_session_question', this.questionInput.value);
+            }
+
+            if (this.settingsSaveStatus) {
+                this.settingsSaveStatus.textContent = 'Išsaugota šiame įrenginyje · Saved in this browser';
+                this.settingsSaveStatus.classList.add('is-saved');
+            }
+        } catch (error) {
+            console.error('Nepavyko išsaugoti nustatymų:', error);
+            if (this.settingsSaveStatus) {
+                this.settingsSaveStatus.textContent = 'Nepavyko išsaugoti · Save failed';
+                this.settingsSaveStatus.classList.remove('is-saved');
+            }
         }
     }
 
     loadRemoteGenerationSettings() {
+        let migratedDefaultModel = false;
         try {
             const stored = localStorage.getItem('seimas_remote_generation_settings');
             if (stored) {
                 const parsed = JSON.parse(stored);
+                // Upgrade the app's previous built-in default while preserving custom model IDs.
+                if (typeof parsed.transcriptModel === 'string' && parsed.transcriptModel.trim() === 'gpt-5-mini') {
+                    parsed.transcriptModel = 'gpt-5.6-luna';
+                    migratedDefaultModel = true;
+                }
                 this.remoteGenerationSettings = {
                     ...this.remoteGenerationSettings,
                     ...parsed
@@ -710,6 +816,9 @@ class EnhancedSeimasLiveStream {
             }
         } catch (error) {
             console.warn('Nepavyko nuskaityti OpenAI generavimo nustatymų:', error);
+        }
+        if (migratedDefaultModel) {
+            this.saveRemoteGenerationSettings();
         }
         this.applyRemoteGenerationSettingsToInputs();
     }
@@ -720,7 +829,7 @@ class EnhancedSeimasLiveStream {
             this.openAIBaseUrlInput.value = settings.baseUrl || 'https://api.openai.com/v1';
         }
         if (this.openAITranscriptModelInput) {
-            this.openAITranscriptModelInput.value = settings.transcriptModel || 'gpt-5-mini';
+            this.openAITranscriptModelInput.value = settings.transcriptModel || 'gpt-5.6-luna';
         }
         if (this.openAIMaxOutputTokensInput) {
             this.openAIMaxOutputTokensInput.value = settings.maxOutputTokens || 100000;
@@ -777,12 +886,19 @@ class EnhancedSeimasLiveStream {
     }
 
     loadXaiGenerationSettings() {
+        let migratedDefaultModel = false;
         try {
             const stored = localStorage.getItem('seimas_xai_generation_settings');
             if (stored) {
+                const parsed = JSON.parse(stored);
+                // Upgrade the app's previous built-in default while preserving custom model IDs.
+                if (typeof parsed.transcriptModel === 'string' && parsed.transcriptModel.trim() === 'grok-4') {
+                    parsed.transcriptModel = 'grok-4.7';
+                    migratedDefaultModel = true;
+                }
                 this.xaiGenerationSettings = {
                     ...this.xaiGenerationSettings,
-                    ...JSON.parse(stored)
+                    ...parsed
                 };
             }
             // Back-compat: the xAI key may also live in its own slot.
@@ -792,6 +908,9 @@ class EnhancedSeimasLiveStream {
             }
         } catch (error) {
             console.warn('Nepavyko nuskaityti xAI generavimo nustatymų:', error);
+        }
+        if (migratedDefaultModel) {
+            this.saveXaiGenerationSettings();
         }
         this.applyXaiGenerationSettingsToInputs();
     }
@@ -805,7 +924,7 @@ class EnhancedSeimasLiveStream {
             this.xaiBaseUrlInput.value = settings.baseUrl || 'https://api.x.ai/v1';
         }
         if (this.xaiTranscriptModelInput) {
-            this.xaiTranscriptModelInput.value = settings.transcriptModel || 'grok-4';
+            this.xaiTranscriptModelInput.value = settings.transcriptModel || 'grok-4.7';
         }
         if (this.xaiMaxOutputTokensInput) {
             this.xaiMaxOutputTokensInput.value = settings.maxOutputTokens || 100000;
@@ -835,6 +954,8 @@ class EnhancedSeimasLiveStream {
             localStorage.setItem('seimas_xai_generation_settings', JSON.stringify(this.xaiGenerationSettings));
             if (this.xaiGenerationSettings?.apiKey) {
                 localStorage.setItem('xai_api_key', this.xaiGenerationSettings.apiKey);
+            } else {
+                localStorage.removeItem('xai_api_key');
             }
         } catch (error) {
             console.warn('Nepavyko įrašyti xAI generavimo nustatymų:', error);
@@ -915,7 +1036,7 @@ class EnhancedSeimasLiveStream {
     }
 
     getActiveXaiTranscriptModelLabel() {
-        return this.xaiGenerationSettings?.transcriptModel?.trim() || 'grok-4';
+        return this.xaiGenerationSettings?.transcriptModel?.trim() || 'grok-4.7';
     }
 
     loadSessionLanguagePreference() {
@@ -1002,6 +1123,7 @@ class EnhancedSeimasLiveStream {
         }
 
         this.saveSpeachesSettings();
+        this.unavailableLiveTTSProvider = null;
 
         if (this.textToSpeechEnabled) {
             this.updateTextToSpeechStatus(`⚙️ Speaches nustatymai atnaujinti (modelis: ${this.getActiveSpeachesModelLabel()}).`, 'info');
@@ -1204,19 +1326,20 @@ class EnhancedSeimasLiveStream {
         this.saveGenerationMode();
         this.applyGenerationModeToUI();
         this.currentTTSOptions = null;
+        this.unavailableLiveTTSProvider = null;
         this.resetVoiceAssignments(this.getTextToSpeechProvider());
         const modeLabels = { remote: 'OpenAI debesų', xai: 'xAI (Grok)', local: 'lokalų' };
         this.updateTextToSpeechStatus(`🔁 Pereita į ${modeLabels[mode] || mode} režimą. Balsams bus naudojamas ${this.getTTSProviderLabel()}.`, 'info');
     }
 
-    getTextToSpeechProvider() {
-        if (this.generationMode === 'remote') return 'openai';
-        if (this.generationMode === 'xai') return 'xai';
+    getTextToSpeechProvider(mode = this.generationMode) {
+        if (mode === 'remote') return 'openai';
+        if (mode === 'xai') return 'xai';
         return 'speaches';
     }
 
-    buildDefaultTTSOptions() {
-        const provider = this.getTextToSpeechProvider();
+    buildDefaultTTSOptions(mode = this.generationMode) {
+        const provider = this.getTextToSpeechProvider(mode);
         if (provider === 'openai') {
             return {
                 provider: 'openai',
@@ -1260,7 +1383,7 @@ class EnhancedSeimasLiveStream {
     }
 
     getActiveOpenAITranscriptModelLabel() {
-        return this.remoteGenerationSettings?.transcriptModel?.trim() || 'gpt-5-mini';
+        return this.remoteGenerationSettings?.transcriptModel?.trim() || 'gpt-5.6-luna';
     }
 
     getActiveOpenAITTSModelLabel() {
@@ -1491,6 +1614,7 @@ class EnhancedSeimasLiveStream {
         }
 
         this.textToSpeechEnabled = this.textToSpeechCheckbox.checked;
+        this.unavailableLiveTTSProvider = null;
         try {
             localStorage.setItem('seimas_tts_enabled', this.textToSpeechEnabled ? 'true' : 'false');
         } catch (error) {
@@ -2094,6 +2218,7 @@ class EnhancedSeimasLiveStream {
         }
 
         this.showLoading(true);
+        this.unavailableLiveTTSProvider = null;
 
         let transcript;
 
@@ -2105,7 +2230,7 @@ class EnhancedSeimasLiveStream {
             } else {
                 transcript = await this.callLocalModel(question);
             }
-            this.currentTTSOptions = this.buildDefaultTTSOptions();
+            this.currentTTSOptions = this.buildDefaultTTSOptions(mode);
 
             this.resetVoiceAssignments(this.currentTTSOptions?.provider || this.getTextToSpeechProvider());
 
@@ -2283,7 +2408,7 @@ class EnhancedSeimasLiveStream {
         const prompt = this.buildPrompt(question);
         const systemPrompt = this.buildSystemPrompt();
         const baseUrl = this.normalizeBaseUrl(this.localGenerationSettings?.baseUrl || 'http://localhost:11434');
-        const model = this.localGenerationSettings?.model || 'llama3.1:70b';
+        const model = this.localGenerationSettings?.model || 'qwen3:30b';
         const temperature = Number(this.localGenerationSettings?.temperature ?? 0.35);
         const extraOptions = this.parseJsonOptions(
             this.localGenerationSettings?.optionsJson,
@@ -3795,13 +3920,23 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
         this.speakerTitle.textContent = event.title || '';
         this.speakerParty.textContent = event.party || '';
         this.currentSpeech.textContent = event.text;
+        const representationLabel = document.getElementById('stageRepresentationLabel');
+        if (representationLabel) {
+            representationLabel.textContent = 'Sintetinis avataras';
+            representationLabel.title = 'Stilizuotas dirbtinis personažas; neatvaizduoja tikro žmogaus. / Stylized synthetic avatar; does not depict a real person.';
+            representationLabel.hidden = false;
+        }
 
         // Switch the talking-head portrait to the current speaker.
         if (this.animatedFace && typeof this.animatedFace.setSpeaker === 'function') {
+            const persona = (this.seimasMembers || []).find(member => member && member.name === event.speaker) || {};
             this.animatedFace.setSpeaker({
                 name: event.speaker,
                 party: event.party,
-                title: event.title
+                title: event.title,
+                gender: this.genderForSpeaker(event.speaker),
+                personality: persona.personality,
+                tone: persona.tone
             });
         }
 
@@ -3911,6 +4046,10 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
 
         const provider = this.currentTTSOptions?.provider || this.getTextToSpeechProvider();
         const providerOptions = this.currentTTSOptions || this.buildDefaultTTSOptions();
+        if (this.unavailableLiveTTSProvider === provider) {
+            this.completeLiveEventWithoutAudio(eventIndex);
+            return;
+        }
         if (provider === 'openai') {
             const apiKey = providerOptions?.apiKey || this.apiKeyInput?.value?.trim();
             if (!apiKey) {
@@ -3950,7 +4089,18 @@ IMPORTANT: Produce 50-60 events and respond ONLY with JSON.
                 }
             } catch (error) {
                 console.error('Live TTS playback error:', error);
-                this.updateTextToSpeechStatus('⚠️ Nepavyko sugeneruoti audio šiam pasisakymui. Bandome tęsti.', 'error');
+                const cannotReachSpeaches = provider === 'speaches'
+                    && String(error?.message || '').includes('Nepavyko pasiekti Speaches serverio');
+                if (cannotReachSpeaches) {
+                    this.unavailableLiveTTSProvider = provider;
+                    const endpoint = this.getSpeachesEndpoint('audio/speech');
+                    const message = this.sessionLanguage === 'en'
+                        ? `Transcript is ready; continuing without speech because Speaches is unreachable at ${endpoint}. Start it with “cd speaches && docker compose -f compose.cpu.yaml up speaches”, or switch to OpenAI/xAI TTS in Settings.`
+                        : `Stenograma paruošta; tęsiame be garso, nes Speaches nepasiekiamas adresu ${endpoint}. Paleiskite „cd speaches && docker compose -f compose.cpu.yaml up speaches“ arba nustatymuose pasirinkite OpenAI / xAI TTS.`;
+                    this.updateTextToSpeechStatus(`⚠️ ${message}`, 'error');
+                } else {
+                    this.updateTextToSpeechStatus('⚠️ Nepavyko sugeneruoti audio šiam pasisakymui. Bandome tęsti.', 'error');
+                }
                 await this.waitAfterLiveAudioIssue();
             } finally {
                 this.finalizeLivePlayback(eventIndex, generation);

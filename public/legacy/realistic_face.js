@@ -1,21 +1,20 @@
 /**
- * RealisticFace — a semi-realistic, audio-driven talking head for the browser.
+ * RealisticFace — a broadcast-style, audio-driven talking head for the browser.
  *
  * Architecture (per 2026 research recommendation): 2D portrait + a browser
  * viseme engine driven by real Web Audio FFT analysis of the actually playing
  * audio. No GPU, no per-minute cost, scales to 141 speakers, fully offline.
  *
- *  - Each speaker gets a DETERMINISTIC portrait seeded from their name
- *    (skin tone, face shape, hair, eyes, glasses, facial hair, party tie),
- *    so the same MP always looks the same and looks distinct from others.
+ *  - Each speaker gets a consistent, illustrated avatar seeded from their name
+ *    and persona cues. No portrait photos or real-person likenesses are used.
  *  - The mouth is driven by genuine visemes extracted from the audio signal
  *    (energy → jaw openness, spectral centroid → vowel shape), not random.
- *  - Optional real photos: if window.SEIMAS_MEMBER_PHOTOS maps a name to an
- *    image URL, that photo is used and the mouth region is animated over it.
+ *  - Face motion is drawn directly on canvas, so blinking and lip-sync stay
+ *    visible for every speaker.
  *
  * Public API (kept compatible with the previous AnimatedFace):
  *    new RealisticFace(containerId)
- *    .setSpeaker({ name, party, title })
+ *    .setSpeaker({ name, party, title, personality, tone })
  *    .syncWithAudioElement(audioElement, text)
  *    .speak(text, rate)         // fallback when no audio element is available
  *    .setRate(rate)
@@ -59,10 +58,9 @@
         return /(a|ė)$/.test(last);
     }
 
-    const SKIN_TONES = ['#f3d2b3', '#ecc19b', '#e3b38b', '#d9a679', '#cf9a6c', '#f7dcc0', '#e8bf9a'];
+    const SKIN_TONES = ['#eed4bd', '#e4c2a4', '#dcb696', '#cda184', '#f0d9c3', '#e2c5a8', '#d6af90'];
     const HAIR_COLORS = ['#2b2118', '#3d2b1a', '#5a4326', '#7a5c34', '#9c7a45', '#b9b4ad', '#d7d3cc', '#8a8a8a', '#1c1a17'];
-    const EYE_COLORS = ['#5b4636', '#6f4e37', '#3a6ea5', '#4a7c59', '#7b8794', '#52423a'];
-
+    const EYE_COLORS = ['#7358cb', '#347fae', '#4b9a83', '#b97954', '#5f8498', '#885f91'];
     const PARTY_COLORS = {
         'LSDP': '#d32f2f', 'TS-LKD': '#1976d2', 'Nemuno aušra': '#7b1fa2',
         'DSVL': '#2e8b57', 'Liberalų sąjūdis': '#f9a825', 'LVŽS': '#2e7d32',
@@ -78,11 +76,11 @@
     const VISEMES = {
         sil:  { open: 0.02, wide: 0.30, round: 0.20 }, // closed / rest
         MBP:  { open: 0.00, wide: 0.34, round: 0.18 }, // bilabial closure
-        aa:   { open: 0.85, wide: 0.55, round: 0.10 }, // "a" open
-        E:    { open: 0.42, wide: 0.85, round: 0.05 }, // "e/i" wide
-        I:    { open: 0.30, wide: 0.92, round: 0.02 },
-        O:    { open: 0.62, wide: 0.30, round: 0.85 }, // "o" round
-        U:    { open: 0.34, wide: 0.22, round: 0.95 }, // "u" pucker
+        aa:   { open: 0.66, wide: 0.55, round: 0.10 }, // "a" open
+        E:    { open: 0.35, wide: 0.72, round: 0.05 }, // "e/i" wide
+        I:    { open: 0.25, wide: 0.78, round: 0.02 },
+        O:    { open: 0.48, wide: 0.30, round: 0.72 }, // "o" round
+        U:    { open: 0.28, wide: 0.22, round: 0.78 }, // "u" pucker
         FV:   { open: 0.16, wide: 0.55, round: 0.10 }
     };
 
@@ -102,6 +100,7 @@
             this.mouth = { open: 0.02, wide: 0.30, round: 0.20 };
             this.target = Object.assign({}, VISEMES.sil);
             this.blinkTimer = 0;
+            this.nextBlinkIn = 3.2 + Math.random() * 1.8;
             this.eyeOpen = 1;
             this.head = { x: 0, y: 0 };
             this.headTarget = { x: 0, y: 0 };
@@ -113,13 +112,15 @@
                 nostril: 0,
                 ear: 0,
                 squint: 0,
-                lipTension: 0
+                lipTension: 0,
+                smile: 0
             };
 
             // Audio analysis
             this.audioEl = null;
             this.audioListeners = null;
             this.manualTimeout = null;
+            this._lastFrameAt = 0;
 
             this._setupCanvas();
             this._loop = this._loop.bind(this);
@@ -142,6 +143,8 @@
             // Offscreen pipeline buffers.
             this.faceCanvas = document.createElement('canvas');   // base face render
             this.faceCtx = this.faceCanvas.getContext('2d', { willReadFrequently: true });
+            this.transitionCanvas = document.createElement('canvas');
+            this.transitionCtx = this.transitionCanvas.getContext('2d');
             this.workCanvas = document.createElement('canvas');   // warped + dispersed result
             this.workCtx = this.workCanvas.getContext('2d', { willReadFrequently: true });
             this.bloomCanvas = document.createElement('canvas');  // blurred highlight layer
@@ -149,13 +152,12 @@
             this.bloom2 = document.createElement('canvas');
             this.bloom2Ctx = this.bloom2.getContext('2d');
 
-            this._renderScale = 1;        // adaptive quality (1 → 0.6)
+            this._renderScale = 1;        // adaptive quality (1 → 0.62)
             this._frameMs = 16;
             this._time = 0;
             this._microHead = { x: 0, y: 0, tx: 0, ty: 0 };
             this._saccade = { x: 0, y: 0, tx: 0, ty: 0, t: 0 };
 
-            this._makeGrain();
             this._resize();
         }
 
@@ -175,67 +177,65 @@
         // upscaled to the visible canvas (the soft upscale reads as cinematic).
         _sizeBuffers() {
             const aspect = this.ch / this.cw;
-            const Wi = Math.max(160, Math.min(360, Math.round(this.cw * this._renderScale)));
-            const Hi = Math.max(160, Math.min(520, Math.round(Wi * aspect)));
+            const Wi = Math.max(240, Math.min(520, Math.round(this.cw * this._renderScale)));
+            const Hi = Math.max(240, Math.min(720, Math.round(Wi * aspect)));
             this.Wi = Wi; this.Hi = Hi;
-            [this.faceCanvas, this.workCanvas].forEach(c => { c.width = Wi; c.height = Hi; });
+            [this.faceCanvas, this.transitionCanvas, this.workCanvas].forEach(c => { c.width = Wi; c.height = Hi; });
             const bw = Math.max(1, Math.round(Wi / 3)), bh = Math.max(1, Math.round(Hi / 3));
             this.bloomCanvas.width = bw; this.bloomCanvas.height = bh;
             this.bloom2.width = Math.max(1, Math.round(bw / 2)); this.bloom2.height = Math.max(1, Math.round(bh / 2));
         }
 
-        _makeGrain() {
-            const g = document.createElement('canvas');
-            g.width = g.height = 128;
-            const gc = g.getContext('2d');
-            const img = gc.createImageData(128, 128);
-            for (let i = 0; i < img.data.length; i += 4) {
-                const v = (Math.random() * 255) | 0;
-                img.data[i] = img.data[i + 1] = img.data[i + 2] = v;
-                img.data[i + 3] = 255;
-            }
-            gc.putImageData(img, 0, 0);
-            this.grainCanvas = g;
-            this._grainPhase = 0;
-        }
-
         // ---- Per-speaker deterministic appearance ------------------------
-        _buildProfile(name, party) {
+        _buildProfile(name, party, persona = {}) {
             const rng = mulberry32(hashString((name || 'default') + '|' + (party || '')));
             const hasName = Boolean((name || '').trim());
-            const female = inferFemale(name);
+            const female = persona.gender === 'f' ? true
+                : persona.gender === 'm' ? false : inferFemale(name);
             const pick = arr => arr[Math.floor(rng() * arr.length)];
+            const age = 36 + Math.floor(rng() * 38);
             const grayBias = rng();
-            const hair = grayBias > 0.88 ? pick(['#b9b4ad', '#d7d3cc', '#8a8a8a'])
+            const hair = (age > 59 && grayBias > 0.32) || grayBias > 0.94
+                ? pick(['#b9b4ad', '#d7d3cc', '#8a8a8a'])
                 : pick(HAIR_COLORS.slice(0, 6));
-            const photo = (window.SEIMAS_MEMBER_PHOTOS && name && window.SEIMAS_MEMBER_PHOTOS[name]) || null;
+            const personaText = `${persona.personality || ''} ${persona.tone || ''}`
+                .toLocaleLowerCase('lt-LT').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            const speakingStyle = /dialog|diplomat|bendradarb|tolerant|konstruktyv/.test(personaText)
+                ? 'warm'
+                : /tvirt|princip|gynyb|griezt|autoritet|saugum/.test(personaText)
+                    ? 'firm'
+                    : /analit|moksl|ekspert|faktais|strateg/.test(personaText)
+                        ? 'measured' : 'neutral';
+            const hairStrands = Array.from({ length: 38 }, () => ({
+                x: -0.96 + rng() * 1.92,
+                y: -0.98 + rng() * 0.4,
+                length: 0.08 + rng() * 0.2,
+                alpha: 0.08 + rng() * 0.12
+            }));
             return {
-                name, party,
+                name, party, persona, speakingStyle, age, hairStrands,
                 female,
-                photo,
-                photoImg: null,
                 skin: pick(SKIN_TONES),
                 hair,
                 eye: pick(EYE_COLORS),
-                tie: partyColor(party),
-                // Women get a slightly narrower face & jaw, softer brows, fuller lips,
-                // and (almost always) longer hair so gender reads clearly.
-                faceWidth: (female ? 0.80 : 0.88) + rng() * 0.16,
-                jaw: (female ? 0.62 : 0.85) + rng() * 0.22,
-                bald: hasName && !female && rng() > 0.78,
-                receding: hasName && !female && rng() > 0.55,
-                longHair: female ? rng() > 0.12 : false,
-                glasses: rng() > (female ? 0.8 : 0.58),
-                beard: hasName && !female && rng() > 0.74,
-                mustache: hasName && !female && rng() > 0.84,
-                earrings: female && rng() > 0.45,
-                blush: female,
-                browThick: (female ? 0.35 : 0.7) + rng() * (female ? 0.4 : 0.7),
-                noseLen: (female ? 0.85 : 0.95) + rng() * 0.3,
-                eyeSpacing: 0.92 + rng() * 0.16,
-                lashes: female,
-                lipFull: female ? 1.25 : 0.95,
-                lipTint: female ? '#bd5b63' : '#a9645c',
+                tie: '#32423f',
+                accent: partyColor(party),
+                faceWidth: (female ? 0.82 : 0.87) + rng() * 0.12,
+                jaw: (female ? 0.68 : 0.78) + rng() * 0.18,
+                bald: hasName && !female && rng() > 0.94,
+                receding: hasName && !female && rng() > 0.78,
+                longHair: female ? rng() > 0.45 : rng() > 0.93,
+                glasses: rng() > 0.79,
+                beard: hasName && !female && rng() > 0.86,
+                mustache: hasName && !female && rng() > 0.93,
+                earrings: female && rng() > 0.84,
+                blush: rng() > 0.78,
+                browThick: 0.52 + rng() * 0.42,
+                noseLen: 0.92 + rng() * 0.18,
+                eyeSpacing: 0.96 + rng() * 0.08,
+                lashes: false,
+                lipFull: 0.88 + rng() * 0.2,
+                lipTint: '#a65f58',
                 seed: rng()
             };
         }
@@ -243,13 +243,18 @@
         setSpeaker(info) {
             const name = (info && info.name) || '';
             const party = (info && info.party) || '';
-            if (this.profile && this.profile.name === name && this.profile.party === party) return;
-            this.profile = this._buildProfile(name, party);
-            if (this.profile.photo) {
-                const img = new Image();
-                img.onload = () => { this.profile.photoImg = img; };
-                img.src = this.profile.photo;
+            const persona = info || {};
+            if (this.profile && this.profile.name === name && this.profile.party === party
+                && this.profile.persona.personality === persona.personality
+                && this.profile.persona.tone === persona.tone
+                && this.profile.persona.gender === persona.gender) return;
+            if (this.profile && this.profile.name && this.profile.name !== name && this.faceCanvas.width) {
+                this.transitionCanvas.width = this.Wi;
+                this.transitionCanvas.height = this.Hi;
+                this.transitionCtx.drawImage(this.faceCanvas, 0, 0, this.Wi, this.Hi);
+                this._speakerTransition = { startedAt: performance.now(), duration: 360 };
             }
+            this.profile = this._buildProfile(name, party, persona);
         }
 
         // ---- Audio-driven lip sync ---------------------------------------
@@ -267,6 +272,7 @@
             if (!audioElement || typeof audioElement.addEventListener !== 'function') return;
             this._detachAudio();
             this.audioEl = audioElement;
+            this._setFallbackSpeech(text);
 
             const ctx = this._ensureAudioContext();
             if (ctx) {
@@ -294,6 +300,7 @@
 
             const onPlay = () => {
                 this.isSpeaking = true;
+                if (this.fallbackSpeech) this.fallbackSpeech.startedAt = performance.now();
                 if (RealisticFace._audioCtx && RealisticFace._audioCtx.state === 'suspended') {
                     RealisticFace._audioCtx.resume();
                 }
@@ -330,6 +337,8 @@
             this._detachAudio();
             const len = Math.max(1, (text || '').length);
             const dur = Math.min(20, Math.max(2, len / (12 * Math.max(rate || 1, 0.1))));
+            this._setFallbackSpeech(text, rate);
+            if (this.fallbackSpeech) this.fallbackSpeech.startedAt = performance.now();
             this.isSpeaking = true;
             this._startHeadMotion();
             if (this.manualTimeout) clearTimeout(this.manualTimeout);
@@ -338,6 +347,31 @@
                 this.target = Object.assign({}, VISEMES.sil);
             }, dur * 1000);
             return Promise.resolve();
+        }
+
+        _setFallbackSpeech(text, rate = this.speechRate) {
+            const words = (text || '').toLocaleLowerCase('lt-LT').replace(/[^a-ząčęėįšųūž]+/gi, ' ').trim();
+            this.fallbackSpeech = words ? {
+                words,
+                startedAt: performance.now(),
+                charMs: Math.max(55, Math.min(125, 88 / Math.max(rate || 1, 0.1)))
+            } : null;
+        }
+
+        _fallbackViseme() {
+            const speech = this.fallbackSpeech;
+            if (!speech || !speech.words.length) return { open: 0.1, wide: 0.3, round: 0.1 };
+            const index = Math.floor((performance.now() - speech.startedAt) / speech.charMs) % speech.words.length;
+            const char = speech.words[index];
+            if (char === ' ') return Object.assign({}, VISEMES.sil);
+            if ('aą'.includes(char)) return { open: 0.58, wide: 0.52, round: 0.08 };
+            if ('eęė'.includes(char)) return { open: 0.3, wide: 0.72, round: 0.04 };
+            if ('iįy'.includes(char)) return { open: 0.21, wide: 0.78, round: 0.02 };
+            if ('oó'.includes(char)) return { open: 0.43, wide: 0.28, round: 0.68 };
+            if ('uųū'.includes(char)) return { open: 0.24, wide: 0.2, round: 0.74 };
+            if ('bmp'.includes(char)) return { open: 0.015, wide: 0.28, round: 0.12 };
+            if ('fv'.includes(char)) return { open: 0.11, wide: 0.44, round: 0.04 };
+            return { open: 0.17, wide: 0.36, round: 0.08 };
         }
 
         setRate(rate) { this.speechRate = rate || 1; }
@@ -360,11 +394,13 @@
         _startHeadMotion() {
             const move = () => {
                 if (!this.isSpeaking) { this.headTarget = { x: 0, y: 0 }; return; }
+                const style = this.profile.speakingStyle;
+                const motionScale = style === 'warm' ? 1.12 : style === 'firm' ? 0.72 : style === 'measured' ? 0.82 : 0.94;
                 this.headTarget = {
-                    x: (Math.random() - 0.5) * 0.05,
-                    y: (Math.random() - 0.5) * 0.07
+                    x: (Math.random() - 0.5) * 0.035 * motionScale,
+                    y: (Math.random() - 0.5) * 0.048 * motionScale
                 };
-                setTimeout(move, 900 + Math.random() * 1600);
+                setTimeout(move, (1150 + Math.random() * 1800) / motionScale);
             };
             move();
         }
@@ -425,17 +461,17 @@
         // ---- Render loop -------------------------------------------------
         _loop() {
             this._raf = requestAnimationFrame(this._loop);
-            const dt = 0.016;
+            const now = performance.now();
+            const dt = this._lastFrameAt
+                ? Math.min(0.05, Math.max(0.001, (now - this._lastFrameAt) / 1000))
+                : 1 / 60;
+            this._lastFrameAt = now;
 
             if (this.isSpeaking && this.analyser) {
                 this._analyseAudio();
             } else if (this.isSpeaking) {
-                // No analyser: gentle procedural motion.
-                this.target = {
-                    open: 0.25 + Math.abs(Math.sin(Date.now() * 0.012)) * 0.45,
-                    wide: 0.45 + Math.sin(Date.now() * 0.006) * 0.15,
-                    round: 0.2
-                };
+                // When no analyser is available, shape the lips from the spoken text.
+                this.target = this._fallbackViseme();
             } else {
                 this.energy += (0 - this.energy) * 0.1;
             }
@@ -449,16 +485,18 @@
             this.mouth.wide += (this.target.wide - this.mouth.wide) * k * 0.7;
             this.mouth.round += (this.target.round - this.mouth.round) * k * 0.7;
 
-            const speechDrive = this.isSpeaking ? Math.max(this.energy, this.mouth.open * 0.55) : 0;
+            const speechDrive = this.isSpeaking ? Math.max(this.energy, this.mouth.open * 0.38) : 0;
             const vowelTension = Math.max(0, this.mouth.wide - this.mouth.round * 0.45);
+            const style = this.profile.speakingStyle;
             const expTarget = {
                 jaw: this.mouth.open,
-                cheek: speechDrive * 0.7 + vowelTension * 0.18,
-                brow: speechDrive * 0.28 + Math.sin(this._time * 1.7) * 0.035,
-                nostril: speechDrive * 0.45 + this.mouth.round * 0.12,
-                ear: speechDrive * 0.2 + Math.sin(this._time * 2.1 + (this.profile.seed || 0) * 6) * 0.025,
-                squint: Math.min(0.45, speechDrive * 0.22 + this.mouth.wide * 0.08),
-                lipTension: Math.max(0, this.mouth.wide - this.mouth.round) * 0.55
+                cheek: speechDrive * 0.24 + vowelTension * 0.08,
+                brow: speechDrive * (style === 'firm' ? 0.2 : 0.12) + Math.sin(this._time * 1.2) * 0.018,
+                nostril: speechDrive * 0.12 + this.mouth.round * 0.04,
+                ear: speechDrive * 0.035 + Math.sin(this._time * 1.7 + (this.profile.seed || 0) * 6) * 0.012,
+                squint: Math.min(0.2, speechDrive * 0.1 + this.mouth.wide * 0.025),
+                lipTension: Math.max(0, this.mouth.wide - this.mouth.round) * 0.28,
+                smile: (style === 'warm' ? 0.075 : style === 'firm' ? -0.025 : 0.01) + (this.isSpeaking ? 0.012 : 0)
             };
             Object.keys(expTarget).forEach(key => {
                 this.expression[key] += (expTarget[key] - this.expression[key]) * dt * 8;
@@ -466,15 +504,16 @@
 
             // Blink.
             this.blinkTimer += dt;
-            if (this.blinkTimer > 2.8 + (this.profile.seed || 0.5) * 2.5) {
+            if (this.blinkTimer >= this.nextBlinkIn) {
                 this.blinkTimer = 0;
-                this._blinking = 0.001;
+                this.nextBlinkIn = 3.2 + Math.random() * 2.1;
+                this._blinking = 0;
             }
             if (this._blinking !== undefined) {
                 this._blinking += dt;
-                const p = this._blinking / 0.16;
-                if (p < 0.5) this.eyeOpen = 1 - p * 2;
-                else if (p < 1) this.eyeOpen = (p - 0.5) * 2;
+                const p = Math.min(1, this._blinking / 0.2);
+                this.eyeOpen = 1 - Math.sin(Math.PI * p);
+                if (p < 1) this.eyeOpen = Math.max(0, this.eyeOpen);
                 else { this.eyeOpen = 1; this._blinking = undefined; }
             }
 
@@ -483,19 +522,22 @@
             this.head.y += (this.headTarget.y - this.head.y) * dt * 2;
             this._microHead.t -= dt;
             if (this._microHead.t <= 0) {
-                this._microHead.tx = (Math.random() - 0.5) * 0.05;
-                this._microHead.ty = (Math.random() - 0.5) * 0.04;
-                this._microHead.t = 0.7 + Math.random() * 1.6;
+                this._microHead.tx = (Math.random() - 0.5) * 0.025;
+                this._microHead.ty = (Math.random() - 0.5) * 0.02;
+                this._microHead.t = 1.1 + Math.random() * 2.1;
             }
             this._microHead.x += (this._microHead.tx - this._microHead.x) * dt * 1.6;
             this._microHead.y += (this._microHead.ty - this._microHead.y) * dt * 1.6;
 
             this._saccade.t -= dt;
             if (this._saccade.t <= 0) {
-                const speakingBias = this.isSpeaking ? 1.35 : 0.7;
-                this._saccade.tx = (Math.random() - 0.5) * 0.12 * speakingBias;
-                this._saccade.ty = (Math.random() - 0.5) * 0.08 * speakingBias;
-                this._saccade.t = 0.35 + Math.random() * (this.isSpeaking ? 1.1 : 2.4);
+                const styleBias = this.profile.speakingStyle === 'warm' ? 1.08
+                    : this.profile.speakingStyle === 'firm' ? 0.78
+                        : this.profile.speakingStyle === 'measured' ? 0.72 : 0.92;
+                const speakingBias = (this.isSpeaking ? 1.05 : 0.75) * styleBias;
+                this._saccade.tx = (Math.random() - 0.5) * 0.075 * speakingBias;
+                this._saccade.ty = (Math.random() - 0.5) * 0.05 * speakingBias;
+                this._saccade.t = 0.55 + Math.random() * (this.isSpeaking ? 1.5 : 2.5);
             }
             this._saccade.x += (this._saccade.tx - this._saccade.x) * dt * 9;
             this._saccade.y += (this._saccade.ty - this._saccade.y) * dt * 9;
@@ -507,10 +549,8 @@
         _draw() {
             if (!this.ctx || !this.Wi) return;
             const t0 = performance.now();
-            this._renderBase();        // rich face → faceCanvas (internal res)
-            this._warpDisperse();      // per-pixel fluid warp + chromatic dispersion → workCanvas
-            this._bloom();             // highlight extract + blur → bloomCanvas
-            this._composite();         // upscale + bloom + grain + vignette → visible
+            this._renderBase();        // detailed portrait → faceCanvas (internal res)
+            this._composite();         // clean broadcast finish → visible
 
             // Adaptive quality to keep the heavy passes near 60fps.
             const ms = performance.now() - t0;
@@ -526,23 +566,19 @@
             const ctx = this.faceCtx, W = this.Wi, H = this.Hi, p = this.profile;
 
             const bg = ctx.createLinearGradient(0, 0, 0, H);
-            bg.addColorStop(0, '#111827');
-            bg.addColorStop(0.55, '#070a12');
-            bg.addColorStop(1, '#04060b');
+            bg.addColorStop(0, '#242a29');
+            bg.addColorStop(0.55, '#151a19');
+            bg.addColorStop(1, '#0a0d0d');
             ctx.fillStyle = bg;
-            ctx.fillRect(0, 0, W, H);
-            const halo = ctx.createRadialGradient(W / 2, H * 0.42, 8, W / 2, H * 0.42, Math.max(W, H) * 0.6);
-            halo.addColorStop(0, this._rgba(p.tie, 0.25));
-            halo.addColorStop(0.32, 'rgba(230,181,74,0.08)');
-            halo.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = halo;
             ctx.fillRect(0, 0, W, H);
             this._drawBroadcastDome(ctx, W, H);
 
+            if (!p.name) return;
+
             const cx = W / 2 + (this.head.y + this._microHead.y) * W * 0.35;
-            const baseR = Math.min(W, H) * 0.24;
-            const cy = H * 0.46 + (this.head.x + this._microHead.x) * H * 0.18
-                + Math.sin(this._time * 1.3) * H * 0.004; // breathing
+            const baseR = Math.min(W, H) * 0.22;
+            const cy = H * 0.43 + (this.head.x + this._microHead.x) * H * 0.12
+                + Math.sin(this._time * 1.1) * H * 0.0025; // slow breathing
             this._faceCenter = { cx, cy, R: baseR };
             this._mouthPos = { x: cx, y: cy + baseR * 0.72 };
             this._eyePos = {
@@ -551,11 +587,6 @@
                 y: cy + this._eyeY(baseR)
             };
 
-            if (p.photoImg) {
-                this._drawPhoto(ctx, p, cx, cy, baseR, W, H);
-                return;
-            }
-
             ctx.save();
             ctx.translate(cx, cy);
             ctx.rotate((this.head.y + this._microHead.y) * 0.2);
@@ -563,6 +594,7 @@
             this._drawNeck(ctx, p, baseR);
             this._drawEars(ctx, p, baseR);
             this._drawHead(ctx, p, baseR);
+            this._drawSkinDetail(ctx, p, baseR);
             this._drawFacialMuscleField(ctx, p, baseR);
             this._drawHair(ctx, p, baseR);
             if (p.beard) this._drawBeard(ctx, p, baseR);
@@ -710,52 +742,94 @@
             ctx.imageSmoothingQuality = 'high';
             ctx.globalCompositeOperation = 'source-over';
             ctx.globalAlpha = 1;
-            ctx.drawImage(this.workCanvas, 0, 0, W, H);
+            ctx.clearRect(0, 0, W, H);
+            if (this._speakerTransition) {
+                const progress = Math.min(1, (performance.now() - this._speakerTransition.startedAt) / this._speakerTransition.duration);
+                ctx.globalAlpha = 1 - progress;
+                ctx.drawImage(this.transitionCanvas, 0, 0, W, H);
+                ctx.globalAlpha = progress;
+                ctx.drawImage(this.faceCanvas, 0, 0, W, H);
+                ctx.globalAlpha = 1;
+                if (progress >= 1) this._speakerTransition = null;
+            } else {
+                ctx.drawImage(this.faceCanvas, 0, 0, W, H);
+            }
 
-            // Bloom (screen so only highlights add light).
-            ctx.globalCompositeOperation = 'screen';
-            ctx.globalAlpha = 0.5 + this.energy * 0.3;
-            ctx.drawImage(this.bloomCanvas, 0, 0, W, H);
-
-            // Film grain (dispersion-like micro texture).
-            ctx.globalCompositeOperation = 'overlay';
-            ctx.globalAlpha = 0.045;
-            const gx = -((Math.random() * 110) | 0), gy = -((Math.random() * 110) | 0);
-            ctx.drawImage(this.grainCanvas, gx, gy, W + 128, H + 128);
-
-            ctx.globalCompositeOperation = 'source-over';
-            ctx.globalAlpha = 1;
-            const vg = ctx.createRadialGradient(W / 2, H * 0.45, Math.min(W, H) * 0.18, W / 2, H * 0.52, Math.max(W, H) * 0.72);
+            // Keep a soft broadcast lens falloff without the face-warp and bloom haze.
+            const vg = ctx.createRadialGradient(W / 2, H * 0.44, Math.min(W, H) * 0.22, W / 2, H * 0.5, Math.max(W, H) * 0.8);
             vg.addColorStop(0, 'rgba(0,0,0,0)');
-            vg.addColorStop(1, 'rgba(0,0,0,0.5)');
+            vg.addColorStop(1, 'rgba(0,0,0,0.28)');
             ctx.fillStyle = vg;
             ctx.fillRect(0, 0, W, H);
         }
 
         _drawBroadcastDome(ctx, W, H) {
-            const y = H * 0.9;
-            const cx = W * 0.5;
-            const rx = W * 0.46;
-            const ry = H * 0.24;
+            // Quiet oak wall, soft room lights, and distant chamber seating.
             ctx.save();
-            ctx.strokeStyle = 'rgba(230,181,74,0.16)';
+            const wall = ctx.createLinearGradient(0, 0, W, H * 0.72);
+            wall.addColorStop(0, '#242925');
+            wall.addColorStop(0.48, '#312d27');
+            wall.addColorStop(1, '#191e1c');
+            ctx.fillStyle = wall;
+            ctx.fillRect(0, 0, W, H * 0.78);
+            for (let i = 0; i < 9; i++) {
+                const x = (i / 9) * W;
+                const panel = ctx.createLinearGradient(x, 0, x + W * 0.095, 0);
+                panel.addColorStop(0, 'rgba(5,8,8,0.22)');
+                panel.addColorStop(0.22, 'rgba(130,103,73,0.08)');
+                panel.addColorStop(0.9, 'rgba(0,0,0,0.07)');
+                panel.addColorStop(1, 'rgba(4,7,7,0.3)');
+                ctx.fillStyle = panel;
+                ctx.fillRect(x, 0, W * 0.095, H * 0.78);
+            }
+            ctx.strokeStyle = 'rgba(179,145,105,0.09)';
             ctx.lineWidth = Math.max(1, W * 0.002);
+            for (let i = 1; i < 18; i++) {
+                const x = W * (i / 18);
+                ctx.beginPath();
+                ctx.moveTo(x, H * 0.025);
+                ctx.lineTo(x, H * 0.74);
+                ctx.stroke();
+            }
+            const lamp = ctx.createRadialGradient(W * 0.48, H * 0.19, 1, W * 0.48, H * 0.19, W * 0.56);
+            lamp.addColorStop(0, 'rgba(234,206,159,0.12)');
+            lamp.addColorStop(0.45, 'rgba(200,172,132,0.035)');
+            lamp.addColorStop(1, 'rgba(210,188,151,0)');
+            ctx.fillStyle = lamp;
+            ctx.fillRect(0, 0, W, H * 0.8);
+
+            const benches = ctx.createLinearGradient(0, H * 0.76, 0, H * 0.92);
+            benches.addColorStop(0, '#36322a');
+            benches.addColorStop(0.28, '#1b201e');
+            benches.addColorStop(1, '#090c0c');
+            ctx.fillStyle = benches;
+            ctx.fillRect(0, H * 0.76, W, H * 0.24);
+            ctx.fillStyle = 'rgba(5,8,8,0.34)';
+            for (let i = 0; i < 10; i++) {
+                const x = W * (0.03 + i * 0.104);
+                const y = H * (0.79 + (i % 2) * 0.035);
+                const headR = Math.max(3, W * 0.011);
+                ctx.beginPath();
+                ctx.ellipse(x, y, headR, headR * 1.25, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillRect(x - headR * 1.5, y + headR, headR * 3, H * 0.085);
+            }
+            ctx.restore();
+        }
+
+        _drawSkinDetail(ctx, p, R) {
+            ctx.save();
+            // A smooth highlight gives the avatar a polished, animated finish.
+            ctx.globalCompositeOperation = 'screen';
+            ctx.globalAlpha = 0.12;
+            const sheen = ctx.createLinearGradient(-R * 0.72, -R * 0.3, R * 0.6, R * 0.8);
+            sheen.addColorStop(0, 'rgba(255,255,255,0.9)');
+            sheen.addColorStop(0.5, 'rgba(255,255,255,0.12)');
+            sheen.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = sheen;
             ctx.beginPath();
-            ctx.ellipse(cx, y, rx, ry, 0, Math.PI, Math.PI * 2);
-            ctx.stroke();
-            ctx.strokeStyle = 'rgba(61,217,211,0.08)';
-            for (let i = -4; i <= 4; i++) {
-                const x = cx + (i / 4) * rx;
-                ctx.beginPath();
-                ctx.moveTo(x, y);
-                ctx.quadraticCurveTo(cx + (i / 8) * rx, y - ry * 0.78, cx, y - ry);
-                ctx.stroke();
-            }
-            for (let j = 1; j <= 3; j++) {
-                ctx.beginPath();
-                ctx.ellipse(cx, y, rx * (j / 3), ry * (j / 3), 0, Math.PI, Math.PI * 2);
-                ctx.stroke();
-            }
+            ctx.ellipse(-R * 0.32, -R * 0.1, R * 0.24, R * 0.78, -0.22, 0, Math.PI * 2);
+            ctx.fill();
             ctx.restore();
         }
 
@@ -782,27 +856,6 @@
             ctx.restore();
         }
 
-        _drawPhoto(ctx, p, cx, cy, baseR, W, H) {
-            const img = p.photoImg;
-            const size = baseR * 4.4;
-            const ar = img.width / img.height;
-            let dw = size, dh = size;
-            if (ar > 1) dh = size / ar; else dw = size * ar;
-            ctx.save();
-            ctx.beginPath();
-            ctx.ellipse(cx, cy, baseR * 1.5, baseR * 1.9, 0, 0, Math.PI * 2);
-            ctx.clip();
-            ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
-            // Animated mouth overlay over the photo.
-            const my = cy + baseR * 0.62;
-            const open = this.mouth.open * baseR * 0.5;
-            ctx.fillStyle = 'rgba(60,20,20,0.85)';
-            ctx.beginPath();
-            ctx.ellipse(cx, my, baseR * (0.32 + this.mouth.wide * 0.12), Math.max(2, open), 0, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-        }
-
         _shade(ctx, x, y, rx, ry, base, light, dark) {
             const g = ctx.createRadialGradient(x - rx * 0.3, y - ry * 0.4, ry * 0.1, x, y, ry * 1.2);
             g.addColorStop(0, light);
@@ -813,18 +866,19 @@
 
         _drawShoulders(ctx, p, R, H, cy) {
             const y = R * 1.7;
-            const suit = ctx.createLinearGradient(0, R * 1.25, 0, R * 3.25);
-            suit.addColorStop(0, '#20283a');
-            suit.addColorStop(1, '#080b13');
+            const suit = ctx.createLinearGradient(-R * 1.4, R * 1.15, R * 1.2, R * 3.25);
+            suit.addColorStop(0, '#263333');
+            suit.addColorStop(0.48, '#172120');
+            suit.addColorStop(1, '#0b1111');
             ctx.fillStyle = suit;
             ctx.beginPath();
-            ctx.moveTo(-R * 2.6, R * 3.2);
-            ctx.quadraticCurveTo(-R * 1.9, y, 0, y - R * 0.1);
-            ctx.quadraticCurveTo(R * 1.9, y, R * 2.6, R * 3.2);
+            ctx.moveTo(-R * 2.45, R * 3.2);
+            ctx.quadraticCurveTo(-R * 1.8, y, 0, y - R * 0.12);
+            ctx.quadraticCurveTo(R * 1.8, y, R * 2.45, R * 3.2);
             ctx.closePath();
             ctx.fill();
-            // Shirt collar
-            ctx.fillStyle = '#f4f1e8';
+            // Shirt and tailored lapels.
+            ctx.fillStyle = '#e8e8df';
             ctx.beginPath();
             ctx.moveTo(-R * 0.5, R * 1.45);
             ctx.lineTo(0, R * 2.0);
@@ -833,23 +887,38 @@
             ctx.lineTo(-R * 0.32, R * 1.3);
             ctx.closePath();
             ctx.fill();
-            // Tie (party colour)
+            ctx.fillStyle = this._rgba('#101717', 0.52);
+            ctx.beginPath();
+            ctx.moveTo(-R * 0.42, R * 1.34);
+            ctx.lineTo(-R * 0.18, R * 1.55);
+            ctx.lineTo(-R * 0.54, R * 2.16);
+            ctx.lineTo(-R * 0.79, R * 1.57);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(R * 0.42, R * 1.34);
+            ctx.lineTo(R * 0.18, R * 1.55);
+            ctx.lineTo(R * 0.54, R * 2.16);
+            ctx.lineTo(R * 0.79, R * 1.57);
+            ctx.closePath();
+            ctx.fill();
+            // A subdued tie and party-colour lapel pin keep the look formal.
             ctx.fillStyle = p.tie;
             ctx.beginPath();
             ctx.moveTo(-R * 0.12, R * 1.5);
             ctx.lineTo(R * 0.12, R * 1.5);
-            ctx.lineTo(R * 0.22, R * 3.0);
-            ctx.lineTo(0, R * 3.3);
-            ctx.lineTo(-R * 0.22, R * 3.0);
+            ctx.lineTo(R * 0.18, R * 2.85);
+            ctx.lineTo(0, R * 3.05);
+            ctx.lineTo(-R * 0.18, R * 2.85);
             ctx.closePath();
             ctx.fill();
-            ctx.fillStyle = this._rgba(p.tie, 0.6);
+            ctx.fillStyle = this._rgba(p.accent, 0.82);
             ctx.beginPath();
-            ctx.moveTo(-R * 0.14, R * 1.45);
-            ctx.lineTo(R * 0.14, R * 1.45);
-            ctx.lineTo(R * 0.18, R * 1.7);
-            ctx.lineTo(-R * 0.18, R * 1.7);
-            ctx.closePath();
+            ctx.arc(-R * 0.57, R * 1.74, R * 0.045, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'rgba(235,226,199,0.72)';
+            ctx.beginPath();
+            ctx.arc(-R * 0.57, R * 1.74, R * 0.018, 0, Math.PI * 2);
             ctx.fill();
         }
 
@@ -876,8 +945,11 @@
             ctx.quadraticCurveTo(-rx * 0.96, ry * 0.55, -rx, -ry * 0.25);
             ctx.closePath();
             ctx.fill();
+            ctx.strokeStyle = this._rgba(p.accent, 0.46);
+            ctx.lineWidth = Math.max(1, R * 0.018);
+            ctx.stroke();
             // Cheek warmth (stronger blush for a feminine read)
-            ctx.fillStyle = this._rgba('#df8576', p.blush ? 0.22 : 0.1);
+            ctx.fillStyle = this._rgba('#c88373', p.blush ? 0.1 : 0.035);
             ctx.beginPath();
             ctx.ellipse(-rx * 0.55, ry * 0.25, rx * 0.22, ry * 0.16, 0, 0, Math.PI * 2);
             ctx.ellipse(rx * 0.55, ry * 0.25, rx * 0.22, ry * 0.16, 0, 0, Math.PI * 2);
@@ -939,11 +1011,23 @@
             }
             ctx.closePath();
             ctx.fill();
-            // highlight
-            ctx.fillStyle = this._lighten(p.hair, 18);
+            // Fine directional strands break up the flat shape without a hard shine.
+            ctx.save();
             ctx.beginPath();
-            ctx.ellipse(-rx * 0.3, -ry * 0.7, rx * 0.3, ry * 0.18, -0.4, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.ellipse(0, -ry * 0.55, rx * 1.08, ry * 0.53, 0, Math.PI, Math.PI * 2);
+            ctx.clip();
+            ctx.strokeStyle = this._rgba(this._lighten(p.hair, 34), 0.22);
+            ctx.lineWidth = Math.max(0.7, R * 0.008);
+            p.hairStrands.forEach(strand => {
+                const x = strand.x * rx;
+                const y = strand.y * ry;
+                ctx.globalAlpha = Math.min(0.42, strand.alpha * 1.8);
+                ctx.beginPath();
+                ctx.moveTo(x, y + strand.length * ry);
+                ctx.quadraticCurveTo(x + R * 0.06, y + strand.length * ry * 0.35, x + R * 0.035, y);
+                ctx.stroke();
+            });
+            ctx.restore();
         }
 
         _eyeY(R) { return -R * 0.12; }
@@ -953,7 +1037,7 @@
             const ey = this._eyeY(R) - R * (0.34 + this.expression.brow * 0.16);
             const ex = this._eyeX(R);
             ctx.strokeStyle = this._darken(p.hair, 10);
-            ctx.lineWidth = R * 0.07 * p.browThick;
+            ctx.lineWidth = R * 0.04 * p.browThick;
             ctx.lineCap = 'round';
             [-1, 1].forEach(s => {
                 ctx.beginPath();
@@ -967,69 +1051,102 @@
         _drawEyes(ctx, p, R) {
             const ey = this._eyeY(R);
             const ex = this._eyeX(R);
-            const ew = R * (0.19 + this.expression.squint * 0.012);
-            const eh = R * 0.095 * this.eyeOpen * (1 - this.expression.squint * 0.34) + 0.5;
+            const openness = Math.max(0, Math.min(1, this.eyeOpen));
+            const ew = R * (0.17 + this.expression.squint * 0.006);
+            const eyeHeight = R * 0.078 * (1 - this.expression.squint * 0.24);
+            const eh = Math.max(0.35, eyeHeight * openness);
             [-1, 1].forEach(s => {
                 const x = s * ex;
-                // white
-                ctx.fillStyle = '#f4f1ec';
+                const sclera = ctx.createLinearGradient(x, ey - eh, x, ey + eh);
+                sclera.addColorStop(0, '#d8e4e1');
+                sclera.addColorStop(0.42, '#f5fbf8');
+                sclera.addColorStop(1, '#baccc7');
+                ctx.fillStyle = sclera;
                 ctx.beginPath();
                 ctx.ellipse(x, ey, ew, eh, 0, 0, Math.PI * 2);
                 ctx.fill();
-                if (this.eyeOpen > 0.2) {
+                ctx.strokeStyle = this._rgba(p.accent, 0.24);
+                ctx.lineWidth = Math.max(0.6, R * 0.008);
+                ctx.stroke();
+                if (openness > 0.2) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.ellipse(x, ey, ew, eh, 0, 0, Math.PI * 2);
+                    ctx.clip();
                     // iris + pupil, slight gaze drift
                     const gazeX = this._saccade.x * R + Math.sin(Date.now() * 0.0006 + (p.seed || 0) * 6) * R * 0.018;
                     const gazeY = this._saccade.y * R;
                     ctx.fillStyle = p.eye;
                     ctx.beginPath();
-                    ctx.arc(x + gazeX, ey + gazeY, R * 0.076, 0, Math.PI * 2);
+                    ctx.arc(x + gazeX, ey + gazeY, R * 0.059, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.strokeStyle = 'rgba(18,26,21,0.55)';
+                    ctx.lineWidth = Math.max(0.5, R * 0.005);
+                    ctx.beginPath();
+                    ctx.arc(x + gazeX, ey + gazeY, R * 0.051, 0, Math.PI * 2);
+                    ctx.stroke();
                     ctx.fillStyle = '#10100f';
                     ctx.beginPath();
-                    ctx.arc(x + gazeX, ey + gazeY, R * 0.035, 0, Math.PI * 2);
+                    ctx.arc(x + gazeX, ey + gazeY, R * 0.026, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.fillStyle = 'rgba(255,255,255,0.8)';
                     ctx.beginPath();
-                    ctx.arc(x + gazeX - R * 0.024, ey + gazeY - R * 0.022, R * 0.014, 0, Math.PI * 2);
+                    ctx.arc(x + gazeX - R * 0.016, ey + gazeY - R * 0.016, R * 0.009, 0, Math.PI * 2);
                     ctx.fill();
+                    ctx.restore();
                 }
-                // upper lid line
+
+                // The upper lid visibly travels down across the eye aperture.
+                if (openness < 0.98) {
+                    const lidBottom = ey - eyeHeight + eyeHeight * 2 * (1 - openness);
+                    const lidY = Math.min(ey + eyeHeight, lidBottom);
+                    const lid = ctx.createLinearGradient(x, ey - eyeHeight, x, lidY + R * 0.02);
+                    lid.addColorStop(0, this._lighten(p.skin, 12));
+                    lid.addColorStop(1, this._darken(p.skin, 2));
+                    ctx.fillStyle = lid;
+                    ctx.beginPath();
+                    ctx.moveTo(x - ew * 1.05, ey - eyeHeight);
+                    ctx.quadraticCurveTo(x, ey - eyeHeight - R * 0.014, x + ew * 1.05, ey - eyeHeight);
+                    ctx.lineTo(x + ew * 1.05, lidY);
+                    ctx.quadraticCurveTo(x, lidY + R * 0.016, x - ew * 1.05, lidY);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.strokeStyle = this._darken(p.skin, 30);
+                    ctx.lineWidth = R * 0.012;
+                    ctx.beginPath();
+                    ctx.moveTo(x - ew, lidY);
+                    ctx.quadraticCurveTo(x, lidY + R * 0.016, x + ew, lidY);
+                    ctx.stroke();
+                }
+
                 ctx.strokeStyle = this._darken(p.skin, 30);
-                ctx.lineWidth = R * 0.02;
+                ctx.lineWidth = R * 0.012;
                 ctx.beginPath();
                 ctx.ellipse(x, ey, ew, eh, 0, Math.PI, Math.PI * 2);
                 ctx.stroke();
-                // eyelashes for a clearer feminine read
-                if (p.lashes && this.eyeOpen > 0.3) {
-                    ctx.strokeStyle = '#1c1813';
-                    ctx.lineWidth = R * 0.018;
-                    for (let k = -2; k <= 2; k++) {
-                        const lx = x + (k / 2) * ew * 0.8;
-                        ctx.beginPath();
-                        ctx.moveTo(lx, ey - eh * 0.95);
-                        ctx.lineTo(lx + s * R * 0.03, ey - eh * 1.5);
-                        ctx.stroke();
-                    }
-                }
             });
         }
 
         _drawNose(ctx, p, R) {
-            const len = R * 0.5 * p.noseLen;
+            const len = R * 0.42 * p.noseLen;
             const flare = this.expression.nostril;
-            ctx.strokeStyle = this._darken(p.skin, 18);
-            ctx.lineWidth = R * 0.03;
-            ctx.lineCap = 'round';
+            const bridge = ctx.createLinearGradient(-R * 0.1, 0, R * 0.11, 0);
+            bridge.addColorStop(0, this._rgba(this._darken(p.skin, 35), 0.2));
+            bridge.addColorStop(0.52, this._rgba(this._lighten(p.skin, 18), 0.33));
+            bridge.addColorStop(1, this._rgba(this._darken(p.skin, 36), 0.22));
+            ctx.fillStyle = bridge;
             ctx.beginPath();
-            ctx.moveTo(-R * 0.04, -R * 0.05);
-            ctx.lineTo(-R * 0.07, len);
-            ctx.quadraticCurveTo(0, len + R * 0.1, R * 0.12, len);
-            ctx.stroke();
+            ctx.moveTo(-R * 0.055, -R * 0.06);
+            ctx.quadraticCurveTo(-R * 0.025, len * 0.7, -R * 0.13, len);
+            ctx.quadraticCurveTo(0, len + R * 0.11, R * 0.14, len);
+            ctx.quadraticCurveTo(R * 0.045, len * 0.7, R * 0.045, -R * 0.06);
+            ctx.closePath();
+            ctx.fill();
             // nostril shadow
-            ctx.fillStyle = this._rgba(this._darken(p.skin, 40), 0.5);
+            ctx.fillStyle = this._rgba(this._darken(p.skin, 43), 0.3);
             [-1, 1].forEach(s => {
                 ctx.beginPath();
-                ctx.ellipse(s * R * (0.06 + flare * 0.03), len + R * (0.02 + flare * 0.015), R * (0.065 + flare * 0.035), R * (0.038 + flare * 0.02), s * 0.12, 0, Math.PI * 2);
+                ctx.ellipse(s * R * (0.075 + flare * 0.015), len + R * (0.025 + flare * 0.01), R * (0.043 + flare * 0.015), R * (0.025 + flare * 0.012), s * 0.12, 0, Math.PI * 2);
                 ctx.fill();
             });
             ctx.fillStyle = this._rgba('#fff2d6', 0.09 + this.energy * 0.08);
@@ -1040,62 +1157,47 @@
 
         _drawMouth(ctx, p, R) {
             const e = this.expression;
-            const my = R * (0.72 + e.jaw * 0.12);
-            const open = this.mouth.open * R * 0.55;
-            const widthF = (0.5 + this.mouth.wide * (0.58 + e.lipTension * 0.12)) * (1 - this.mouth.round * 0.46);
-            const w = R * 0.6 * widthF * p.lipFull;
-            const roundPucker = this.mouth.round * R * 0.08;
+            const my = R * (0.72 + e.jaw * 0.035);
+            const open = this.isSpeaking ? this.mouth.open * R * 0.3 : 0;
+            const widthF = (0.54 + this.mouth.wide * 0.36) * (1 - this.mouth.round * 0.34);
+            const w = R * 0.48 * widthF * p.lipFull;
+            const pucker = this.mouth.round * R * 0.035;
+            const cornerLift = e.smile * R * 0.22;
+            const lipColor = p.lipTint || '#a65f58';
 
-            // lips outer
-            const lipGrad = ctx.createRadialGradient(-w * 0.18, my - R * 0.03, 0, 0, my, w + R * 0.18);
-            lipGrad.addColorStop(0, this._lighten(p.lipTint || '#b56b63', 18));
-            lipGrad.addColorStop(0.58, this._darken(p.lipTint || '#b56b63', 4));
-            lipGrad.addColorStop(1, this._darken(p.lipTint || '#b56b63', 24));
-            ctx.fillStyle = lipGrad;
-            ctx.beginPath();
-            ctx.ellipse(0, my, w + R * 0.04 - roundPucker, open + R * (0.08 + this.mouth.round * 0.04), 0, 0, Math.PI * 2);
-            ctx.fill();
-            // mouth interior
-            const inner = ctx.createRadialGradient(0, my + open * 0.2, 0, 0, my, Math.max(R * 0.08, open + w * 0.2));
-            inner.addColorStop(0, '#8f3440');
-            inner.addColorStop(0.62, '#481821');
-            inner.addColorStop(1, '#18080d');
-            ctx.fillStyle = inner;
-            ctx.beginPath();
-            ctx.ellipse(0, my, Math.max(R * 0.07, w - roundPucker), Math.max(1, open), 0, 0, Math.PI * 2);
-            ctx.fill();
-            // teeth (upper) when open enough
-            if (open > R * 0.07) {
-                ctx.fillStyle = '#f3efe6';
+            if (open > R * 0.025) {
+                const mouthHeight = Math.min(R * 0.24, open);
+                ctx.fillStyle = '#4a2020';
                 ctx.beginPath();
-                ctx.ellipse(0, my - open * 0.55, w * 0.82, open * 0.28, 0, 0, Math.PI * 2);
+                ctx.ellipse(0, my, Math.max(R * 0.08, w - pucker), mouthHeight, 0, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.strokeStyle = 'rgba(95,72,62,0.3)';
-                ctx.lineWidth = Math.max(0.6, R * 0.006);
-                for (let i = -2; i <= 2; i++) {
+                if (mouthHeight > R * 0.075) {
+                    ctx.fillStyle = '#e8e1d8';
                     ctx.beginPath();
-                    ctx.moveTo((i / 3) * w * 0.56, my - open * 0.78);
-                    ctx.lineTo((i / 3) * w * 0.5, my - open * 0.36);
-                    ctx.stroke();
+                    ctx.ellipse(0, my - mouthHeight * 0.54, w * 0.72, mouthHeight * 0.2, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = '#9e5557';
+                    ctx.beginPath();
+                    ctx.ellipse(0, my + mouthHeight * 0.48, w * 0.48, mouthHeight * 0.23, 0, 0, Math.PI * 2);
+                    ctx.fill();
                 }
-                // tongue
-                ctx.fillStyle = '#b85c63';
-                ctx.beginPath();
-                ctx.ellipse(0, my + open * 0.5, w * 0.6, open * 0.4, 0, 0, Math.PI * 2);
-                ctx.fill();
             }
-            // upper lip line
-            ctx.strokeStyle = this._darken('#a85c54', 10);
-            ctx.lineWidth = R * 0.02;
+
+            const lipGrad = ctx.createLinearGradient(0, my - R * 0.055, 0, my + R * 0.07);
+            lipGrad.addColorStop(0, this._lighten(lipColor, 8));
+            lipGrad.addColorStop(0.52, lipColor);
+            lipGrad.addColorStop(1, this._darken(lipColor, 20));
+            ctx.strokeStyle = lipGrad;
+            ctx.lineWidth = Math.max(1, R * (open > R * 0.025 ? 0.033 : 0.022));
+            ctx.lineCap = 'round';
             ctx.beginPath();
-            ctx.moveTo(-w - R * 0.04, my);
-            ctx.quadraticCurveTo(0, my - R * (0.06 + e.lipTension * 0.06), w + R * 0.04, my);
+            ctx.moveTo(-w, my + cornerLift * 0.34);
+            ctx.quadraticCurveTo(-w * 0.38, my - R * 0.027 - cornerLift, 0, my - R * 0.018);
+            ctx.quadraticCurveTo(w * 0.38, my - R * 0.027 - cornerLift, w, my + cornerLift * 0.34);
             ctx.stroke();
-            ctx.strokeStyle = `rgba(255,236,218,${0.18 + this.energy * 0.16})`;
-            ctx.lineWidth = R * 0.012;
             ctx.beginPath();
-            ctx.moveTo(-w * 0.45, my - open * 0.25 - R * 0.035);
-            ctx.quadraticCurveTo(0, my - open * 0.42 - R * 0.02, w * 0.45, my - open * 0.25 - R * 0.035);
+            ctx.moveTo(-w * 0.92, my + cornerLift * 0.34);
+            ctx.quadraticCurveTo(0, my + R * (0.045 + open / R * 0.12), w * 0.92, my + cornerLift * 0.34);
             ctx.stroke();
         }
 
@@ -1114,27 +1216,36 @@
         _drawMustache(ctx, p, R) {
             ctx.fillStyle = this._darken(p.hair, 6);
             ctx.beginPath();
-            ctx.ellipse(0, R * 0.55, R * 0.32, R * 0.1, 0, 0, Math.PI * 2);
+            ctx.moveTo(-R * 0.42, R * 0.585);
+            ctx.quadraticCurveTo(-R * 0.25, R * 0.51, -R * 0.04, R * 0.575);
+            ctx.quadraticCurveTo(0, R * 0.59, 0, R * 0.62);
+            ctx.quadraticCurveTo(0, R * 0.59, R * 0.04, R * 0.575);
+            ctx.quadraticCurveTo(R * 0.25, R * 0.51, R * 0.42, R * 0.585);
+            ctx.quadraticCurveTo(R * 0.27, R * 0.68, R * 0.06, R * 0.63);
+            ctx.quadraticCurveTo(0, R * 0.625, 0, R * 0.64);
+            ctx.quadraticCurveTo(0, R * 0.625, -R * 0.06, R * 0.63);
+            ctx.quadraticCurveTo(-R * 0.27, R * 0.68, -R * 0.42, R * 0.585);
+            ctx.closePath();
             ctx.fill();
         }
 
         _drawGlasses(ctx, p, R) {
             const ey = this._eyeY(R);
             const ex = this._eyeX(R);
-            ctx.strokeStyle = 'rgba(25,28,34,0.9)';
-            ctx.lineWidth = R * 0.035;
+            ctx.strokeStyle = 'rgba(34,39,40,0.82)';
+            ctx.lineWidth = R * 0.014;
             [-1, 1].forEach(s => {
                 ctx.beginPath();
-                ctx.ellipse(s * ex, ey, R * 0.3, R * 0.24, 0, 0, Math.PI * 2);
+                ctx.ellipse(s * ex, ey, R * 0.22, R * 0.105, 0, 0, Math.PI * 2);
                 ctx.stroke();
             });
             ctx.beginPath();
-            ctx.moveTo(-ex + R * 0.3, ey);
-            ctx.lineTo(ex - R * 0.3, ey);
-            ctx.moveTo(-ex - R * 0.3, ey);
-            ctx.lineTo(-ex - R * 0.55, ey - R * 0.08);
-            ctx.moveTo(ex + R * 0.3, ey);
-            ctx.lineTo(ex + R * 0.55, ey - R * 0.08);
+            ctx.moveTo(-ex + R * 0.22, ey);
+            ctx.lineTo(ex - R * 0.22, ey);
+            ctx.moveTo(-ex - R * 0.22, ey);
+            ctx.lineTo(-ex - R * 0.29, ey - R * 0.025);
+            ctx.moveTo(ex + R * 0.22, ey);
+            ctx.lineTo(ex + R * 0.29, ey - R * 0.025);
             ctx.stroke();
         }
 
@@ -1144,6 +1255,8 @@
             return `rgba(${c.r},${c.g},${c.b},${a})`;
         }
         _toRgb(hex) {
+            const rgb = (hex || '').match(/^rgba?\(\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)\s*,\s*(\d+(?:\.\d+)?)/i);
+            if (rgb) return { r: Number(rgb[1]), g: Number(rgb[2]), b: Number(rgb[3]) };
             const h = hex.replace('#', '');
             return { r: parseInt(h.substr(0, 2), 16), g: parseInt(h.substr(2, 2), 16), b: parseInt(h.substr(4, 2), 16) };
         }
