@@ -1279,7 +1279,7 @@ class EnhancedSeimasLiveStream {
     loadGenerationMode() {
         try {
             const stored = localStorage.getItem('seimas_generation_mode');
-            if (stored === 'remote' || stored === 'local' || stored === 'xai') {
+            if (stored === 'remote' || stored === 'local' || stored === 'xai' || stored === 'chatgpt') {
                 this.generationMode = stored;
             }
         } catch (error) {
@@ -1297,6 +1297,7 @@ class EnhancedSeimasLiveStream {
     }
 
     applyGenerationModeToUI() {
+        document.getElementById('chatgptConfigPanel')?.classList.toggle('hidden', this.generationMode !== 'chatgpt');
         if (this.generationModeToggle) {
             const buttons = this.generationModeToggle.querySelectorAll('.mode-option');
             buttons.forEach(button => {
@@ -1316,7 +1317,7 @@ class EnhancedSeimasLiveStream {
     }
 
     handleGenerationModeChange(mode) {
-        if (mode !== 'local' && mode !== 'remote' && mode !== 'xai') {
+        if (mode !== 'local' && mode !== 'remote' && mode !== 'xai' && mode !== 'chatgpt') {
             return;
         }
         if (this.generationMode === mode) {
@@ -2213,7 +2214,7 @@ class EnhancedSeimasLiveStream {
             if (!this.ensureXaiGenerationConfigured()) {
                 return;
             }
-        } else if (!this.ensureLocalGenerationConfigured()) {
+        } else if (mode !== 'chatgpt' && !this.ensureLocalGenerationConfigured()) {
             return;
         }
 
@@ -2223,7 +2224,9 @@ class EnhancedSeimasLiveStream {
         let transcript;
 
         try {
-            if (mode === 'remote') {
+            if (mode === 'chatgpt') {
+                transcript = await this.callChatGPT(question);
+            } else if (mode === 'remote') {
                 transcript = await this.callOpenAI(question, this.apiKeyInput.value.trim());
             } else if (mode === 'xai') {
                 transcript = await this.callXai(question, (this.xaiApiKeyInput?.value?.trim() || this.xaiGenerationSettings?.apiKey));
@@ -2255,6 +2258,21 @@ class EnhancedSeimasLiveStream {
         } else {
             this.generateTranscriptBtn.textContent = '🚀 Generuoti Seimo posėdį';
         }
+    }
+
+    async callChatGPT(question) {
+        const statusResponse = await fetch('/api/chatgpt/status');
+        const status = await statusResponse.json();
+        if (!statusResponse.ok || !status.canGenerate) throw new Error(status.error || 'Prisijunkite / Continue with ChatGPT first.');
+        const model = document.getElementById('chatgptModelSelect')?.value;
+        if (!model) throw new Error('Pasirinkite modelį / Select a ChatGPT model.');
+        const response = await fetch('/api/chatgpt/generate', {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Seimas-CSRF': status.csrf },
+            body: JSON.stringify({ model, prompt: this.buildPrompt(question), instructions: this.buildSystemPrompt() })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'ChatGPT generation failed.');
+        return data.text;
     }
 
     async callOpenAI(question, apiKey) {

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { chatgptPlugin } from './server/chatgpt_auth.js';
 
 const sessionsDir = path.resolve(process.cwd(), 'sessions');
 
@@ -65,7 +66,7 @@ function readBody(req) {
 }
 
 export default defineConfig({
-  plugins: [react(), sessionArchivePlugin()],
+  plugins: [react(), chatgptPlugin(), sessionArchivePlugin()],
   server: {
     port: 5173,
     host: true
