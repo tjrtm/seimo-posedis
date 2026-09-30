@@ -1,6 +1,6 @@
 # Seimas AI Live Stream Generator
 
-Lietuvos Respublikos Seimo posėdžių simuliatorius su OpenAI, xAI (Grok) ir lokalia (Ollama + Speaches) integracija. Generuoja realistiškus parlamentinius posėdžius su visais 141 Seimo nariu.
+Lietuvos Respublikos Seimo posėdžių simuliatorius su ChatGPT plano, OpenAI API, xAI (Grok) ir lokalia (Ollama + Speaches) integracija. Programa skirta naudoti savo kompiuteryje. Generuoja realistiškus parlamentinius posėdžius su visais 141 Seimo nariu.
 
 ## 🚀 Greitas startas
 
@@ -10,6 +10,29 @@ npm run dev      # paleisti dev serverį
 ```
 
 Atidarykite naršyklėje adresą, kurį parodo Vite (paprastai **http://localhost:5173**; jei portas užimtas, Vite pasirenka kitą, pvz. `5174`).
+
+## ChatGPT prisijungimas ir posėdžio generavimas
+
+ChatGPT režimu stenogramą galima generuoti su tinkamos paskyros ChatGPT plano limitais, neįvedant OpenAI API rakto.
+
+1. Paleiskite `npm install` ir `npm run dev` **tame pačiame kompiuteryje, kuriame naudojate naršyklę**.
+2. Atidarykite `http://localhost:5173` arba Vite parodytą `localhost` adresą.
+3. Atidarykite **⚙️ Nustatymai → Generavimo tiekėjas → ChatGPT**.
+4. Spauskite **Continue with ChatGPT**. OpenAI lange prisijunkite ir suteikite leidimą naudoti ChatGPT planą.
+5. Grįžkite į Seimas programą, palaukite, kol įsikels paskyros modeliai, ir pasirinkite stenogramos modelį.
+6. Įveskite temą, pasirinkite kalbą ir spauskite **🚀 Generuoti Seimo posėdį**.
+
+**Balsai:** šis režimas naudoja atskirą vietinį **Speaches** serverį. Jo adresą ir modelį nustatykite **Lokalus** kortelėje, tada grįžkite į **ChatGPT**. Jei balsų nereikia, palikite įgarsinimą išjungtą. ChatGPT prisijungimas nesuteikia prieigos prie OpenAI API įgarsinimo.
+
+**Paleidimas:** veikia per `npm run dev` arba `npm run build` ir `npm run preview`. Vien statinių `dist/` failų nepakanka: prisijungimui ir generavimui reikalingi vietiniai Node maršrutai. Prisijungimo callback veikia per `127.0.0.1` pasirinktame laisvame porte. Šiam vietiniam srautui nereikia iš anksto įvesti client ID ar client secret.
+
+**Paskyra:** prieinami modeliai ir generavimo limitai priklauso nuo paskyros. OAuth duomenys įrašomi į Git ignoruojamą `.chatgpt/` aplanką, o API raktų režimai lieka atskirai. Norėdami pakeisti paskyrą, spauskite **Atsijungti / Sign out**, tada prisijunkite iš naujo.
+
+**Patikrinimo būsena:** build ir sintetiniai stream testai patikrinti; tikras OpenAI prisijungimas ir posėdžio generavimas su vartotojo paskyra dar nepatvirtinti. Žinomi funkcionalumo trūkumai: atsijungimo metu vykstantis tokeno atnaujinimas gali atkurti prisijungimą; paskyrai be el. pašto lauko modelių sąrašas gali neįsikelti.
+
+**English:** Run Seimas and your browser on the same computer, open the app through `localhost`, select **ChatGPT**, and click **Continue with ChatGPT**. Authorize plan usage, return, choose an account-provided model, and generate a session. Speech uses a separate local Speaches server. Live account authorization remains unverified; the sign-out race and missing-email model-loading issue remain unresolved.
+
+Išsamus vadovas: [ChatGPT plan session generation](docs/chatgpt-signin.md).
 
 ## Sąsajos ekrano nuotraukos
 
@@ -43,18 +66,18 @@ Po vaizdo grotuvu, valdiklių eilutėje, yra mygtukas **⛶ Platus vaizdas**. J�
 
 ## ⚙️ Nustatymai (modalas)
 
-Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutinėje juostoje (arba mygtuką **✨ Generuoti posėdį**) ir rodomi moderniame modaliniame lange virš posėdžio turinio. Modalas tvarkingai suskirstytas į tris sekcijas: *Tema ir kalba*, *Generavimo tiekėjas* (Lokalus / OpenAI / xAI) ir *Įgarsinimas*. Uždaroma kryžiuku, paspaudus už lango arba klavišu `Esc`.
+Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutinėje juostoje (arba mygtuką **✨ Generuoti posėdį**) ir rodomi moderniame modaliniame lange virš posėdžio turinio. Modalas tvarkingai suskirstytas į tris sekcijas: *Tema ir kalba*, *Generavimo tiekėjas* (Lokalus / OpenAI / ChatGPT / xAI) ir *Įgarsinimas*. Uždaroma kryžiuku, paspaudus už lango arba klavišu `Esc`.
 
 ## Stakeholder Brief
 - **Status (2025-11-15):** Feature-complete beta. Core simulator, bilingual prompt scaffolding, and local text-to-speech now run inside a React + Vite SPA (`src/App.jsx`) backed by the legacy simulation controller.
 - **Value Proposition:** Enables communications, policy, and research teams to dry-run plenary debates with controllable topics, factions, and scripted realism before public sessions. Delivers JSON transcripts, live-playback UI, and optional audio for debriefs or press prep.
 - **Required Inputs:** 
   - *None for a quick demo* — import `test-import-offline-preview.zip` via **📥 Importuoti** to replay a fully generated session (with audio) without any key.
-  - For generating new sessions, one of: an OpenAI-compatible API key, an xAI (Grok) API key, or a local Ollama + Speaches stack.
+  - For generating new sessions, one of: an authorized eligible ChatGPT account for plan usage, an OpenAI-compatible API key, an xAI (Grok) API key, or a local Ollama stack. Speech is configured separately.
   - Running Speaches server on the stakeholder device (`http://localhost:8000/v1`) with at least one Kokoro-derived TTS model downloaded (local mode only).
   - (For local simulations) An Ollama instance with the chosen LLM pulled locally (e.g., `ollama pull llama3.1:70b`).
-- **UI Highlights:** refreshed dark-corporate React interface with a settings modal (⚙️ icon), three provider cards (Local / OpenAI / xAI Grok), a collapsible sidebar for wide-screen video, bilingual prompts, and contextual status badges improves stakeholder demos without extra configuration.
-- **Data Residency & Privacy:** Local mode stays on Ollama + Speaches. Remote mode calls the configured OpenAI-compatible Responses and TTS endpoints. All outputs, cached keys, and session files stay in the stakeholder’s browser storage or the local `sessions/` folder selected via the File System Access API.
+- **UI Highlights:** refreshed dark-corporate React interface with a settings modal (⚙️ icon), four provider cards (Local / OpenAI / ChatGPT / xAI Grok), a collapsible sidebar for wide-screen video, bilingual prompts, and contextual status badges improves stakeholder demos without extra configuration.
+- **Data Residency & Privacy:** Local mode stays on Ollama + Speaches. Remote mode calls the configured OpenAI-compatible Responses and TTS endpoints. Outputs and settings are stored locally in browser storage or session files. ChatGPT OAuth credentials are stored by the local Node integration in `.chatgpt/`; generation requests are sent to the selected provider.
 - **Evaluation Checklist:** 
   1. Run `npm install && npm run dev`, then open `http://localhost:5173`.
   2. Fill topic + choose Lithuanian/English.
@@ -87,11 +110,12 @@ Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutin
 - Parinktis veikia tiek GPT stenogramoms, tiek tiesioginiams atnaujinimams
 - Kalbos pasirinkimas įsimenamas naršyklėje, tad nereikia keisti kiekvieną kartą
 
-### ⚙️ Trys generavimo tiekėjai
+### ⚙️ Keturi generavimo režimai
 - **🔒 Lokalus režimas:** stenogramos kuriamos per jūsų Ollama serverį, balsai – per Speaches TTS. Galima nurodyti Ollama modelį, temperatūrą, `num_predict` ir papildomą `options` JSON.
+- **ChatGPT režimas:** prisijunkite per **Continue with ChatGPT**, pasirinkite paskyrai prieinamą modelį ir generuokite stenogramą su ChatGPT plano limitais. Balsams naudojamas vietinis Speaches; OpenAI API raktas stenogramai nereikalingas.
 - **☁️ OpenAI režimas:** naudoja pasirinktą OpenAI arba OpenAI-compatible Responses endpointą stenogramoms ir atskirą `/audio/speech` TTS endpointą balsams.
 - **🚀 xAI (Grok) režimas:** stenogramos kuriamos per OpenAI-suderinamą Grok `/chat/completions` endpointą (`grok-4`, `grok-4-fast`, `grok-3-mini` ir kt.), o balsai – per xAI Grok `/v1/tts` (balsai *Eve, Ara, Leo, Rex, Sal* priskiriami automatiškai pagal kalbėtojo lytį).
-- Visais atvejais galima pasirinkti kalbą, audio formatą, konkretų modelį, bazinį URL ir papildomus tiekėjo nustatymus. Tiekėjas perjungiamas kortelėmis nustatymų modale.
+- Visais režimais galima pasirinkti kalbą ir stenogramos modelį. API adresai, papildomi JSON ir audio nustatymai priklauso nuo tiekėjo; ChatGPT režimas naudoja fiksuotą OpenAI Responses adresą ir paskyros modelių sąrašą. Tiekėjas perjungiamas kortelėmis nustatymų modale.
 
 ### 🌓 Moderni tamsi sąsaja
 - Visi komponentai perkurti į profesionalų, korporatyvinį dark theme dizainą.
@@ -126,6 +150,7 @@ Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutin
 5. **Tema:** įveskite klausimą (pvz. „Ar turėtų būti įvesta 4 dienų darbo savaitė?“) ir pasirinkite kalbą (lt/en).
 6. **Tiekėjas:** pasirinkite kortelę:
    - *🔒 Lokalus:* nurodykite Ollama API (`http://localhost:11434`), modelį (`llama3.1:70b`), temperatūrą/`num_predict` jei reikia, Speaches URL ir modelį bei pasirinktą audio formatą.
+   - *ChatGPT:* spauskite **Continue with ChatGPT**, suteikite leidimą naudoti planą, grįžkite ir pasirinkite paskyros modelį. Balsams naudojami vietinio Speaches nustatymai.
    - *☁️ OpenAI:* pateikite API raktą/tokeną, Responses bazinį URL, stenogramos modelį, TTS bazinį URL, TTS modelį ir papildomą JSON, jei endpointui reikia nestandartinių parametrų.
    - *🚀 xAI (Grok):* pateikite xAI API raktą (`xai-...` iš `console.x.ai`), bazinį URL (`https://api.x.ai/v1`), Grok modelį (pvz. `grok-4`), TTS kalbą (`auto` arba BCP-47 kodą) ir audio formatą.
 7. **Generavimas:** spauskite "🚀 Generuoti Seimo posėdį" ir, jei norite automatinio įrašymo, pasirinkite `sessions` aplanką per File System Access.
@@ -139,6 +164,7 @@ Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutin
 ├── src/
 │   ├── App.jsx                         # React UI (kortelės, valdikliai)
 │   ├── App.css                         # Modernus tamsus stilius
+│   ├── chatgpt_signin.jsx              # ChatGPT prisijungimas + modelių pasirinkimas
 │   └── main.jsx                        # React įkrova
 ├── public/
 │   ├── favicon.ico
@@ -146,6 +172,10 @@ Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutin
 │       ├── seimas_stream_enhanced.js   # Branduolio logika + Node sesijų archyvai
 │       ├── seimas_members_data.js      # 141 nario duomenys (globalus Array)
 │       └── animated_face.js            # WebGL veido animacija
+├── server/
+│   ├── chatgpt_auth.js                 # Vietinis OAuth, tokenų atnaujinimas ir generavimas
+│   └── chatgpt_auth.test.js            # Sintetiniai stream ir užklausų testai
+├── docs/chatgpt-signin.md              # ChatGPT režimo vadovas
 ├── seimas/                             # 141 parlamentaro profilis (Markdown)
 ├── sessions/                           # Sugeneruotų sesijų JSON išrašai
 ├── seimas_session_transcript.md        # Pavyzdinis posėdis
@@ -154,6 +184,14 @@ Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutin
 ```
 
 ## API Requirements
+
+- **ChatGPT plano režimas**
+  - Reikalinga tinkama ChatGPT paskyra ir leidimas naudoti plano limitus; API rakto įvesti nereikia.
+  - Programa ir naršyklė paleidžiamos tame pačiame kompiuteryje per `localhost`.
+  - Paskyros modeliai gaunami per `/v1/models`, stenograma – per `/v1/responses` su `store: false` ir `stream: true`.
+  - Papildomi OpenAI API režimo JSON ir max output tokens nustatymai šiam režimui netaikomi.
+  - Balsams atskirai paleiskite Speaches arba išjunkite įgarsinimą.
+  - Plačiau: [ChatGPT prisijungimo vadovas](docs/chatgpt-signin.md).
 
 - **Lokalus režimas (Ollama + Speaches)**
   - *Ollama:* įdiekite Ollama, paleiskite `ollama serve`, atsisiųskite pasirinktą modelį (`ollama run llama3.1:70b --system ...`). Programoje nurodykite API adresą (dažniausiai `http://localhost:11434`), modelio pavadinimą, temperatūrą, `num_predict` ir papildomą `options` JSON pagal poreikį.
@@ -174,7 +212,7 @@ Visi konfigūracijos laukai dabar atidaromi per **⚙️ piktogramą** viršutin
 ## Technologijos
 
 - **React + Vite** - SPA sąsaja (`src/App.jsx`) virš legacy simuliacijos valdiklio
-- **Trys tiekėjai** - OpenAI Responses API, xAI Grok (`/chat/completions` + `/v1/tts`) ir lokalus Ollama + Speaches
+- **Keturi generavimo režimai** - ChatGPT plano Responses API, OpenAI API, xAI Grok ir lokalus Ollama + Speaches
 - **CSS Grid/Flexbox** - responsive dizainas, slepiamas šoninis skydelis, modalinis nustatymų langas
 - **Local Storage** - API raktų ir nustatymų saugojimas naršyklėje
 - **Embedded Data** - 141 narių profiliai kode (jokių HTTP užklausų)
@@ -200,9 +238,10 @@ Sistemoje yra pavyzdinis posėdis temu "Dirbtinio intelekto poveikis darbo rinka
 
 ## Saugumo pastabos
 
-- API raktas niekada neišsiunčiamas iš jūsų naršyklės
-- Visi duomenys saugomi lokaliai
-- Stenogramos generuojamos real-time su pasirinktu Ollama arba OpenAI-compatible endpointu
+- Programa skirta vienam vartotojui savo kompiuteryje; naudokite `localhost` adresą.
+- OpenAI ir xAI API raktai saugomi naršyklėje ir siunčiami pasirinktam API tiekėjui užklausoms autentifikuoti.
+- ChatGPT OAuth duomenys saugomi vietiniame `.chatgpt/` aplanke; neįtraukite šio aplanko į Git ar dalijamus projekto archyvus.
+- Stenogramos užklausa siunčiama pasirinktam Ollama, OpenAI, ChatGPT plano arba xAI endpointui.
 
 ## Licencija
 
